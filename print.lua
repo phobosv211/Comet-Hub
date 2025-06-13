@@ -1,6 +1,3 @@
--- not made by Comet Hub
--- all credits to original owner
-
 return function(message, options)
 	options = options or {}
 	local textColor = options.textColor or Color3.fromRGB(0, 255, 0)
