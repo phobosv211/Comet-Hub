@@ -1093,9 +1093,6 @@ function RayfieldLibrary:Notify(data)
 			elseif data.notificationTYPE == "nothing" then
 				sound.SoundId = ""
 			end
-
-			-- Reset and play
-			sound:Stop()
 			sound:Play()
 		end
 
