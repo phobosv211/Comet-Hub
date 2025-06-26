@@ -6,6 +6,8 @@
 	shlex | Designing + Programming
 	iRay  | Programming
 	Max   | Programming
+	
+	Modified for Comet Hub
 
 ]]
 
@@ -1089,54 +1091,6 @@ function RayfieldLibrary:Notify(data)
 
 			sound:Play()
 			game:GetService("Debris"):AddItem(sound, 5)
-		end
-
-		if data.Actions and typeof(data.Actions) == "table" and #data.Actions > 0 then
-			local ActionHolder = Instance.new("Frame")
-			ActionHolder.Name = "ActionHolder"
-			ActionHolder.BackgroundTransparency = 1
-			ActionHolder.Size = UDim2.new(1, -70, 0, 30)
-			ActionHolder.Position = UDim2.new(0, 50, 1, -40)
-			ActionHolder.AutomaticSize = Enum.AutomaticSize.Y
-			ActionHolder.Parent = newNotification
-
-			local Layout = Instance.new("UIListLayout")
-			Layout.FillDirection = Enum.FillDirection.Horizontal
-			Layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-			Layout.VerticalAlignment = Enum.VerticalAlignment.Center
-			Layout.Padding = UDim.new(0, 8)
-			Layout.Parent = ActionHolder
-
-			for _, action in ipairs(data.Actions) do
-				local Button = Instance.new("TextButton")
-				Button.Size = UDim2.new(0, 90, 0, 26)
-				Button.BackgroundColor3 = SelectedTheme.Background
-				Button.TextColor3 = SelectedTheme.TextColor
-				Button.Text = action.Name or "Action"
-				Button.Font = Enum.Font.GothamMedium
-				Button.TextSize = 13
-				Button.BorderSizePixel = 0
-				Button.BackgroundTransparency = 0.2
-				Button.AutoButtonColor = true
-				Button.Parent = ActionHolder
-
-				local Stroke = Instance.new("UIStroke")
-				Stroke.Color = SelectedTheme.TextColor
-				Stroke.Transparency = 0.4
-				Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-				Stroke.Parent = Button
-
-				Button.MouseButton1Click:Connect(function()
-					if typeof(action.Callback) == "function" then
-						pcall(action.Callback)
-					end
-					newNotification.Visible = false
-					newNotification:Destroy()
-				end)
-			end
-
-			local additionalHeight = 40
-			newNotification.Size = UDim2.new(newNotification.Size.X.Scale, newNotification.Size.X.Offset, 0, newNotification.Size.Y.Offset + additionalHeight)
 		end
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
