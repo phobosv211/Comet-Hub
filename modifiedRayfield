@@ -1072,10 +1072,15 @@ function RayfieldLibrary:Notify(data)
 		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 
 		if data.notificationTYPE then
-			local sound = Instance.new("Sound")
-			sound.Volume = 1
-			sound.SoundGroup = nil
-			sound.Parent = newNotification
+			local existingSound = newNotification:FindFirstChild("SFX")
+			local sound = existingSound or Instance.new("Sound")
+
+			if not existingSound then
+				sound.Name = "SFX"
+				sound.Volume = 1
+				sound.Looped = false
+				sound.Parent = newNotification
+			end
 
 			if data.notificationTYPE == "calm" then
 				sound.SoundId = "rbxassetid://7383525713"
@@ -1089,9 +1094,11 @@ function RayfieldLibrary:Notify(data)
 				sound.SoundId = ""
 			end
 
+			-- Reset and play
+			sound:Stop()
 			sound:Play()
-			game:GetService("Debris"):AddItem(sound, 5)
 		end
+
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
 		task.wait(data.Duration or waitDuration)
