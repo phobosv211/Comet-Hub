@@ -1587,6 +1587,18 @@ end
 
 function RayfieldLibrary:CreateWindow(Settings)
 	local TweenService = game:GetService("TweenService")
+	
+	local existingSound = Rayfield:FindFirstChild("Intro")
+	
+	local sound = existingSound or Instance.new("Sound")
+
+	if not existingSound then
+		sound.Name = "Intro"
+		sound.Volume = 1
+		sound.Looped = false
+		sound.Parent = Rayfield
+		sound.SoundId = "rbxassetid://8503531171"
+	end
 
 	if Rayfield:FindFirstChild("Loading") then
 		if getgenv and not getgenv().rayfieldCached then
@@ -1605,6 +1617,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end
 
 			-- Tween: Meteor-style entry (no rotation)
+			sound:Play()
 			local entryTween = TweenService:Create(banner, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
 				ImageTransparency = 0,
 				Position = UDim2.new(0.5, 0, 0.5, 0) -- Center screen
