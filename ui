@@ -1587,38 +1587,48 @@ end
 
 function RayfieldLibrary:CreateWindow(Settings)
 	local TweenService = game:GetService("TweenService")
-	if Rayfield:FindFirstChild('Loading') then
+
+	if Rayfield:FindFirstChild("Loading") then
 		if getgenv and not getgenv().rayfieldCached then
 			Rayfield.Enabled = true
 			Rayfield.Loading.Visible = true
 
 			local banner = Rayfield.Loading:FindFirstChild("Banner")
 			if banner then
-				-- Set initial properties
+				-- Set initial offscreen position and properties
 				banner.Image = "rbxassetid://78129230285653"
 				banner.ImageColor3 = Color3.fromRGB(219, 176, 255)
 				banner.Size = UDim2.new(0, 250, 0, 245)
 				banner.ImageTransparency = 1
+				banner.Position = UDim2.new(1.2, 0, -0.5, 0) -- Start top-right offscreen
+				banner.AnchorPoint = Vector2.new(0.5, 0.5)
 			end
 
-			local fadeIn = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				ImageTransparency = 0
+			-- Tween: Meteor-style entry (no rotation)
+			local entryTween = TweenService:Create(banner, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+				ImageTransparency = 0,
+				Position = UDim2.new(0.5, 0, 0.5, 0) -- Center screen
 			})
 
-			local fadeOut = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-				ImageTransparency = 1
-			})
+			entryTween:Play()
+			entryTween.Completed:Wait()
 
-			fadeIn:Play()
-			fadeIn.Completed:Wait()
+			-- Hover briefly
 			task.wait(1.5)
+
+			-- Tween: Fade out and shrink
+			local fadeOut = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+				ImageTransparency = 1,
+				Size = UDim2.new(0, 0, 0, 0)
+			})
+
 			fadeOut:Play()
 			fadeOut.Completed:Wait()
 
 			Rayfield.Loading.Visible = false
-			
 		end
 	end
+
 
 
 
