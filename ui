@@ -2480,8 +2480,11 @@ function ModifiedRLibary:CreateWindow(Settings)
 			TweenService:Create(Label.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = Color and 0.2 or 0}):Play()	
 
 			function LabelValue:Set(NewLabel, Icon, Color)
-				Label.Title.Text = NewLabel
-
+				if Label then
+					Label.Title.Text = NewLabel
+					-- prevent console errors
+				end
+				
 				if Color then
 					Label.BackgroundColor3 = Color or SelectedTheme.SecondaryElementBackground
 					Label.UIStroke.Color = Color or SelectedTheme.SecondaryElementStroke
