@@ -935,6 +935,30 @@ local function SaveConfiguration()
 	end
 end
 
+function makenewsound(bytecodelink, soundname)
+	local folderName = "Comet-Hub"
+	local subFolderName = "sounds"
+	local fullFolderPath = folderName .. "/" .. subFolderName
+	local fileName = soundname .. ".mp3"
+	local fullFilePath = fullFolderPath .. "/" .. fileName
+
+	if not isfolder(folderName) then
+		makefolder(folderName)
+	end
+
+	if not isfolder(fullFolderPath) then
+		makefolder(fullFolderPath)
+	end
+
+	if not isfile(fullFilePath) then
+		local encoded = game:HttpGet(bytecodelink)
+		writefile(fullFilePath, crypt.base64decode(encoded))
+	end
+
+	return getcustomasset(fullFilePath)
+end
+
+
 function ModifiedRLibary:Notify(data) -- action e.g open messages
 	task.spawn(function()
 
@@ -1026,11 +1050,23 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 			elseif data.notificationTYPE == "urgent" then
 				sound.SoundId = "rbxassetid://93440821784388"
 			elseif data.notificationTYPE == "info" then
-				sound.SoundId = "rbxassetid://78221512421085"
+				local soundAsset = makenewsound(
+					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/infomp3base64",
+					"info" -- would default to info.mp3
+				)
+				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
 			elseif data.notificationTYPE == "on" then
-				sound.SoundId = "rbxassetid://83545410137694"
+				local soundAsset = makenewsound(
+					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/onmp3base64",
+					"on" -- would default to info.mp3
+				)
+				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
 			elseif data.notificationTYPE == "off" then
-				sound.SoundId = "rbxassetid://117240355841894"
+				local soundAsset = makenewsound(
+					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/offmp3base64",
+					"off" -- would default to info.mp3
+				)
+				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
 			elseif data.notificationTYPE == "nothing" then
 				sound.SoundId = ""
 			end
