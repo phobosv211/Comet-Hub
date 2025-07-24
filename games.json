@@ -14,5 +14,10 @@
     "126884695634066": {
         "script_id": "fbba8547b6f2812c5dcfd35997532575",
         "note": "grow a garden"
+    },
+    "15198987828": {
+    "script_id": "d47122204d1344b44a320a8f4b1d4761",
+    "note": "san junipero prison",
+    "betaTesting": ["JSpvZUrnyygXFAIoMyQDtkJjBEhnNumU"]
     }
 }
