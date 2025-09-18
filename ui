@@ -582,7 +582,7 @@ local CoreGui = getService("CoreGui")
 
 -- Interface Management
 
-local Rayfield = useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://91532633816025")[1]
+local Rayfield = useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://119681114050388")[1]
 local buildAttempts = 0
 local correctBuild = false
 local warned
@@ -596,7 +596,7 @@ repeat
 	end
 
 	correctBuild = false
-	toDestroy, Rayfield = Rayfield, useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://91532633816025")[1]
+	toDestroy, Rayfield = Rayfield, useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://119681114050388")[1]
 	if toDestroy and not useStudio then toDestroy:Destroy() end
 
 	buildAttempts = buildAttempts + 1
@@ -1032,7 +1032,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-		
+
 		if data.notificationTYPE then
 			local existingSound = newNotification:FindFirstChild("SFX")
 			local sound = existingSound or Instance.new("Sound")
@@ -1565,9 +1565,9 @@ end
 
 function ModifiedRLibary:CreateWindow(Settings)
 	local TweenService = game:GetService("TweenService")
-	
+
 	local existingSound = Rayfield:FindFirstChild("Intro")
-	
+
 	local sound = existingSound or Instance.new("Sound")
 
 	if not existingSound then
@@ -1657,7 +1657,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 	LoadingFrame.Version.TextTransparency = 1
 	LoadingFrame.Title.Text = Settings.LoadingTitle or "Rayfield"
 	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "Interface Suite"
-	
+
 	if Settings.Icon and Settings.Icon ~= 0 and Topbar:FindFirstChild('Icon') then
 		Topbar.Icon.Visible = true
 		Topbar.Title.Position = UDim2.new(0, 47, 0.5, 0)
@@ -2536,7 +2536,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 					Label.Title.Text = NewLabel
 					-- prevent console errors
 				end
-				
+
 				if Color then
 					Label.BackgroundColor3 = Color or SelectedTheme.SecondaryElementBackground
 					Label.UIStroke.Color = Color or SelectedTheme.SecondaryElementStroke
