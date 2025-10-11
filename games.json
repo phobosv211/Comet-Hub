@@ -11,6 +11,11 @@
         "script_id": "779fa78901063063d29f35879ac69291",
         "note": "Murder Mystery 2"
     },
+    "130700367963690": {
+    "script_id": "c9e51e13cbcb417e839b41e27d8b528c",
+    "note": "Philly Streetz 2",
+    "betaTesting": ["JSpvZUrnyygXFAIoMyQDtkJjBEhnNumU"]
+    },
     "15198987828": {
     "script_id": "d47122204d1344b44a320a8f4b1d4761",
     "note": "San Junipero State Prison"
