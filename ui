@@ -4763,7 +4763,7 @@ if useStudio then
 	--	InputStroke = Color3.fromRGB(180, 190, 200),
 	--	PlaceholderColor = Color3.fromRGB(150, 150, 150)
 	--})
-
+	--yo gurt
 	--local Keybind = Tab:CreateKeybind({
 	--	Name = "Keybind Example",
 	--	CurrentKeybind = "Q",
