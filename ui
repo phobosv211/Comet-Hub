@@ -737,7 +737,6 @@ local Themes = {
 local configPath = "Comet-Hub/data.json"
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
 
-api.script_id = script_id
 function loadConfig()
 	if isfile(configPath) then
 		local data = Library:LoadConfig(configPath)
@@ -2291,6 +2290,7 @@ local function updateSetting(category: string, setting: string, value: any)
 		if themes and themes[themeName] then
 			ModifiedRLibary:ChangeTheme(themes[themeName])
 			saveTheme(themes[themeName])
+			warn("saved" .. tostring(themes[themeName]))
 		else
 			-- unknown theme
 		end
