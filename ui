@@ -730,7 +730,15 @@ end
 
 function ModifiedRLibary:ChangeTheme(Theme)
 	local SelectedTheme = Theme
-	local Main = self:FindFirstChild("Main", true)
+	-- Change this line to match how your library stores the main UI reference
+	-- Common options:
+	local Main = self.Main or self.GUI or self.ScreenGui
+	-- Or if you store it differently, adjust accordingly
+
+	-- If Main is not directly stored, you might need:
+	-- local Main = game:GetService("CoreGui"):FindFirstChild("YourLibraryName"):FindFirstChild("Main")
+	-- or
+	-- local Main = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("YourLibraryName"):FindFirstChild("Main")
 	if not Main then return end
 
 	local Elements = Main:FindFirstChild("Elements")
