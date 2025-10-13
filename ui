@@ -2237,31 +2237,28 @@ local allThemes = {
 }
 
 local function updateSetting(category: string, setting: string, value: any)
-	if not settingsInitialized then
-		return
-	end
+	if not settingsInitialized then return end
 
-	-- Update value and remove override
 	settingsTable[category][setting].Value = value
 	overriddenSettings[`{category}.{setting}`] = nil
 	saveSettings()
 
-	-- Handle special setting logic
-	if category == "General" then
-		if setting == "themeSelection" then
-			-- Automatically apply theme if user changes dropdown
-			if allThemes and allThemes[value] then
-				ModifiedRLibary:ChangeTheme(allThemes[value])
-				print("[Rayfield] Theme changed to:", value)
-			else
-				warn("[Rayfield] Unknown theme:", value)
-			end
-		elseif setting == "rayfieldOpen" then
-			-- If user rebinds the toggle key
-			print("[Rayfield] Toggle UI keybind changed to:", value)
+	if category == "General" and setting == "themeSelection" then
+		-- Handle single or multiple selection dropdowns
+		local themeName = value
+		if typeof(value) == "table" then
+			themeName = value[1] -- Get the first selected option
+		end
+
+		if allThemes and allThemes[themeName] then
+			ModifiedRLibary:ChangeTheme(allThemes[themeName])
+			print("[Rayfield] Theme changed to:", themeName)
+		else
+			warn("[Rayfield] Unknown theme:", themeName)
 		end
 	end
 end
+
 
 local function createSettings(window)
 	if not (writefile and isfile and readfile and isfolder and makefolder) and not useStudio then
