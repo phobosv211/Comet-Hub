@@ -2296,7 +2296,7 @@ local function updateSetting(category: string, setting: string, value: any)
 		end
 	end
 end
-
+--h
 
 
 local function createSettings(window)
