@@ -727,7 +727,7 @@ local function ChangeTheme(Theme)
 		end
 	end
 end
-function Rayfield:ChangeTheme(Theme)
+function ModifiedRLibary:ChangeTheme(Theme)
 	local SelectedTheme
 
 	if typeof(Theme) == "string" then
