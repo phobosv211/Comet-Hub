@@ -2251,16 +2251,14 @@ local function updateSetting(category: string, setting: string, value: any)
 	saveSettings()
 
 	if category == "General" and setting == "themeSelection" then
-		-- Convert table return (like {"Nord"}) to string
 		local themeName = typeof(value) == "table" and value[1] or value
 
 		-- Access global theme table
 		local themes = _G.Themes or Themes
 		if themes and themes[themeName] then
 			ModifiedRLibary:ChangeTheme(themes[themeName])
-			print("[Rayfield] Theme changed to:", themeName)
 		else
-			warn("[Rayfield] Unknown theme:", themeName)
+			-- unknown theme
 		end
 	end
 end
