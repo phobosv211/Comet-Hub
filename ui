@@ -849,12 +849,21 @@ local settingsTable = {
 		themeSelection = {
 			Type = 'dropdown',
 			Name = 'Theme',
-			Options = {"Cyberpunk","Desert","Arctic","Forest","Vampire Crimson","Monochrome Hacker","Pastel","VSCodeLight","VSCodeDark","Abyss", "Solarized Dark", "Monokai Pro", "Dracula", "Retro", "Palenight", "One Dark Pro", "Ayu Dark", "Nord","clarkWARE","CS6K"},
+			Options = {"Cyberpunk","Desert","Arctic","Forest","Vampire Crimson","Monochrome Hacker","Pastel","VSCodeLight","VSCodeDark","Abyss","Solarized Dark","Monokai Pro","Dracula","Retro","Palenight","One Dark Pro","Ayu Dark","Nord","clarkWARE","CS6K"},
 			Value = "",
-			Multiple = false, -- optional (set true for multi-select dropdowns)
+			Multiple = false,
+		},
+
+		resetButton = {
+			Type = 'button',
+			Name = 'Reset Settings',
+			Callback = function()
+				print("Default button callback, override in updateSetting")
+			end,
 		},
 	}
 }
+
 
 
 -- Settings that have been overridden by the developer. These will not be saved to the user's configuration file
@@ -2278,24 +2287,32 @@ end
 local function updateSetting(category: string, setting: string, value: any)
 	if not settingsInitialized then return end
 
-	settingsTable[category][setting].Value = value
-	overriddenSettings[`{category}.{setting}`] = nil
-	saveSettings()
+	local settingInfo = settingsTable[category][setting]
 
-	if category == "General" and setting == "themeSelection" then
-		-- Create a new variable for the theme name
-		local selectedThemeName = typeof(value) == "table" and value[1] or value
-		-- Access global theme table
+	-- For normal settings, update value
+	if settingInfo.Type ~= "button" then
+		settingInfo.Value = value
+		overriddenSettings[`{category}.{setting}`] = nil
+		saveSettings()
+	end
+
+	-- Handle dropdown theme changes
+	if settingInfo.Type == "dropdown" then
+		local selectedOption = typeof(value) == "table" and value[1] or value
 		local themes = _G.Themes or Themes
-		if themes and themes[selectedThemeName] then
-			ModifiedRLibary:ChangeTheme(themes[selectedThemeName])
-			saveTheme(selectedThemeName)
-			warn("saved " .. selectedThemeName)
-		else
-			warn("Unknown theme: " .. tostring(selectedThemeName))
+		if themes and themes[selectedOption] then
+			ModifiedRLibary:ChangeTheme(themes[selectedOption])
+			saveTheme(selectedOption)
 		end
 	end
+
+	-- Handle button callback
+	if settingInfo.Type == "button" and typeof(settingInfo.Callback) == "function" then
+		settingInfo.Callback()
+	end
 end
+
+
 --h
 
 
@@ -2365,6 +2382,14 @@ local function createSettings(window)
 					Callback = function(Value)
 						updateSetting(categoryName, settingName, Value)
 					end,
+				})
+				
+			elseif setting.Type == 'button' then
+				setting.Element = newTab:CreateButton({
+					Name = setting.Name,
+					Callback = function()
+						updateSetting(categoryName, settingName, nil)
+					end
 				})
 			end
 		end
