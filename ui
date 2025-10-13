@@ -729,14 +729,19 @@ local function ChangeTheme(Theme)
 end
 function ModifiedRLibary:ChangeTheme(Theme)
 	local SelectedTheme = Theme
-	local Main = self.Main
-	local Elements = Main.Elements
-	local TabList = Main.TabList
-	local Topbar = Main.Topbar
+	local Main = self:FindFirstChild("Main", true)
+	local Elements = Main and Main:FindFirstChild("Elements")
+	local TabList = Main and Main:FindFirstChild("TabList")
+	local Topbar = Main and Main:FindFirstChild("Topbar")
+
+	if not (Main and Elements and TabList and Topbar) then return end
 
 	Main.BackgroundColor3 = SelectedTheme.Background
 	Topbar.BackgroundColor3 = SelectedTheme.Topbar
-	Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+	local shadow = Main:FindFirstChild("Shadow", true)
+	if shadow and shadow:FindFirstChildOfClass("ImageLabel") then
+		shadow:FindFirstChildOfClass("ImageLabel").ImageColor3 = SelectedTheme.Shadow
+	end
 
 	for _, obj in ipairs(Main:GetDescendants()) do
 		if obj:IsA("TextLabel") or obj:IsA("TextBox") then
@@ -746,19 +751,20 @@ function ModifiedRLibary:ChangeTheme(Theme)
 		elseif obj:IsA("UIStroke") then
 			obj.Color = SelectedTheme.ElementStroke
 		elseif obj:IsA("Frame") then
-			if obj.Name:lower():find("toggle") then
+			local n = obj.Name:lower()
+			if n:find("toggle") then
 				obj.BackgroundColor3 = SelectedTheme.ToggleBackground
-			elseif obj.Name:lower():find("slider") then
+			elseif n:find("slider") then
 				obj.BackgroundColor3 = SelectedTheme.SliderBackground
-			elseif obj.Name:lower():find("button") then
+			elseif n:find("button") then
 				obj.BackgroundColor3 = SelectedTheme.ElementBackground
-			elseif obj.Name:lower():find("dropdown") then
+			elseif n:find("dropdown") then
 				obj.BackgroundColor3 = SelectedTheme.DropdownUnselected
-			elseif obj.Name:lower():find("input") then
+			elseif n:find("input") then
 				obj.BackgroundColor3 = SelectedTheme.InputBackground
-			elseif obj.Name:lower():find("colorpicker") then
+			elseif n:find("colorpicker") then
 				obj.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
-			elseif obj.Name:lower():find("keybind") then
+			elseif n:find("keybind") then
 				obj.BackgroundColor3 = SelectedTheme.ElementBackground
 			end
 		end
