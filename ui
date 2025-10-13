@@ -682,7 +682,7 @@ local Notifications = Rayfield.Notifications
 
 local SelectedTheme = ModifiedRLibary.Theme.Default
 
-local function ChangeTheme(Theme)
+function ChangeTheme(Theme)
 	if typeof(Theme) == 'string' then
 		SelectedTheme = ModifiedRLibary.Theme[Theme]
 	elseif typeof(Theme) == 'table' then
@@ -3910,6 +3910,7 @@ if useStudio then
 	--		-- The variable (Options) is a table of strings for the current selected options
 	--	end,
 	--})
+
 
 	--Window.ModifyTheme({
 	--	TextColor = Color3.fromRGB(50, 55, 60),
