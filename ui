@@ -2283,16 +2283,16 @@ local function updateSetting(category: string, setting: string, value: any)
 	saveSettings()
 
 	if category == "General" and setting == "themeSelection" then
-		local themeName = typeof(value) == "table" and value[1] or value
-		local selectedOption = table.concat(value, ", ")
+		-- Create a new variable for the theme name
+		local selectedThemeName = typeof(value) == "table" and value[1] or value
 		-- Access global theme table
 		local themes = _G.Themes or Themes
-		if themes and themes[themeName] then
-			ModifiedRLibary:ChangeTheme(themes[themeName])
-			saveTheme(selectedOption)
-			warn("saved" .. tostring(selectedOption))
+		if themes and themes[selectedThemeName] then
+			ModifiedRLibary:ChangeTheme(themes[selectedThemeName])
+			saveTheme(selectedThemeName)
+			warn("saved " .. selectedThemeName)
 		else
-			-- unknown theme
+			warn("Unknown theme: " .. tostring(selectedThemeName))
 		end
 	end
 end
