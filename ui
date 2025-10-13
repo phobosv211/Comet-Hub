@@ -2289,8 +2289,8 @@ local function updateSetting(category: string, setting: string, value: any)
 		local themes = _G.Themes or Themes
 		if themes and themes[themeName] then
 			ModifiedRLibary:ChangeTheme(themes[themeName])
-			saveTheme(themes[themeName])
-			warn("saved" .. tostring(themes[themeName]))
+			saveTheme(themeName)
+			warn("saved" .. tostring(themeName))
 		else
 			-- unknown theme
 		end
