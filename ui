@@ -799,6 +799,13 @@ local Release = "UI Version 1.70"
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
+
+local themeNames = {}
+
+for themeName in pairs(Themes) do
+	table.insert(themeNames, themeName)
+end
+
 local settingsTable = {
 	General = {
 		rayfieldOpen = {
@@ -810,8 +817,8 @@ local settingsTable = {
 		themeSelection = {
 			Type = 'dropdown',
 			Name = 'Theme',
-			Options = {"CS6K","Nord"},
-			Value = "", -- default selected option
+			Options = themeNames,
+			Value = themeNames[1] or "",
 			Multiple = false, -- optional (set true for multi-select dropdowns)
 		},
 	}
