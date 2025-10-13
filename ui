@@ -729,46 +729,71 @@ local function ChangeTheme(Theme)
 end
 
 function ModifiedRLibary:ChangeTheme(Theme)
-	if typeof(Theme) == 'string' then
+	local SelectedTheme
+
+	if typeof(Theme) == "string" then
 		SelectedTheme = ModifiedRLibary.Theme[Theme]
-	elseif typeof(Theme) == 'table' then
+	elseif typeof(Theme) == "table" then
 		SelectedTheme = Theme
+	else
+		warn("Rayfield: Invalid theme type! Must be string or table.")
+		return
 	end
 
+	if not SelectedTheme then
+		warn("Rayfield: Theme not found:", Theme)
+		return
+	end
+
+	--// Core background and topbar
 	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
 	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
 	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
 	Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
+	--// Topbar icons
 	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
 	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
 	Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
-	if Topbar:FindFirstChild('Settings') then
+	if Topbar:FindFirstChild("Settings") then
 		Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
 		Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
 	end
 
+	--// Search bar
 	Main.Search.BackgroundColor3 = SelectedTheme.TextColor
 	Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
 	Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
-	Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
+	Main.Search.Input.PlaceholderColor3 = SelectedTheme.PlaceholderColor or SelectedTheme.TextColor
 	Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 
-	if Main:FindFirstChild('Notice') then
+	if Main:FindFirstChild("Notice") then
 		Main.Notice.BackgroundColor3 = SelectedTheme.Background
 	end
 
+	--// Text recoloring
 	for _, text in ipairs(Rayfield:GetDescendants()) do
 		if text.Parent.Parent ~= Notifications then
-			if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
+			if text:IsA("TextLabel") or text:IsA("TextBox") then
+				text.TextColor3 = SelectedTheme.TextColor
+			end
 		end
 	end
 
+	--// Element recoloring
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		for _, Element in ipairs(TabPage:GetChildren()) do
-			if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+			if Element.ClassName == "Frame"
+				and Element.Name ~= "Placeholder"
+				and Element.Name ~= "SectionSpacing"
+				and Element.Name ~= "Divider"
+				and Element.Name ~= "SectionTitle"
+				and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+
 				Element.BackgroundColor3 = SelectedTheme.ElementBackground
-				Element.UIStroke.Color = SelectedTheme.ElementStroke
+				if Element:FindFirstChild("UIStroke") then
+					Element.UIStroke.Color = SelectedTheme.ElementStroke
+				end
 			end
 		end
 	end
