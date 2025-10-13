@@ -730,11 +730,6 @@ end
 
 function ModifiedRLibary:ChangeTheme(Theme)
 	local SelectedTheme = Theme
-	local Main = self.Main
-	local Elements = Main.Elements
-	local TabList = Main.TabList
-	local Topbar = Main.Topbar
-	local Notifications = self.Notifications
 
 	-- Main + Topbar
 	Main.BackgroundColor3 = SelectedTheme.Background
