@@ -7,7 +7,7 @@
 	iRay  | Programming
 	Max   | Programming
 	
-	Modified for Comet Hub
+	Modified by the Comet Hub Team
 	All credits to Sirius for making Rayfield; thanks from the Comet Hub Team 🩵
 
 ]]
@@ -734,6 +734,39 @@ local Themes = {
 	}
 }
 
+local configPath = "Comet-Hub/data.json"
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
+
+api.script_id = script_id
+function loadConfig()
+	if isfile(configPath) then
+		local data = Library:LoadConfig(configPath)
+		return data or {}
+	end
+	return {}
+end
+
+function saveConfig(data)
+	Library:SaveConfig(configPath, data)
+end
+
+function saveKey(key)
+	local data = loadConfig()
+	data.validKey = key
+	saveConfig(data)
+end
+
+function loadTheme()
+	local data = loadConfig()
+	return data.theme
+end
+
+function saveTheme(theme)
+	local data = loadConfig()
+	data.theme = theme
+	saveConfig(data)
+end
+
 if debugX then
 	warn('Initialising Rayfield')
 end
@@ -817,8 +850,8 @@ local settingsTable = {
 		themeSelection = {
 			Type = 'dropdown',
 			Name = 'Theme',
-			Options = themeNames,
-			Value = themeNames[1] or "",
+			Options = {"Cyberpunk","Desert","Arctic","Forest","Vampire Crimson","Monochrome Hacker","Pastel","VSCodeLight","VSCodeDark","Abyss", "Solarized Dark", "Monokai Pro", "Dracula", "Retro", "Palenight", "One Dark Pro", "Ayu Dark", "Nord","clarkWARE","CS6K"},
+			Value = "",
 			Multiple = false, -- optional (set true for multi-select dropdowns)
 		},
 	}
@@ -2257,6 +2290,7 @@ local function updateSetting(category: string, setting: string, value: any)
 		local themes = _G.Themes or Themes
 		if themes and themes[themeName] then
 			ModifiedRLibary:ChangeTheme(themes[themeName])
+			saveTheme(themeName)
 		else
 			-- unknown theme
 		end
