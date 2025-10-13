@@ -727,8 +727,7 @@ local function ChangeTheme(Theme)
 		end
 	end
 end
-
-function ModifiedRLibary:ChangeTheme(Theme)
+function Rayfield:ChangeTheme(Theme)
 	local SelectedTheme
 
 	if typeof(Theme) == "string" then
@@ -745,13 +744,13 @@ function ModifiedRLibary:ChangeTheme(Theme)
 		return
 	end
 
-	--// Core background and topbar
+	--// Core Background
 	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
 	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
 	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
 	Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-	--// Topbar icons
+	--// Topbar
 	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
 	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
 	Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
@@ -760,9 +759,9 @@ function ModifiedRLibary:ChangeTheme(Theme)
 		Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
 	end
 
-	--// Search bar
-	Main.Search.BackgroundColor3 = SelectedTheme.TextColor
-	Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
+	--// Search
+	Main.Search.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
+	Main.Search.Shadow.ImageColor3 = SelectedTheme.Shadow
 	Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
 	Main.Search.Input.PlaceholderColor3 = SelectedTheme.PlaceholderColor or SelectedTheme.TextColor
 	Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
@@ -771,33 +770,96 @@ function ModifiedRLibary:ChangeTheme(Theme)
 		Main.Notice.BackgroundColor3 = SelectedTheme.Background
 	end
 
-	--// Text recoloring
-	for _, text in ipairs(Rayfield:GetDescendants()) do
-		if text.Parent.Parent ~= Notifications then
-			if text:IsA("TextLabel") or text:IsA("TextBox") then
-				text.TextColor3 = SelectedTheme.TextColor
-			end
-		end
-	end
-
-	--// Element recoloring
-	for _, TabPage in ipairs(Elements:GetChildren()) do
-		for _, Element in ipairs(TabPage:GetChildren()) do
-			if Element.ClassName == "Frame"
-				and Element.Name ~= "Placeholder"
-				and Element.Name ~= "SectionSpacing"
-				and Element.Name ~= "Divider"
-				and Element.Name ~= "SectionTitle"
-				and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
-
-				Element.BackgroundColor3 = SelectedTheme.ElementBackground
-				if Element:FindFirstChild("UIStroke") then
-					Element.UIStroke.Color = SelectedTheme.ElementStroke
+	--// Tab Buttons
+	for _, TabButton in ipairs(Rayfield.Main.TabList:GetChildren()) do
+		if TabButton:IsA("TextButton") or TabButton:IsA("TextLabel") then
+			if TabButton:IsA("TextButton") then
+				TabButton.BackgroundColor3 = SelectedTheme.TabBackground
+				if TabButton:FindFirstChild("UIStroke") then
+					TabButton.UIStroke.Color = SelectedTheme.TabStroke
+				end
+				if TabButton:IsDescendantOf(Rayfield.Main) then
+					TabButton.TextColor3 = SelectedTheme.TabTextColor
 				end
 			end
 		end
 	end
+	
+	for _, TabPage in ipairs(Elements:GetChildren()) do
+		for _, Element in ipairs(TabPage:GetChildren()) do
+			if Element:IsA("Frame") then
+				if Element.Name == "Button" then
+					Element.BackgroundColor3 = SelectedTheme.ElementBackground
+					if Element:FindFirstChild("UIStroke") then
+						Element.UIStroke.Color = SelectedTheme.ElementStroke
+					end
+					if Element:FindFirstChild("TextLabel") then
+						Element.TextLabel.TextColor3 = SelectedTheme.TextColor
+					end
+
+				elseif Element.Name == "Toggle" then
+					local toggleMain = Element:FindFirstChild("Main")
+					if toggleMain then
+						toggleMain.BackgroundColor3 = SelectedTheme.ToggleBackground
+						if toggleMain:FindFirstChild("UIStroke") then
+							toggleMain.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
+						end
+					end
+					local circle = Element:FindFirstChild("Circle")
+					if circle then
+						circle.BackgroundColor3 = SelectedTheme.ToggleDisabled
+					end
+
+				elseif Element.Name == "Slider" then
+					local bar = Element:FindFirstChild("Bar")
+					local fill = Element:FindFirstChild("Fill")
+					if bar then bar.BackgroundColor3 = SelectedTheme.SliderBackground end
+					if fill then fill.BackgroundColor3 = SelectedTheme.SliderProgress end
+					if Element:FindFirstChild("UIStroke") then
+						Element.UIStroke.Color = SelectedTheme.SliderStroke
+					end
+
+				elseif Element.Name == "Dropdown" then
+					Element.BackgroundColor3 = SelectedTheme.DropdownUnselected
+					if Element:FindFirstChild("UIStroke") then
+						Element.UIStroke.Color = SelectedTheme.ElementStroke
+					end
+					local title = Element:FindFirstChild("Title")
+					if title then title.TextColor3 = SelectedTheme.TextColor end
+
+				elseif Element.Name == "Input" then
+					Element.BackgroundColor3 = SelectedTheme.InputBackground
+					if Element:FindFirstChild("UIStroke") then
+						Element.UIStroke.Color = SelectedTheme.InputStroke
+					end
+					local input = Element:FindFirstChild("InputBox")
+					if input then
+						input.TextColor3 = SelectedTheme.TextColor
+						input.PlaceholderColor3 = SelectedTheme.PlaceholderColor
+					end
+
+				else
+					if Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" then
+						Element.BackgroundColor3 = SelectedTheme.ElementBackground
+						if Element:FindFirstChild("UIStroke") then
+							Element.UIStroke.Color = SelectedTheme.ElementStroke
+						end
+					end
+				end
+			elseif Element:IsA("TextLabel") or Element:IsA("TextBox") then
+				Element.TextColor3 = SelectedTheme.TextColor
+			end
+		end
+	end
+	
+	for _, obj in ipairs(Rayfield:GetDescendants()) do
+		if obj:IsA("TextLabel") or obj:IsA("TextBox") then
+			obj.TextColor3 = SelectedTheme.TextColor
+		end
+	end
 end
+
+
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
 	if not Icons then
