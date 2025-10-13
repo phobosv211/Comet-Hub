@@ -727,8 +727,7 @@ local function ChangeTheme(Theme)
 		end
 	end
 end
-
-function ModifiedRLibary:ChangeTheme(Theme)
+function Rayfield:ChangeTheme(Theme)
 	local SelectedTheme
 
 	if typeof(Theme) == "string" then
@@ -757,6 +756,7 @@ function ModifiedRLibary:ChangeTheme(Theme)
 	Topbar.BackgroundColor3 = SelectedTheme.Topbar
 	Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
+	--// ========== TOPBAR ==========
 	for _, icon in ipairs(Topbar:GetChildren()) do
 		if icon:IsA("ImageButton") or icon:IsA("ImageLabel") then
 			icon.ImageColor3 = SelectedTheme.TextColor
@@ -766,6 +766,8 @@ function ModifiedRLibary:ChangeTheme(Theme)
 			icon.BackgroundColor3 = SelectedTheme.ElementStroke
 		end
 	end
+
+	--// ========== SEARCH BAR ==========
 	if Search then
 		Search.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
 		Search.Shadow.ImageColor3 = SelectedTheme.Shadow
@@ -783,6 +785,8 @@ function ModifiedRLibary:ChangeTheme(Theme)
 			Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 		end
 	end
+
+	--// ========== TABS ==========
 	for _, TabButton in ipairs(Main.TabList:GetChildren()) do
 		if TabButton:IsA("TextButton") then
 			TabButton.BackgroundColor3 = SelectedTheme.TabBackground
@@ -792,6 +796,8 @@ function ModifiedRLibary:ChangeTheme(Theme)
 			end
 		end
 	end
+
+	--// ========== ELEMENTS ==========
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		for _, Element in ipairs(TabPage:GetDescendants()) do
 
@@ -804,6 +810,7 @@ function ModifiedRLibary:ChangeTheme(Theme)
 				end
 
 			elseif Element:IsA("Frame") or Element:IsA("TextButton") then
+				-- Base element recoloring
 				if Element.Name == "Button" then
 					Element.BackgroundColor3 = SelectedTheme.ElementBackground
 
@@ -844,12 +851,16 @@ function ModifiedRLibary:ChangeTheme(Theme)
 				elseif Element.Name == "SectionTitle" then
 					Element.TextColor3 = SelectedTheme.TextColor
 				end
+
+				-- Stroke support
 				if Element:FindFirstChild("UIStroke") then
 					Element.UIStroke.Color = SelectedTheme.ElementStroke
 				end
 			end
 		end
 	end
+
+	--// ========== NOTIFICATIONS ==========
 	if Notifications then
 		for _, Note in ipairs(Notifications:GetChildren()) do
 			if Note:IsA("Frame") then
@@ -866,7 +877,6 @@ function ModifiedRLibary:ChangeTheme(Theme)
 		end
 	end
 end
-
 
 
 
