@@ -728,149 +728,67 @@ local function ChangeTheme(Theme)
 	end
 end
 function ModifiedRLibary:ChangeTheme(Theme)
-	local SelectedTheme
-
-	if typeof(Theme) == "string" then
-		SelectedTheme = ModifiedRLibary.Theme[Theme]
-	elseif typeof(Theme) == "table" then
-		SelectedTheme = Theme
-	else
-		warn("Rayfield: Invalid theme type! Must be string or table.")
-		return
-	end
-
-	if not SelectedTheme then
-		warn("Rayfield: Theme not found:", Theme)
-		return
-	end
-
-	--// ========== CORE UI ==========
-	local Main = Rayfield.Main
-	local Topbar = Main.Topbar
+	local SelectedTheme = Theme
+	local Main = self.Main
 	local Elements = Main.Elements
-	local Search = Main.Search
-	local Shadow = Main.Shadow
-	local Notifications = Rayfield.Notifications
+	local TabList = Main.TabList
+	local Topbar = Main.Topbar
+	local Notifications = self.Notifications
 
 	Main.BackgroundColor3 = SelectedTheme.Background
 	Topbar.BackgroundColor3 = SelectedTheme.Topbar
-	Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+	Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-	--// ========== TOPBAR ==========
-	for _, icon in ipairs(Topbar:GetChildren()) do
-		if icon:IsA("ImageButton") or icon:IsA("ImageLabel") then
+	for _, icon in ipairs(Topbar:GetDescendants()) do
+		if icon:IsA("ImageLabel") or icon:IsA("ImageButton") then
 			icon.ImageColor3 = SelectedTheme.TextColor
 		elseif icon:IsA("TextLabel") then
 			icon.TextColor3 = SelectedTheme.TextColor
-		elseif icon:IsA("Frame") and icon.Name == "Divider" then
-			icon.BackgroundColor3 = SelectedTheme.ElementStroke
 		end
 	end
 
-	--// ========== SEARCH BAR ==========
-	if Search then
-		Search.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
-		Search.Shadow.ImageColor3 = SelectedTheme.Shadow
-
-		if Search:FindFirstChild("Input") then
-			local Input = Search.Input
-			Input.BackgroundColor3 = SelectedTheme.InputBackground
-			Input.PlaceholderColor3 = SelectedTheme.PlaceholderColor
-			Input.TextColor3 = SelectedTheme.TextColor
-		end
-		if Search:FindFirstChild("Search") then
-			Search.Search.ImageColor3 = SelectedTheme.TextColor
-		end
-		if Search:FindFirstChild("UIStroke") then
-			Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
-		end
-	end
-
-	--// ========== TABS ==========
-	for _, TabButton in ipairs(Main.TabList:GetChildren()) do
-		if TabButton:IsA("TextButton") then
-			TabButton.BackgroundColor3 = SelectedTheme.TabBackground
-			TabButton.TextColor3 = SelectedTheme.TabTextColor
-			if TabButton:FindFirstChild("UIStroke") then
-				TabButton.UIStroke.Color = SelectedTheme.TabStroke
+	for _, tab in ipairs(TabList:GetChildren()) do
+		if tab:IsA("Frame") and tab.Name ~= "Placeholder" then
+			if tab:FindFirstChild("Interact") then
+				tab.Interact.BackgroundColor3 = SelectedTheme.TabBackground
+			end
+			if tab:FindFirstChild("UIStroke") then
+				tab.UIStroke.Color = SelectedTheme.TabStroke
+			end
+			if tab:FindFirstChild("Title") then
+				tab.Title.TextColor3 = SelectedTheme.TabTextColor
 			end
 		end
 	end
 
-	--// ========== ELEMENTS ==========
 	for _, TabPage in ipairs(Elements:GetChildren()) do
-		for _, Element in ipairs(TabPage:GetDescendants()) do
-
-			if Element:IsA("TextLabel") or Element:IsA("TextBox") then
-				Element.TextColor3 = SelectedTheme.TextColor
-
-			elseif Element:IsA("ImageLabel") or Element:IsA("ImageButton") then
-				if Element.Name:lower():find("icon") or Element.Name:lower():find("search") then
-					Element.ImageColor3 = SelectedTheme.TextColor
-				end
-
-			elseif Element:IsA("Frame") or Element:IsA("TextButton") then
-				-- Base element recoloring
-				if Element.Name == "Button" then
-					Element.BackgroundColor3 = SelectedTheme.ElementBackground
-
-				elseif Element.Name == "Dropdown" then
-					Element.BackgroundColor3 = SelectedTheme.DropdownUnselected
-
-				elseif Element.Name == "Input" then
-					Element.BackgroundColor3 = SelectedTheme.InputBackground
-
-				elseif Element.Name == "Slider" then
-					local bar = Element:FindFirstChild("Bar")
-					local fill = Element:FindFirstChild("Fill")
-					if bar then bar.BackgroundColor3 = SelectedTheme.SliderBackground end
-					if fill then fill.BackgroundColor3 = SelectedTheme.SliderProgress end
-
-				elseif Element.Name == "Toggle" then
-					local toggleMain = Element:FindFirstChild("Main")
-					local circle = Element:FindFirstChild("Circle")
-					if toggleMain then
-						toggleMain.BackgroundColor3 = SelectedTheme.ToggleBackground
-						if toggleMain:FindFirstChild("UIStroke") then
-							toggleMain.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
-						end
-					end
-					if circle then
-						circle.BackgroundColor3 = SelectedTheme.ToggleDisabled
-					end
-
-				elseif Element.Name == "Keybind" then
-					Element.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
-
-				elseif Element.Name == "ColorPicker" then
-					Element.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
-
-				elseif Element.Name == "Paragraph" or Element.Name == "Label" then
-					Element.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
-
-				elseif Element.Name == "SectionTitle" then
-					Element.TextColor3 = SelectedTheme.TextColor
-				end
-
-				-- Stroke support
+		for _, Element in ipairs(TabPage:GetChildren()) do
+			if Element:IsA("Frame") and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" then
 				if Element:FindFirstChild("UIStroke") then
 					Element.UIStroke.Color = SelectedTheme.ElementStroke
 				end
-			end
-		end
-	end
-
-	--// ========== NOTIFICATIONS ==========
-	if Notifications then
-		for _, Note in ipairs(Notifications:GetChildren()) do
-			if Note:IsA("Frame") then
-				Note.BackgroundColor3 = SelectedTheme.NotificationBackground
-				if Note:FindFirstChild("UIStroke") then
-					Note.UIStroke.Color = SelectedTheme.SecondaryElementStroke
+				if Element:FindFirstChild("Interact") then
+					Element.Interact.BackgroundColor3 = SelectedTheme.ElementBackground
 				end
-				for _, child in ipairs(Note:GetDescendants()) do
-					if child:IsA("TextLabel") then
-						child.TextColor3 = SelectedTheme.TextColor
+				if Element:FindFirstChild("Title") and Element.Title:IsA("TextLabel") then
+					Element.Title.TextColor3 = SelectedTheme.TextColor
+				end
+				if Element.Name == "Dropdown" then
+					local list = Element:FindFirstChild("List")
+					if list and list:FindFirstChild("Template") then
+						for _, item in ipairs(list:GetChildren()) do
+							if item:IsA("Frame") and item.Name ~= "Placeholder" then
+								if item:FindFirstChild("UIStroke") then
+									item.UIStroke.Color = SelectedTheme.SecondaryElementStroke
+								end
+								if item:FindFirstChild("Interact") then
+									item.Interact.BackgroundColor3 = SelectedTheme.DropdownUnselected
+								end
+								if item:FindFirstChild("Title") then
+									item.Title.TextColor3 = SelectedTheme.TextColor
+								end
+							end
+						end
 					end
 				end
 			end
