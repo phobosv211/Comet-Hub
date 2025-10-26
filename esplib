@@ -1,0 +1,420 @@
+local ESPLibrary = {}
+ESPLibrary.__index = ESPLibrary
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+function ESPLibrary.new()
+    local self = setmetatable({}, ESPLibrary)
+    
+    self.Config = {
+        ESPEnabled = false,
+        ChamsEnabled = false,
+        RefreshInterval = 10,
+        TeleportThreshold = 100,
+        SpeedThreshold = 150,
+        MaxUpdatesPerFrame = 3,
+        DefaultColor = Color3.fromRGB(255, 60, 60),
+        HealthBarEnabled = true,
+        NametagEnabled = true,
+        TeamBased = true,
+    }
+    
+    self.LocalPlayer = Players.LocalPlayer
+    self.ActiveHighlights = {}
+    self.ActiveBillboards = {}
+    self.ActiveChams = {}
+    self.PlayersToUpdate = {}
+    self.UpdateQueue = {}
+    
+    self.LastPosition = Vector3.new(0, 0, 0)
+    self.LastCheck = os.time()
+    self.Connections = {}
+    
+    self:_Initialize()
+    
+    return self
+end
+
+function ESPLibrary:_Initialize()
+    self.Connections.Heartbeat = RunService.Heartbeat:Connect(function()
+        self:_ProcessUpdateQueue()
+        self:_CheckPlayerMovement()
+    end)
+    
+    self.Connections.PlayerAdded = Players.PlayerAdded:Connect(function(player)
+        task.wait(2)
+        if player ~= self.LocalPlayer then
+            self.PlayersToUpdate[player] = true
+        end
+    end)
+    
+    self.Connections.PlayerRemoving = Players.PlayerRemoving:Connect(function(player)
+        self:_CleanUpPlayer(player)
+    end)
+    
+    task.spawn(function()
+        while true do
+            self:_PeriodicRefresh()
+            task.wait(self.Config.RefreshInterval)
+        end
+    end)
+    
+    task.spawn(function()
+        while true do
+            self:_ProcessPlayerUpdates()
+            task.wait(0.1)
+        end
+    end)
+end
+
+function ESPLibrary:_CleanUpPlayer(player)
+    if not player then return end
+    local playerName = player.Name
+    
+    if self.ActiveHighlights[playerName] then
+        for _, highlight in pairs(self.ActiveHighlights[playerName]) do
+            if highlight and highlight.Parent then
+                highlight:Destroy()
+            end
+        end
+        self.ActiveHighlights[playerName] = nil
+    end
+    
+    if self.ActiveBillboards[playerName] then
+        for _, billboard in pairs(self.ActiveBillboards[playerName]) do
+            if billboard and billboard.Parent then
+                billboard:Destroy()
+            end
+        end
+        self.ActiveBillboards[playerName] = nil
+    end
+    
+    if self.ActiveChams[playerName] then
+        for _, cham in pairs(self.ActiveChams[playerName]) do
+            if cham and cham.Parent then
+                cham:Destroy()
+            end
+        end
+        self.ActiveChams[playerName] = nil
+    end
+    
+    self.UpdateQueue[playerName] = nil
+end
+
+function ESPLibrary:_CreateESP(player, character)
+    if not character or not character.Parent or player == self.LocalPlayer then return end
+    
+    local playerName = player.Name
+    self:_CleanUpPlayer(player)
+    
+    self.ActiveHighlights[playerName] = {}
+    self.ActiveBillboards[playerName] = {}
+    
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESP_Highlight_" .. playerName
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = true
+    highlight.FillTransparency = 0.5
+    highlight.OutlineTransparency = 1
+    
+    local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
+    highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.5)
+    highlight.Parent = character
+    table.insert(self.ActiveHighlights[playerName], highlight)
+    
+    local adornee = character:FindFirstChild("Head") or character:FindFirstChild("UpperTorso")
+    if not adornee then return end
+    
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ESP_BillboardGui_" .. playerName
+    billboard.Adornee = adornee
+    billboard.Size = UDim2.new(0, 180, 0, 80)
+    billboard.StudsOffset = Vector3.new(0, 5, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = CoreGui
+    table.insert(self.ActiveBillboards[playerName], billboard)
+    
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, 0, 1, 0)
+    container.BackgroundTransparency = 0.9
+    container.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    container.BorderSizePixel = 0
+    container.Parent = billboard
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = container
+    
+    if self.Config.NametagEnabled then
+        local label = Instance.new("TextLabel")
+        label.Text = player.Name
+        label.Size = UDim2.new(1, -10, 0.4, 0)
+        label.Position = UDim2.new(0, 5, 0, 5)
+        label.TextColor3 = Color3.fromRGB(240, 240, 240)
+        label.TextStrokeTransparency = 0.8
+        label.Font = Enum.Font.GothamBold
+        label.TextSize = 16
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.BackgroundTransparency = 1
+        label.ZIndex = 10
+        label.Parent = container
+    end
+    
+    if self.Config.HealthBarEnabled then
+        local healthBarContainer = Instance.new("Frame")
+        healthBarContainer.Size = UDim2.new(1, -10, 0.2, 0)
+        healthBarContainer.Position = UDim2.new(0, 5, 0.45, 0)
+        healthBarContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        healthBarContainer.BorderSizePixel = 0
+        healthBarContainer.Parent = container
+        
+        local healthBarCorner = Instance.new("UICorner")
+        healthBarCorner.CornerRadius = UDim.new(0, 4)
+        healthBarCorner.Parent = healthBarContainer
+        
+        local healthFill = Instance.new("Frame")
+        healthFill.Size = UDim2.new(1, 0, 1, 0)
+        healthFill.BackgroundColor3 = Color3.fromRGB(11, 255, 145)
+        healthFill.BorderSizePixel = 0
+        healthFill.Parent = healthBarContainer
+        
+        local healthFillCorner = Instance.new("UICorner")
+        healthFillCorner.CornerRadius = UDim.new(0, 4)
+        healthFillCorner.Parent = healthFill
+        
+        local healthText = Instance.new("TextLabel")
+        healthText.Size = UDim2.new(1, 0, 1, 0)
+        healthText.Text = "100%"
+        healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        healthText.TextStrokeTransparency = 0.7
+        healthText.Font = Enum.Font.GothamBold
+        healthText.TextSize = 15
+        healthText.BackgroundTransparency = 1
+        healthText.Parent = healthBarContainer
+        
+        self.UpdateQueue[playerName] = {
+            healthFill = healthFill,
+            healthText = healthText,
+            highlight = highlight,
+            player = player,
+        }
+    end
+end
+
+function ESPLibrary:_CreateChams(player, character)
+    if not character or not character.Parent or player == self.LocalPlayer then return end
+    
+    local playerName = player.Name
+    
+    if self.ActiveChams[playerName] then
+        for _, cham in pairs(self.ActiveChams[playerName]) do
+            if cham and cham.Parent then
+                cham:Destroy()
+            end
+        end
+    end
+    
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "Chams_" .. playerName
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Enabled = true
+    highlight.FillTransparency = 0.5
+    highlight.OutlineTransparency = 1
+    
+    local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
+    highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.5)
+    highlight.Parent = character
+    
+    self.ActiveChams[playerName] = {highlight}
+end
+
+function ESPLibrary:_ProcessUpdateQueue()
+    if not self.Config.ESPEnabled then return end
+    
+    local updatesProcessed = 0
+    for playerName, data in pairs(self.UpdateQueue) do
+        if updatesProcessed >= self.Config.MaxUpdatesPerFrame then break end
+        
+        local player = data.player
+        local character = player and player.Character
+        local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
+        
+        if not character or not humanoid then
+            self:_CleanUpPlayer(player)
+            updatesProcessed = updatesProcessed + 1
+            continue
+        end
+        
+        local health = humanoid.Health
+        local maxHealth = humanoid.MaxHealth
+        local percentage = maxHealth > 0 and health / maxHealth or 0
+        
+        data.healthFill.Size = UDim2.new(percentage, 0, 1, 0)
+        data.healthText.Text = string.format("%d%%", math.floor(percentage * 100))
+        
+        if percentage <= 0.2 then
+            data.healthFill.BackgroundColor3 = Color3.fromRGB(255, 7, 86)
+        elseif percentage <= 0.5 then
+            data.healthFill.BackgroundColor3 = Color3.fromRGB(255, 255, 127)
+        else
+            data.healthFill.BackgroundColor3 = Color3.fromRGB(11, 255, 145)
+        end
+        
+        local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
+        data.highlight.FillColor = teamColor
+        
+        updatesProcessed = updatesProcessed + 1
+    end
+end
+
+function ESPLibrary:_ProcessPlayerUpdates()
+    for player, _ in pairs(self.PlayersToUpdate) do
+        if not self.Config.ESPEnabled and not self.Config.ChamsEnabled then
+            self:_CleanUpPlayer(player)
+            self.PlayersToUpdate[player] = nil
+            continue
+        end
+        
+        local character = player.Character
+        if character then
+            if self.Config.ESPEnabled then
+                self:_CreateESP(player, character)
+            end
+            if self.Config.ChamsEnabled then
+                self:_CreateChams(player, character)
+            end
+        end
+        
+        self.PlayersToUpdate[player] = nil
+    end
+end
+
+function ESPLibrary:_CheckPlayerMovement()
+    if not self.Config.ESPEnabled and not self.Config.ChamsEnabled then return end
+    
+    local hrp = self.LocalPlayer.Character and self.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    
+    local currentPos = hrp.Position
+    local distance = (currentPos - self.LastPosition).Magnitude
+    local currentTime = os.time()
+    
+    if distance > self.Config.TeleportThreshold or 
+       (currentTime - self.LastCheck > 1 and (distance / (currentTime - self.LastCheck)) > self.Config.SpeedThreshold) then
+        self:RefreshAll()
+    end
+    
+    self.LastPosition = currentPos
+    self.LastCheck = currentTime
+end
+
+function ESPLibrary:_PeriodicRefresh()
+    if not self.Config.ESPEnabled and not self.Config.ChamsEnabled then return end
+    
+    for playerName, _ in pairs(self.ActiveHighlights) do
+        local player = Players:FindFirstChild(playerName)
+        if not player then
+            self:_CleanUpPlayer({Name = playerName})
+        end
+    end
+    
+    self:RefreshAll()
+end
+
+function ESPLibrary:EnableESP()
+    self.Config.ESPEnabled = true
+    self.Config.ChamsEnabled = false
+    self:RefreshAll()
+end
+
+function ESPLibrary:DisableESP()
+    self.Config.ESPEnabled = false
+    self:ClearAllESP()
+end
+
+function ESPLibrary:EnableChams()
+    self.Config.ChamsEnabled = true
+    self.Config.ESPEnabled = false
+    self:ClearAllESP()
+    self:RefreshAll()
+end
+
+function ESPLibrary:DisableChams()
+    self.Config.ChamsEnabled = false
+    self:ClearAllChams()
+end
+
+function ESPLibrary:ClearAllESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        self:_CleanUpPlayer(player)
+    end
+end
+
+function ESPLibrary:ClearAllChams()
+    for playerName, _ in pairs(self.ActiveChams) do
+        local player = Players:FindFirstChild(playerName)
+        if player then
+            if self.ActiveChams[playerName] then
+                for _, cham in pairs(self.ActiveChams[playerName]) do
+                    if cham and cham.Parent then
+                        cham:Destroy()
+                    end
+                end
+            end
+            self.ActiveChams[playerName] = nil
+        end
+    end
+end
+
+function ESPLibrary:RefreshAll()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= self.LocalPlayer then
+            self.PlayersToUpdate[player] = true
+        end
+    end
+end
+
+function ESPLibrary:SetESPColor(color)
+    self.Config.DefaultColor = color
+    self:RefreshAll()
+end
+
+function ESPLibrary:SetTeamBased(enabled)
+    self.Config.TeamBased = enabled
+    self:RefreshAll()
+end
+
+function ESPLibrary:SetHealthBarEnabled(enabled)
+    self.Config.HealthBarEnabled = enabled
+    self:RefreshAll()
+end
+
+function ESPLibrary:SetNametagEnabled(enabled)
+    self.Config.NametagEnabled = enabled
+    self:RefreshAll()
+end
+
+function ESPLibrary:IsESPEnabled()
+    return self.Config.ESPEnabled
+end
+
+function ESPLibrary:IsChamsEnabled()
+    return self.Config.ChamsEnabled
+end
+
+function ESPLibrary:Destroy()
+    self:ClearAllESP()
+    self:ClearAllChams()
+    
+    for _, connection in pairs(self.Connections) do
+        if connection then
+            connection:Disconnect()
+        end
+    end
+    
+    setmetatable(self, nil)
+end
+
+return ESPLibrary.new()
