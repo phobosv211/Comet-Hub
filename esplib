@@ -5,21 +5,23 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 
+getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
+    ESPEnabled = false,
+    ChamsEnabled = false,
+    RefreshInterval = 10,
+    TeleportThreshold = 100,
+    SpeedThreshold = 150,
+    MaxUpdatesPerFrame = 3,
+    DefaultColor = Color3.fromRGB(255, 60, 60),
+    HealthBarEnabled = true,
+    NametagEnabled = true,
+    TeamBased = true,
+}
+
 function ESPLibrary.new()
     local self = setmetatable({}, ESPLibrary)
     
-    self.Config = {
-        ESPEnabled = false,
-        ChamsEnabled = false,
-        RefreshInterval = 10,
-        TeleportThreshold = 100,
-        SpeedThreshold = 150,
-        MaxUpdatesPerFrame = 3,
-        DefaultColor = Color3.fromRGB(255, 60, 60),
-        HealthBarEnabled = true,
-        NametagEnabled = true,
-        TeamBased = true,
-    }
+    self.Config = getgenv().ESPLibConfig
     
     self.LocalPlayer = Players.LocalPlayer
     self.ActiveHighlights = {}
@@ -33,6 +35,12 @@ function ESPLibrary.new()
     self.Connections = {}
     
     self:_Initialize()
+    
+    if self.Config.ESPEnabled then
+        self:RefreshAll()
+    elseif self.Config.ChamsEnabled then
+        self:RefreshAll()
+    end
     
     return self
 end
@@ -347,29 +355,35 @@ end
 
 function ESPLibrary:DisableChams()
     self.Config.ChamsEnabled = false
-    self:ClearAllChams()
+    for playerName, chams in pairs(self.ActiveChams) do
+        for _, cham in pairs(chams) do
+            if cham and cham.Parent then
+                cham:Destroy()
+            end
+        end
+    end
+    self.ActiveChams = {}
 end
 
 function ESPLibrary:ClearAllESP()
     for _, player in pairs(Players:GetPlayers()) do
         self:_CleanUpPlayer(player)
     end
+    self.UpdateQueue = {}
+    self.PlayersToUpdate = {}
+    self.ActiveHighlights = {}
+    self.ActiveBillboards = {}
 end
 
 function ESPLibrary:ClearAllChams()
-    for playerName, _ in pairs(self.ActiveChams) do
-        local player = Players:FindFirstChild(playerName)
-        if player then
-            if self.ActiveChams[playerName] then
-                for _, cham in pairs(self.ActiveChams[playerName]) do
-                    if cham and cham.Parent then
-                        cham:Destroy()
-                    end
-                end
+    for playerName, chams in pairs(self.ActiveChams) do
+        for _, cham in pairs(chams) do
+            if cham and cham.Parent then
+                cham:Destroy()
             end
-            self.ActiveChams[playerName] = nil
         end
     end
+    self.ActiveChams = {}
 end
 
 function ESPLibrary:RefreshAll()
