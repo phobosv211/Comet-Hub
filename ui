@@ -2374,6 +2374,7 @@ end
 
 
 function ModifiedRLibary:CreateWindow(Settings)
+	Main.Visible = false
 	local TweenService = game:GetService("TweenService")
 
 	local existingSound = Rayfield:FindFirstChild("Intro")
