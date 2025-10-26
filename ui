@@ -12,6 +12,9 @@
 
 ]]
 --yo
+
+math.randomseed(os.time())
+
 local Themes = {
 	Default = {
 		TextColor = Color3.fromRGB(200, 160, 255),
