@@ -331,7 +331,11 @@ end
 
 function ESPLibrary:DisableESP()
     self.Config.ESPEnabled = false
-    self:ClearAllESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        self:_CleanUpPlayer(player)
+    end
+    self.UpdateQueue = {}
+    self.PlayersToUpdate = {}
 end
 
 function ESPLibrary:EnableChams()
