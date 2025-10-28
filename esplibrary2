@@ -1,6 +1,6 @@
 --[[
 	
-	ESP Library 3 - Enhanced Visual Design
+	ESP Library 4 - iOS 26 Glassmorphism Design
 	
 	Comet Hub
 	
@@ -18,7 +18,7 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 	TeleportThreshold = 100,
 	SpeedThreshold = 150,
 	MaxUpdatesPerFrame = 3,
-	DefaultColor = Color3.fromRGB(88, 166, 255),
+	DefaultColor = Color3.fromRGB(10, 132, 255),
 	HealthBarEnabled = true,
 	NametagEnabled = true,
 	DistanceEnabled = true,
@@ -104,194 +104,252 @@ function ESPLibrary:_CreateESP(player, character)
 	self.ActiveHighlights[playerName] = {}
 	self.ActiveBillboards[playerName] = {}
 
-	-- Enhanced Highlight with better visibility
+	-- Ultra-frosted highlight (iOS style)
 	local highlight = Instance.new("Highlight")
 	highlight.Name = "ESP_Highlight_" .. playerName
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.Enabled = true
-	highlight.FillTransparency = 0.6
-	highlight.OutlineTransparency = 0.3
+	highlight.FillTransparency = 0.75
+	highlight.OutlineTransparency = 0
 
 	local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
-	highlight.FillColor = teamColor
-	highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
+	highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.6)
+	highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.2)
 	highlight.Parent = character
 	table.insert(self.ActiveHighlights[playerName], highlight)
 
 	local adornee = character:FindFirstChild("Head") or character:FindFirstChild("UpperTorso")
 	if not adornee then return end
 
-	-- Modern Billboard with gradient and glass effect
+	-- iOS 26 Glassmorphism Billboard
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ESP_BillboardGui_" .. playerName
 	billboard.Adornee = adornee
-	billboard.Size = UDim2.new(0, 200, 0, 90)
+	billboard.Size = UDim2.new(0, 220, 0, 95)
 	billboard.StudsOffset = Vector3.new(0, 3.5, 0)
 	billboard.AlwaysOnTop = true
 	billboard.Parent = CoreGui
 	table.insert(self.ActiveBillboards[playerName], billboard)
 
-	-- Glass morphism container
+	-- Ultra-frosted glass container
 	local container = Instance.new("Frame")
 	container.Size = UDim2.new(1, 0, 1, 0)
-	container.BackgroundTransparency = 0.15
-	container.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+	container.BackgroundTransparency = 0.25
+	container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	container.BorderSizePixel = 0
 	container.Parent = billboard
 
 	local containerCorner = Instance.new("UICorner")
-	containerCorner.CornerRadius = UDim.new(0, 10)
+	containerCorner.CornerRadius = UDim.new(0, 18)
 	containerCorner.Parent = container
 
-	-- Gradient overlay for depth
+	-- Multi-layer blur effect simulation
+	local blurLayer1 = Instance.new("Frame")
+	blurLayer1.Size = UDim2.new(1, 0, 1, 0)
+	blurLayer1.BackgroundTransparency = 0.5
+	blurLayer1.BackgroundColor3 = Color3.fromRGB(240, 242, 247)
+	blurLayer1.BorderSizePixel = 0
+	blurLayer1.ZIndex = 0
+	blurLayer1.Parent = container
+
+	local blur1Corner = Instance.new("UICorner")
+	blur1Corner.CornerRadius = UDim.new(0, 18)
+	blur1Corner.Parent = blurLayer1
+
+	-- Subtle gradient overlay
 	local gradient = Instance.new("UIGradient")
 	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 20))
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(250, 250, 255)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 247, 252))
 	}
-	gradient.Rotation = 90
-	gradient.Parent = container
+	gradient.Rotation = 135
+	gradient.Transparency = NumberSequence.new{
+		NumberSequenceKeypoint.new(0, 0.3),
+		NumberSequenceKeypoint.new(1, 0.5)
+	}
+	gradient.Parent = blurLayer1
 
-	-- Accent border glow
+	-- iOS frosted border
 	local border = Instance.new("UIStroke")
-	border.Color = teamColor
-	border.Thickness = 1.5
-	border.Transparency = 0.3
+	border.Color = Color3.fromRGB(255, 255, 255)
+	border.Thickness = 1.2
+	border.Transparency = 0.4
 	border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	border.Parent = container
 
-	-- Top accent bar
-	local accentBar = Instance.new("Frame")
-	accentBar.Size = UDim2.new(1, 0, 0, 3)
-	accentBar.BackgroundColor3 = teamColor
-	accentBar.BorderSizePixel = 0
-	accentBar.Position = UDim2.new(0, 0, 0, 0)
-	accentBar.Parent = container
+	-- Colored accent border (inner)
+	local accentBorder = Instance.new("UIStroke")
+	accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
+	accentBorder.Thickness = 0.8
+	accentBorder.Transparency = 0.6
+	accentBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	accentBorder.Parent = blurLayer1
 
-	local accentCorner = Instance.new("UICorner")
-	accentCorner.CornerRadius = UDim.new(0, 10)
-	accentCorner.Parent = accentBar
+	-- Subtle top shine
+	local shine = Instance.new("Frame")
+	shine.Size = UDim2.new(1, 0, 0.35, 0)
+	shine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	shine.BackgroundTransparency = 0.85
+	shine.BorderSizePixel = 0
+	shine.Position = UDim2.new(0, 0, 0, 0)
+	shine.ZIndex = 2
+	shine.Parent = container
+
+	local shineCorner = Instance.new("UICorner")
+	shineCorner.CornerRadius = UDim.new(0, 18)
+	shineCorner.Parent = shine
+
+	local shineGradient = Instance.new("UIGradient")
+	shineGradient.Transparency = NumberSequence.new{
+		NumberSequenceKeypoint.new(0, 0.3),
+		NumberSequenceKeypoint.new(0.7, 0.9),
+		NumberSequenceKeypoint.new(1, 1)
+	}
+	shineGradient.Rotation = 90
+	shineGradient.Parent = shine
 
 	if self.Config.NametagEnabled then
-		-- Player name with icon
+		-- iOS-style player name with SF Pro font aesthetic
 		local nameContainer = Instance.new("Frame")
-		nameContainer.Size = UDim2.new(1, -16, 0, 22)
-		nameContainer.Position = UDim2.new(0, 8, 0, 8)
+		nameContainer.Size = UDim2.new(1, -20, 0, 24)
+		nameContainer.Position = UDim2.new(0, 10, 0, 10)
 		nameContainer.BackgroundTransparency = 1
+		nameContainer.ZIndex = 3
 		nameContainer.Parent = container
 
 		local playerIcon = Instance.new("TextLabel")
-		playerIcon.Text = "👤"
-		playerIcon.Size = UDim2.new(0, 18, 0, 18)
-		playerIcon.Position = UDim2.new(0, 0, 0, 2)
+		playerIcon.Text = "●"
+		playerIcon.Size = UDim2.new(0, 12, 0, 12)
+		playerIcon.Position = UDim2.new(0, 0, 0, 6)
 		playerIcon.TextColor3 = teamColor
-		playerIcon.TextSize = 14
+		playerIcon.TextSize = 20
 		playerIcon.BackgroundTransparency = 1
 		playerIcon.Font = Enum.Font.GothamBold
+		playerIcon.ZIndex = 4
 		playerIcon.Parent = nameContainer
 
 		local label = Instance.new("TextLabel")
 		label.Text = player.Name
-		label.Size = UDim2.new(1, -24, 1, 0)
-		label.Position = UDim2.new(0, 24, 0, 0)
-		label.TextColor3 = Color3.fromRGB(255, 255, 255)
-		label.TextStrokeTransparency = 0.5
-		label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-		label.Font = Enum.Font.GothamBold
+		label.Size = UDim2.new(1, -20, 1, 0)
+		label.Position = UDim2.new(0, 20, 0, 0)
+		label.TextColor3 = Color3.fromRGB(30, 30, 40)
+		label.TextStrokeTransparency = 1
+		label.Font = Enum.Font.GothamMedium
 		label.TextSize = 15
 		label.TextXAlignment = Enum.TextXAlignment.Left
 		label.BackgroundTransparency = 1
 		label.TextTruncate = Enum.TextTruncate.AtEnd
+		label.ZIndex = 4
 		label.Parent = nameContainer
 	end
 
 	if self.Config.HealthBarEnabled then
-		-- Health bar with modern design
+		-- iOS-style health bar with subtle shadow
 		local healthContainer = Instance.new("Frame")
-		healthContainer.Size = UDim2.new(1, -16, 0, 18)
-		healthContainer.Position = UDim2.new(0, 8, 0, 36)
-		healthContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+		healthContainer.Size = UDim2.new(1, -20, 0, 20)
+		healthContainer.Position = UDim2.new(0, 10, 0, 40)
+		healthContainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		healthContainer.BackgroundTransparency = 0.88
 		healthContainer.BorderSizePixel = 0
+		healthContainer.ZIndex = 3
 		healthContainer.Parent = container
 
 		local healthCorner = Instance.new("UICorner")
-		healthCorner.CornerRadius = UDim.new(0, 6)
+		healthCorner.CornerRadius = UDim.new(1, 0)
 		healthCorner.Parent = healthContainer
 
-		local healthStroke = Instance.new("UIStroke")
-		healthStroke.Color = Color3.fromRGB(40, 40, 50)
-		healthStroke.Thickness = 1
-		healthStroke.Transparency = 0.5
-		healthStroke.Parent = healthContainer
+		-- Inner shadow effect
+		local innerShadow = Instance.new("UIStroke")
+		innerShadow.Color = Color3.fromRGB(0, 0, 0)
+		innerShadow.Thickness = 1
+		innerShadow.Transparency = 0.92
+		innerShadow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		innerShadow.Parent = healthContainer
 
 		local healthFill = Instance.new("Frame")
-		healthFill.Size = UDim2.new(1, 0, 1, 0)
-		healthFill.BackgroundColor3 = Color3.fromRGB(46, 213, 115)
+		healthFill.Size = UDim2.new(1, -4, 1, -4)
+		healthFill.Position = UDim2.new(0, 2, 0, 2)
+		healthFill.BackgroundColor3 = Color3.fromRGB(52, 199, 89)
 		healthFill.BorderSizePixel = 0
+		healthFill.ZIndex = 4
 		healthFill.Parent = healthContainer
 
 		local healthFillCorner = Instance.new("UICorner")
-		healthFillCorner.CornerRadius = UDim.new(0, 6)
+		healthFillCorner.CornerRadius = UDim.new(1, 0)
 		healthFillCorner.Parent = healthFill
 
-		-- Health gradient
+		-- Vibrant iOS health gradient
 		local healthGradient = Instance.new("UIGradient")
 		healthGradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0, Color3.fromRGB(46, 213, 115)),
-			ColorSequenceKeypoint.new(1, Color3.fromRGB(72, 219, 129))
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(52, 199, 89)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(48, 209, 88))
 		}
 		healthGradient.Rotation = 90
 		healthGradient.Parent = healthFill
 
-		-- Health icon
-		local healthIcon = Instance.new("TextLabel")
-		healthIcon.Text = "❤"
-		healthIcon.Size = UDim2.new(0, 16, 1, 0)
-		healthIcon.Position = UDim2.new(0, 4, 0, 0)
-		healthIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-		healthIcon.TextSize = 12
-		healthIcon.BackgroundTransparency = 1
-		healthIcon.Font = Enum.Font.GothamBold
-		healthIcon.ZIndex = 2
-		healthIcon.Parent = healthContainer
+		-- Glossy overlay on health bar
+		local healthShine = Instance.new("Frame")
+		healthShine.Size = UDim2.new(1, 0, 0.5, 0)
+		healthShine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		healthShine.BackgroundTransparency = 0.7
+		healthShine.BorderSizePixel = 0
+		healthShine.ZIndex = 5
+		healthShine.Parent = healthFill
+
+		local healthShineCorner = Instance.new("UICorner")
+		healthShineCorner.CornerRadius = UDim.new(1, 0)
+		healthShineCorner.Parent = healthShine
+
+		local healthShineGradient = Instance.new("UIGradient")
+		healthShineGradient.Transparency = NumberSequence.new{
+			NumberSequenceKeypoint.new(0, 0.4),
+			NumberSequenceKeypoint.new(1, 1)
+		}
+		healthShineGradient.Rotation = 90
+		healthShineGradient.Parent = healthShine
 
 		local healthText = Instance.new("TextLabel")
-		healthText.Size = UDim2.new(1, -24, 1, 0)
-		healthText.Position = UDim2.new(0, 24, 0, 0)
-		healthText.Text = "100 HP"
+		healthText.Size = UDim2.new(1, -16, 1, 0)
+		healthText.Position = UDim2.new(0, 8, 0, 0)
+		healthText.Text = "100%"
 		healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
-		healthText.TextStrokeTransparency = 0.6
+		healthText.TextStrokeTransparency = 0.3
+		healthText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 		healthText.Font = Enum.Font.GothamBold
-		healthText.TextSize = 13
+		healthText.TextSize = 12
 		healthText.BackgroundTransparency = 1
-		healthText.TextXAlignment = Enum.TextXAlignment.Left
-		healthText.ZIndex = 2
-		healthText.Parent = healthContainer
+		healthText.TextXAlignment = Enum.TextXAlignment.Center
+		healthText.ZIndex = 6
+		healthText.Parent = healthFill
 
 		self.UpdateQueue[playerName] = {
 			healthFill = healthFill,
 			healthText = healthText,
 			healthGradient = healthGradient,
+			healthShine = healthShine,
 			highlight = highlight,
 			border = border,
-			accentBar = accentBar,
+			accentBorder = accentBorder,
+			playerIcon = playerIcon,
 			player = player,
 		}
 	end
 
 	if self.Config.DistanceEnabled then
-		-- Distance indicator
+		-- iOS-style distance label
 		local distanceLabel = Instance.new("TextLabel")
 		distanceLabel.Name = "DistanceLabel"
-		distanceLabel.Size = UDim2.new(1, -16, 0, 18)
-		distanceLabel.Position = UDim2.new(0, 8, 0, 60)
-		distanceLabel.Text = "📍 0m"
-		distanceLabel.TextColor3 = Color3.fromRGB(200, 200, 210)
-		distanceLabel.TextStrokeTransparency = 0.6
+		distanceLabel.Size = UDim2.new(1, -20, 0, 18)
+		distanceLabel.Position = UDim2.new(0, 10, 0, 67)
+		distanceLabel.Text = "0m"
+		distanceLabel.TextColor3 = Color3.fromRGB(60, 60, 67)
+		distanceLabel.TextStrokeTransparency = 1
 		distanceLabel.Font = Enum.Font.Gotham
-		distanceLabel.TextSize = 12
+		distanceLabel.TextSize = 13
 		distanceLabel.BackgroundTransparency = 1
-		distanceLabel.TextXAlignment = Enum.TextXAlignment.Left
+		distanceLabel.TextXAlignment = Enum.TextXAlignment.Center
+		distanceLabel.ZIndex = 4
 		distanceLabel.Parent = container
 
 		if self.UpdateQueue[playerName] then
@@ -317,12 +375,12 @@ function ESPLibrary:_CreateChams(player, character)
 	highlight.Name = "Chams_" .. playerName
 	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	highlight.Enabled = true
-	highlight.FillTransparency = 0.4
-	highlight.OutlineTransparency = 0.2
+	highlight.FillTransparency = 0.65
+	highlight.OutlineTransparency = 0
 
 	local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
-	highlight.FillColor = teamColor
-	highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.4)
+	highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.5)
+	highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
 	highlight.Parent = character
 
 	self.ActiveChams[playerName] = {highlight}
@@ -349,40 +407,48 @@ function ESPLibrary:_ProcessUpdateQueue()
 		local maxHealth = humanoid.MaxHealth
 		local percentage = maxHealth > 0 and health / maxHealth or 0
 
-		-- Smooth health bar animation
-		TweenService:Create(data.healthFill, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Size = UDim2.new(percentage, 0, 1, 0)
+		-- Ultra-smooth health bar animation
+		TweenService:Create(data.healthFill, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+			Size = UDim2.new(percentage, -4, 1, -4)
 		}):Play()
 
-		data.healthText.Text = string.format("%d HP", math.floor(health))
+		data.healthText.Text = string.format("%d%%", math.floor(percentage * 100))
 
-		-- Dynamic health color with gradient
+		-- iOS System colors for health states
 		local healthColor
-		if percentage <= 0.25 then
-			healthColor = Color3.fromRGB(255, 71, 87)
+		if percentage <= 0.2 then
+			healthColor = Color3.fromRGB(255, 59, 48) -- iOS Red
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 71, 87)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 107, 107))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 59, 48)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 69, 58))
 			}
 		elseif percentage <= 0.5 then
-			healthColor = Color3.fromRGB(255, 177, 66)
+			healthColor = Color3.fromRGB(255, 149, 0) -- iOS Orange
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 177, 66)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 195, 113))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 149, 0)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 159, 10))
+			}
+		elseif percentage <= 0.75 then
+			healthColor = Color3.fromRGB(255, 204, 0) -- iOS Yellow
+			data.healthGradient.Color = ColorSequence.new{
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 204, 0)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 214, 10))
 			}
 		else
-			healthColor = Color3.fromRGB(46, 213, 115)
+			healthColor = Color3.fromRGB(52, 199, 89) -- iOS Green
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(46, 213, 115)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(72, 219, 129))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(52, 199, 89)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(48, 209, 88))
 			}
 		end
 
+		data.healthFill.BackgroundColor3 = healthColor
+
 		local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
-		data.highlight.FillColor = teamColor
-		data.highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
-		data.border.Color = teamColor
-		data.accentBar.BackgroundColor3 = teamColor
+		data.highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.6)
+		data.highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.2)
+		data.accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
+		data.playerIcon.TextColor3 = teamColor
 
 		updatesProcessed = updatesProcessed + 1
 	end
@@ -402,7 +468,7 @@ function ESPLibrary:_UpdateDistances()
 
 			if targetHRP then
 				local distance = (hrp.Position - targetHRP.Position).Magnitude
-				data.distanceLabel.Text = string.format("📍 %dm", math.floor(distance))
+				data.distanceLabel.Text = string.format("%dm", math.floor(distance))
 			end
 		end
 	end
