@@ -539,9 +539,43 @@ function ESPLibrary:_UpdateBillboardSizes()
 				-- Apply scale to billboard frame only
 				billboard.Size = UDim2.new(0, math.floor(baseWidth * scale), 0, math.floor(baseHeight * scale))
 				
-				-- Adjust vertical offset - keep it closer to head when far
-				local offsetScale = math.max(0.3, scale)
-				billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+				-- Check if billboard would cover the character
+				local character = adornee.Parent
+				local hrp = character and character:FindFirstChild("HumanoidRootPart")
+				
+				if hrp then
+					-- Calculate screen positions
+					local billboardWorldPos = adornee.Position + Vector3.new(0, billboard.StudsOffset.Y, 0)
+					local characterWorldPos = hrp.Position
+					
+					local billboardScreenPos, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
+					local characterScreenPos, characterOnScreen = camera:WorldToScreenPoint(characterWorldPos)
+					
+					if billboardOnScreen and characterOnScreen then
+						local billboardHeight = math.floor(baseHeight * scale)
+						local billboardBottom = billboardScreenPos.Y + (billboardHeight / 2)
+						local characterTop = characterScreenPos.Y - 50 -- Approximate character height on screen
+						
+						-- If billboard is covering the character, move it higher
+						if billboardBottom > characterTop then
+							-- Calculate extra offset needed
+							local extraOffset = (billboardBottom - characterTop) / 50 -- Convert pixels to studs (rough estimate)
+							billboard.StudsOffset = Vector3.new(0, 2.5 + extraOffset, 0)
+						else
+							-- Normal offset
+							local offsetScale = math.max(0.3, scale)
+							billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+						end
+					else
+						-- Fallback to normal offset if off-screen
+						local offsetScale = math.max(0.3, scale)
+						billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+					end
+				else
+					-- Fallback offset
+					local offsetScale = math.max(0.3, scale)
+					billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+				end
 			end
 		end
 	end
@@ -761,3 +795,5 @@ local function CreateInstance()
 end
 
 return CreateInstance()
+
+--new esp
