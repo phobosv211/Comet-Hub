@@ -24,6 +24,7 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 	DistanceEnabled = true,
 	TeamBased = true,
 	BoxESP = false,
+	DarkMode = false, -- true = Dark Mode, false = Light Mode
 }
 
 local ESPLibrary = {}
@@ -104,6 +105,17 @@ function ESPLibrary:_CreateESP(player, character)
 	self.ActiveHighlights[playerName] = {}
 	self.ActiveBillboards[playerName] = {}
 
+	-- Get theme colors
+	local isDark = self.Config.DarkMode
+	local containerBg = isDark and Color3.fromRGB(15, 15, 20) or Color3.fromRGB(255, 255, 255)
+	local containerTransparency = isDark and 0.15 or 0.25
+	local blurLayerBg = isDark and Color3.fromRGB(25, 25, 35) or Color3.fromRGB(240, 242, 247)
+	local blurTransparency = isDark and 0.4 or 0.5
+	local textColor = isDark and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(30, 30, 40)
+	local distanceColor = isDark and Color3.fromRGB(170, 170, 180) or Color3.fromRGB(60, 60, 67)
+	local healthBgColor = isDark and Color3.fromRGB(40, 40, 50) or Color3.fromRGB(0, 0, 0)
+	local healthBgTransparency = isDark and 0.7 or 0.88
+
 	-- Ultra-frosted highlight (iOS style)
 	local highlight = Instance.new("Highlight")
 	highlight.Name = "ESP_Highlight_" .. playerName
@@ -134,8 +146,8 @@ function ESPLibrary:_CreateESP(player, character)
 	-- Ultra-frosted glass container
 	local container = Instance.new("Frame")
 	container.Size = UDim2.new(1, 0, 1, 0)
-	container.BackgroundTransparency = 0.25
-	container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	container.BackgroundTransparency = containerTransparency
+	container.BackgroundColor3 = containerBg
 	container.BorderSizePixel = 0
 	container.Parent = billboard
 
@@ -146,8 +158,8 @@ function ESPLibrary:_CreateESP(player, character)
 	-- Multi-layer blur effect simulation
 	local blurLayer1 = Instance.new("Frame")
 	blurLayer1.Size = UDim2.new(1, 0, 1, 0)
-	blurLayer1.BackgroundTransparency = 0.5
-	blurLayer1.BackgroundColor3 = Color3.fromRGB(240, 242, 247)
+	blurLayer1.BackgroundTransparency = blurTransparency
+	blurLayer1.BackgroundColor3 = blurLayerBg
 	blurLayer1.BorderSizePixel = 0
 	blurLayer1.ZIndex = 0
 	blurLayer1.Parent = container
@@ -158,11 +170,19 @@ function ESPLibrary:_CreateESP(player, character)
 
 	-- Subtle gradient overlay
 	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new{
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(250, 250, 255)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 247, 252))
-	}
+	if isDark then
+		gradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 20, 30)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 25))
+		}
+	else
+		gradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(250, 250, 255)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 247, 252))
+		}
+	end
 	gradient.Rotation = 135
 	gradient.Transparency = NumberSequence.new{
 		NumberSequenceKeypoint.new(0, 0.3),
@@ -172,15 +192,15 @@ function ESPLibrary:_CreateESP(player, character)
 
 	-- iOS frosted border
 	local border = Instance.new("UIStroke")
-	border.Color = Color3.fromRGB(255, 255, 255)
+	border.Color = isDark and Color3.fromRGB(80, 80, 90) or Color3.fromRGB(255, 255, 255)
 	border.Thickness = 1.2
-	border.Transparency = 0.4
+	border.Transparency = isDark and 0.5 or 0.4
 	border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	border.Parent = container
 
 	-- Colored accent border (inner)
 	local accentBorder = Instance.new("UIStroke")
-	accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
+	accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), isDark and 0.2 or 0.3)
 	accentBorder.Thickness = 0.8
 	accentBorder.Transparency = 0.6
 	accentBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
@@ -190,7 +210,7 @@ function ESPLibrary:_CreateESP(player, character)
 	local shine = Instance.new("Frame")
 	shine.Size = UDim2.new(1, 0, 0.35, 0)
 	shine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	shine.BackgroundTransparency = 0.85
+	shine.BackgroundTransparency = isDark and 0.9 or 0.85
 	shine.BorderSizePixel = 0
 	shine.Position = UDim2.new(0, 0, 0, 0)
 	shine.ZIndex = 2
@@ -202,7 +222,7 @@ function ESPLibrary:_CreateESP(player, character)
 
 	local shineGradient = Instance.new("UIGradient")
 	shineGradient.Transparency = NumberSequence.new{
-		NumberSequenceKeypoint.new(0, 0.3),
+		NumberSequenceKeypoint.new(0, isDark and 0.5 or 0.3),
 		NumberSequenceKeypoint.new(0.7, 0.9),
 		NumberSequenceKeypoint.new(1, 1)
 	}
@@ -233,7 +253,7 @@ function ESPLibrary:_CreateESP(player, character)
 		label.Text = player.Name
 		label.Size = UDim2.new(1, -20, 1, 0)
 		label.Position = UDim2.new(0, 20, 0, 0)
-		label.TextColor3 = Color3.fromRGB(30, 30, 40)
+		label.TextColor3 = textColor
 		label.TextStrokeTransparency = 1
 		label.Font = Enum.Font.GothamMedium
 		label.TextSize = 15
@@ -249,8 +269,8 @@ function ESPLibrary:_CreateESP(player, character)
 		local healthContainer = Instance.new("Frame")
 		healthContainer.Size = UDim2.new(1, -20, 0, 20)
 		healthContainer.Position = UDim2.new(0, 10, 0, 40)
-		healthContainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-		healthContainer.BackgroundTransparency = 0.88
+		healthContainer.BackgroundColor3 = healthBgColor
+		healthContainer.BackgroundTransparency = healthBgTransparency
 		healthContainer.BorderSizePixel = 0
 		healthContainer.ZIndex = 3
 		healthContainer.Parent = container
@@ -263,7 +283,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local innerShadow = Instance.new("UIStroke")
 		innerShadow.Color = Color3.fromRGB(0, 0, 0)
 		innerShadow.Thickness = 1
-		innerShadow.Transparency = 0.92
+		innerShadow.Transparency = isDark and 0.85 or 0.92
 		innerShadow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 		innerShadow.Parent = healthContainer
 
@@ -343,7 +363,7 @@ function ESPLibrary:_CreateESP(player, character)
 		distanceLabel.Size = UDim2.new(1, -20, 0, 18)
 		distanceLabel.Position = UDim2.new(0, 10, 0, 67)
 		distanceLabel.Text = "0m"
-		distanceLabel.TextColor3 = Color3.fromRGB(60, 60, 67)
+		distanceLabel.TextColor3 = distanceColor
 		distanceLabel.TextStrokeTransparency = 1
 		distanceLabel.Font = Enum.Font.Gotham
 		distanceLabel.TextSize = 13
@@ -616,6 +636,11 @@ function ESPLibrary:SetDistanceEnabled(enabled)
 	self:RefreshAll()
 end
 
+function ESPLibrary:SetDarkMode(enabled)
+	self.Config.DarkMode = enabled
+	self:RefreshAll()
+end
+
 function ESPLibrary:IsESPEnabled()
 	return self.Config.ESPEnabled
 end
@@ -661,5 +686,5 @@ local function CreateInstance()
 
 	return instance
 end
---meow
+
 return CreateInstance()
