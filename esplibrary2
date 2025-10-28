@@ -495,35 +495,38 @@ function ESPLibrary:_UpdateBillboardSizes()
 	local camera = workspace.CurrentCamera
 	if not camera then return end
 
-	local hrp = self.LocalPlayer.Character and self.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if not hrp then return end
-
 	for playerName, billboards in pairs(self.ActiveBillboards) do
 		for _, billboard in pairs(billboards) do
 			if billboard and billboard.Parent and billboard.Adornee then
 				local adornee = billboard.Adornee
 				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
 				
-				-- Scale based on distance - more aggressive scaling
-				-- At 50 studs: 100% size
-				-- At 100 studs: 70% size  
-				-- At 200+ studs: 40% size
+				-- Much more aggressive scaling based on distance
+				-- The farther away, the smaller it gets
 				local baseWidth = 220
 				local baseHeight = 95
 				
 				local scale
-				if distance <= 50 then
+				if distance <= 30 then
+					-- Close range: full size
 					scale = 1
-				elseif distance <= 100 then
-					scale = 1 - ((distance - 50) / 50) * 0.3
-				elseif distance <= 200 then
-					scale = 0.7 - ((distance - 100) / 100) * 0.3
+				elseif distance <= 60 then
+					-- Medium range: start shrinking
+					scale = 1 - ((distance - 30) / 30) * 0.4  -- 100% to 60%
+				elseif distance <= 120 then
+					-- Far range: shrink more
+					scale = 0.6 - ((distance - 60) / 60) * 0.35  -- 60% to 25%
 				else
-					scale = 0.4
+					-- Very far: keep shrinking proportionally
+					scale = math.max(0.1, 0.25 - ((distance - 120) / 200) * 0.15)  -- 25% down to 10% minimum
 				end
 				
 				-- Apply scale
-				billboard.Size = UDim2.new(0, baseWidth * scale, 0, baseHeight * scale)
+				billboard.Size = UDim2.new(0, math.floor(baseWidth * scale), 0, math.floor(baseHeight * scale))
+				
+				-- Also adjust vertical offset so it stays above head better when small
+				local offsetScale = math.max(0.5, scale)
+				billboard.StudsOffset = Vector3.new(0, 3.5 * offsetScale, 0)
 			end
 		end
 	end
@@ -741,5 +744,5 @@ local function CreateInstance()
 
 	return instance
 end
---nigg
+--retigga
 return CreateInstance()
