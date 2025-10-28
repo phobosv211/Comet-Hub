@@ -512,7 +512,6 @@ function ESPLibrary:_UpdateBillboardSizes()
 		for _, billboard in pairs(billboards) do
 			if billboard and billboard.Parent and billboard.Adornee then
 				local adornee = billboard.Adornee
-				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
 				
 				-- Fixed size - no scaling
 				local baseWidth = 180
@@ -522,35 +521,46 @@ function ESPLibrary:_UpdateBillboardSizes()
 				-- Check if billboard would cover the character
 				local character = adornee.Parent
 				local hrp = character and character:FindFirstChild("HumanoidRootPart")
+				local headPos = adornee.Position
 				
-				if hrp then
-					-- Calculate screen positions
-					local billboardWorldPos = adornee.Position + Vector3.new(0, 2.5, 0)
-					local characterWorldPos = hrp.Position
+				if hrp and headPos then
+					-- Get camera distance to determine coverage
+					local distance = (camera.CFrame.Position - hrp.Position).Magnitude
 					
-					local billboardScreenPos, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
-					local characterScreenPos, characterOnScreen = camera:WorldToScreenPoint(characterWorldPos)
+					-- Calculate world space positions
+					local currentOffset = billboard.StudsOffset.Y
+					local billboardWorldPos = headPos + Vector3.new(0, currentOffset, 0)
+					local headTop = headPos + Vector3.new(0, 0.5, 0)
 					
-					if billboardOnScreen and characterOnScreen then
-						local billboardBottom = billboardScreenPos.Y + (baseHeight / 2)
-						local characterTop = characterScreenPos.Y - 50 -- Approximate character height on screen
+					-- Convert to screen space
+					local billboardScreen, billboardVisible = camera:WorldToScreenPoint(billboardWorldPos)
+					local headScreen, headVisible = camera:WorldToScreenPoint(headTop)
+					
+					if billboardVisible and headVisible then
+						-- Billboard bottom in screen space
+						local billboardBottom = billboardScreen.Y + (baseHeight / 2)
 						
-						-- If billboard is covering the character, move it higher
-						if billboardBottom > characterTop then
-							-- Calculate extra offset needed (convert pixels to studs)
-							local pixelOverlap = billboardBottom - characterTop
-							local extraOffset = pixelOverlap / 30 -- Adjust divisor for sensitivity
-							billboard.StudsOffset = Vector3.new(0, 2.5 + extraOffset, 0)
+						-- Head top in screen space
+						local headTopScreen = headScreen.Y
+						
+						-- Check if overlapping
+						local overlap = billboardBottom - headTopScreen
+						
+						if overlap > 10 then
+							-- Billboard is covering! Move it up
+							-- Convert screen space overlap to world space
+							local studOffset = overlap / 40 -- Adjust this value for more/less aggressive movement
+							billboard.StudsOffset = Vector3.new(0, 2.5 + studOffset, 0)
 						else
-							-- Normal offset - not covering
+							-- Not covering, use default position
 							billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 						end
 					else
-						-- Fallback to normal offset if off-screen
+						-- Default position
 						billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 					end
 				else
-					-- Fallback offset
+					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 				end
 			end
@@ -773,4 +783,4 @@ end
 
 return CreateInstance()
 
---nigalinkonline
+--yooo
