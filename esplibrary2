@@ -229,6 +229,7 @@ function ESPLibrary:_CreateESP(player, character)
 	shineGradient.Rotation = 90
 	shineGradient.Parent = shine
 
+	local playerIcon
 	if self.Config.NametagEnabled then
 		-- iOS-style player name with SF Pro font aesthetic
 		local nameContainer = Instance.new("Frame")
@@ -238,7 +239,7 @@ function ESPLibrary:_CreateESP(player, character)
 		nameContainer.ZIndex = 3
 		nameContainer.Parent = container
 
-		local playerIcon = Instance.new("TextLabel")
+		playerIcon = Instance.new("TextLabel")
 		playerIcon.Text = "●"
 		playerIcon.Size = UDim2.new(0, 12, 0, 12)
 		playerIcon.Position = UDim2.new(0, 0, 0, 6)
@@ -348,6 +349,18 @@ function ESPLibrary:_CreateESP(player, character)
 			healthText = healthText,
 			healthGradient = healthGradient,
 			healthShine = healthShine,
+			highlight = highlight,
+			border = border,
+			accentBorder = accentBorder,
+			playerIcon = playerIcon,
+			player = player,
+		}
+	else
+		self.UpdateQueue[playerName] = {
+			healthFill = nil,
+			healthText = nil,
+			healthGradient = nil,
+			healthShine = nil,
 			highlight = highlight,
 			border = border,
 			accentBorder = accentBorder,
@@ -686,5 +699,5 @@ local function CreateInstance()
 
 	return instance
 end
---yo twin
+--on 55 crip
 return CreateInstance()
