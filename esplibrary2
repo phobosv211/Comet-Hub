@@ -141,6 +141,7 @@ function ESPLibrary:_CreateESP(player, character)
 	billboard.Size = UDim2.new(0, 220, 0, 95)
 	billboard.StudsOffset = Vector3.new(0, 3.5, 0)
 	billboard.AlwaysOnTop = true
+	billboard.MaxDistance = 1000
 	billboard.Parent = CoreGui
 	table.insert(self.ActiveBillboards[playerName], billboard)
 
@@ -488,6 +489,46 @@ function ESPLibrary:_ProcessUpdateQueue()
 	end
 end
 
+function ESPLibrary:_UpdateBillboardSizes()
+	if not self.Config.ESPEnabled then return end
+
+	local camera = workspace.CurrentCamera
+	if not camera then return end
+
+	local hrp = self.LocalPlayer.Character and self.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if not hrp then return end
+
+	for playerName, billboards in pairs(self.ActiveBillboards) do
+		for _, billboard in pairs(billboards) do
+			if billboard and billboard.Parent and billboard.Adornee then
+				local adornee = billboard.Adornee
+				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
+				
+				-- Scale based on distance - more aggressive scaling
+				-- At 50 studs: 100% size
+				-- At 100 studs: 70% size  
+				-- At 200+ studs: 40% size
+				local baseWidth = 220
+				local baseHeight = 95
+				
+				local scale
+				if distance <= 50 then
+					scale = 1
+				elseif distance <= 100 then
+					scale = 1 - ((distance - 50) / 50) * 0.3
+				elseif distance <= 200 then
+					scale = 0.7 - ((distance - 100) / 100) * 0.3
+				else
+					scale = 0.4
+				end
+				
+				-- Apply scale
+				billboard.Size = UDim2.new(0, baseWidth * scale, 0, baseHeight * scale)
+			end
+		end
+	end
+end
+
 function ESPLibrary:_UpdateDistances()
 	if not self.Config.DistanceEnabled or not self.Config.ESPEnabled then return end
 
@@ -700,5 +741,5 @@ local function CreateInstance()
 
 	return instance
 end
---das9uhdh
+--nigg
 return CreateInstance()
