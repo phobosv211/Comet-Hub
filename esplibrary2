@@ -34,6 +34,7 @@ function ESPLibrary:_Initialize()
 		self:_ProcessUpdateQueue()
 		self:_CheckPlayerMovement()
 		self:_UpdateDistances()
+		self:_UpdateBillboardSizes()
 	end)
 
 	self.Connections.PlayerAdded = Players.PlayerAdded:Connect(function(player)
@@ -699,5 +700,5 @@ local function CreateInstance()
 
 	return instance
 end
---on 55 crip
+--das9uhdh
 return CreateInstance()
