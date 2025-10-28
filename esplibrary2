@@ -501,32 +501,57 @@ function ESPLibrary:_UpdateBillboardSizes()
 				local adornee = billboard.Adornee
 				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
 				
-				-- Much more aggressive scaling based on distance
-				-- The farther away, the smaller it gets
-				local baseWidth = 220
-				local baseHeight = 95
+				-- VERY aggressive scaling - shrinks fast with distance
+				local baseWidth = 180
+				local baseHeight = 75
 				
 				local scale
-				if distance <= 30 then
-					-- Close range: full size
+				if distance <= 20 then
+					-- Very close: full size
 					scale = 1
-				elseif distance <= 60 then
-					-- Medium range: start shrinking
-					scale = 1 - ((distance - 30) / 30) * 0.4  -- 100% to 60%
-				elseif distance <= 120 then
-					-- Far range: shrink more
-					scale = 0.6 - ((distance - 60) / 60) * 0.35  -- 60% to 25%
+				elseif distance <= 40 then
+					-- Close: shrink to 50%
+					scale = 1 - ((distance - 20) / 20) * 0.5
+				elseif distance <= 80 then
+					-- Medium: shrink to 25%
+					scale = 0.5 - ((distance - 40) / 40) * 0.25
+				elseif distance <= 150 then
+					-- Far: shrink to 12%
+					scale = 0.25 - ((distance - 80) / 70) * 0.13
 				else
-					-- Very far: keep shrinking proportionally
-					scale = math.max(0.1, 0.25 - ((distance - 120) / 200) * 0.15)  -- 25% down to 10% minimum
+					-- Very far: keep shrinking to 5% minimum
+					scale = math.max(0.05, 0.12 - ((distance - 150) / 150) * 0.07)
 				end
 				
-				-- Apply scale
+				-- Apply scale to billboard
 				billboard.Size = UDim2.new(0, math.floor(baseWidth * scale), 0, math.floor(baseHeight * scale))
 				
-				-- Also adjust vertical offset so it stays above head better when small
-				local offsetScale = math.max(0.5, scale)
-				billboard.StudsOffset = Vector3.new(0, 3.5 * offsetScale, 0)
+				-- Scale all UI elements inside the billboard
+				local container = billboard:FindFirstChildWhichIsA("Frame")
+				if container then
+					-- Scale text sizes
+					for _, descendant in pairs(container:GetDescendants()) do
+						if descendant:IsA("TextLabel") then
+							local baseFontSize = descendant.Name == "DistanceLabel" and 13 or 
+											   (descendant.Parent and descendant.Parent.Name == "DistanceLabel" and 13 or
+											   (descendant.Text:match("%%") and 12 or 15))
+							descendant.TextSize = math.max(6, math.floor(baseFontSize * scale))
+						elseif descendant:IsA("UICorner") then
+							-- Scale corner radius
+							local baseRadius = descendant.Parent.Name:match("Health") and 
+											 (descendant.Parent:IsA("Frame") and descendant.Parent.Parent and descendant.Parent.Parent.Name:match("Health") and 6 or 4) or 18
+							descendant.CornerRadius = UDim.new(0, math.max(2, math.floor(baseRadius * scale)))
+						elseif descendant:IsA("UIStroke") then
+							-- Scale stroke thickness
+							local baseThickness = descendant.Thickness
+							descendant.Thickness = math.max(0.5, baseThickness * scale)
+						end
+					end
+				end
+				
+				-- Adjust vertical offset - keep it closer to head when far
+				local offsetScale = math.max(0.3, scale)
+				billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
 			end
 		end
 	end
@@ -746,5 +771,4 @@ local function CreateInstance()
 end
 
 return CreateInstance()
-
---hio
+--oof sound
