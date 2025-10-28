@@ -138,7 +138,7 @@ function ESPLibrary:_CreateESP(player, character)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ESP_BillboardGui_" .. playerName
 	billboard.Adornee = adornee
-	billboard.Size = UDim2.new(0, 180, 0, 75)
+	billboard.Size = UDim2.new(3.5, 0, 1.5, 0)
 	billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 	billboard.AlwaysOnTop = true
 	billboard.MaxDistance = 1000
@@ -771,4 +771,5 @@ local function CreateInstance()
 end
 
 return CreateInstance()
---oof sound
+
+--yooo
