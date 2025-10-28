@@ -138,7 +138,7 @@ function ESPLibrary:_CreateESP(player, character)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ESP_BillboardGui_" .. playerName
 	billboard.Adornee = adornee
-	billboard.Size = UDim2.new(3.5, 0, 1.5, 0)
+	billboard.Size = UDim2.new(0, 180, 0, 75)
 	billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 	billboard.AlwaysOnTop = true
 	billboard.MaxDistance = 1000
@@ -165,6 +165,7 @@ function ESPLibrary:_CreateESP(player, character)
 	blurLayer1.BackgroundTransparency = blurTransparency
 	blurLayer1.BackgroundColor3 = blurLayerBg
 	blurLayer1.BorderSizePixel = 0
+	blurLayer1.Position = UDim2.new(0, 0, 0, 0)
 	blurLayer1.ZIndex = 0
 	blurLayer1.Parent = container
 
@@ -217,6 +218,7 @@ function ESPLibrary:_CreateESP(player, character)
 	shine.BackgroundTransparency = isDark and 0.9 or 0.85
 	shine.BorderSizePixel = 0
 	shine.Position = UDim2.new(0, 0, 0, 0)
+	shine.AnchorPoint = Vector2.new(0, 0)
 	shine.ZIndex = 2
 	shine.Parent = container
 
@@ -239,6 +241,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local nameContainer = Instance.new("Frame")
 		nameContainer.Size = UDim2.new(1, -20, 0, 24)
 		nameContainer.Position = UDim2.new(0, 10, 0, 10)
+		nameContainer.AnchorPoint = Vector2.new(0, 0)
 		nameContainer.BackgroundTransparency = 1
 		nameContainer.ZIndex = 3
 		nameContainer.Parent = container
@@ -247,6 +250,7 @@ function ESPLibrary:_CreateESP(player, character)
 		playerIcon.Text = "●"
 		playerIcon.Size = UDim2.new(0, 12, 0, 12)
 		playerIcon.Position = UDim2.new(0, 0, 0, 6)
+		playerIcon.AnchorPoint = Vector2.new(0, 0)
 		playerIcon.TextColor3 = teamColor
 		playerIcon.TextSize = 20
 		playerIcon.BackgroundTransparency = 1
@@ -258,6 +262,7 @@ function ESPLibrary:_CreateESP(player, character)
 		label.Text = player.Name
 		label.Size = UDim2.new(1, -20, 1, 0)
 		label.Position = UDim2.new(0, 20, 0, 0)
+		label.AnchorPoint = Vector2.new(0, 0)
 		label.TextColor3 = textColor
 		label.TextStrokeTransparency = 1
 		label.Font = Enum.Font.GothamMedium
@@ -274,6 +279,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local healthContainer = Instance.new("Frame")
 		healthContainer.Size = UDim2.new(1, -20, 0, 20)
 		healthContainer.Position = UDim2.new(0, 10, 0, 40)
+		healthContainer.AnchorPoint = Vector2.new(0, 0)
 		healthContainer.BackgroundColor3 = healthBgColor
 		healthContainer.BackgroundTransparency = healthBgTransparency
 		healthContainer.BorderSizePixel = 0
@@ -295,6 +301,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local healthFill = Instance.new("Frame")
 		healthFill.Size = UDim2.new(1, -4, 1, -4)
 		healthFill.Position = UDim2.new(0, 2, 0, 2)
+		healthFill.AnchorPoint = Vector2.new(0, 0)
 		healthFill.BackgroundColor3 = Color3.fromRGB(52, 199, 89)
 		healthFill.BorderSizePixel = 0
 		healthFill.ZIndex = 4
@@ -316,6 +323,8 @@ function ESPLibrary:_CreateESP(player, character)
 		-- Glossy overlay on health bar
 		local healthShine = Instance.new("Frame")
 		healthShine.Size = UDim2.new(1, 0, 0.5, 0)
+		healthShine.Position = UDim2.new(0, 0, 0, 0)
+		healthShine.AnchorPoint = Vector2.new(0, 0)
 		healthShine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		healthShine.BackgroundTransparency = 0.7
 		healthShine.BorderSizePixel = 0
@@ -337,6 +346,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local healthText = Instance.new("TextLabel")
 		healthText.Size = UDim2.new(1, -16, 1, 0)
 		healthText.Position = UDim2.new(0, 8, 0, 0)
+		healthText.AnchorPoint = Vector2.new(0, 0)
 		healthText.Text = "100%"
 		healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		healthText.TextStrokeTransparency = 0.3
@@ -379,6 +389,7 @@ function ESPLibrary:_CreateESP(player, character)
 		distanceLabel.Name = "DistanceLabel"
 		distanceLabel.Size = UDim2.new(1, -20, 0, 18)
 		distanceLabel.Position = UDim2.new(0, 10, 0, 67)
+		distanceLabel.AnchorPoint = Vector2.new(0, 0)
 		distanceLabel.Text = "0m"
 		distanceLabel.TextColor3 = distanceColor
 		distanceLabel.TextStrokeTransparency = 1
@@ -503,25 +514,33 @@ function ESPLibrary:_UpdateBillboardSizes()
 				local adornee = billboard.Adornee
 				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
 				
-				-- Scale based on distance using Scale size (not Offset)
+				-- VERY aggressive scaling - shrinks fast with distance
+				local baseWidth = 180
+				local baseHeight = 75
+				
 				local scale
 				if distance <= 20 then
-					scale = 3.5
+					-- Very close: full size
+					scale = 1
 				elseif distance <= 40 then
-					scale = 3.5 - ((distance - 20) / 20) * 1.5
+					-- Close: shrink to 50%
+					scale = 1 - ((distance - 20) / 20) * 0.5
 				elseif distance <= 80 then
-					scale = 2 - ((distance - 40) / 40) * 1
+					-- Medium: shrink to 25%
+					scale = 0.5 - ((distance - 40) / 40) * 0.25
 				elseif distance <= 150 then
-					scale = 1 - ((distance - 80) / 70) * 0.5
+					-- Far: shrink to 12%
+					scale = 0.25 - ((distance - 80) / 70) * 0.13
 				else
-					scale = math.max(0.3, 0.5 - ((distance - 150) / 150) * 0.2)
+					-- Very far: keep shrinking to 5% minimum
+					scale = math.max(0.05, 0.12 - ((distance - 150) / 150) * 0.07)
 				end
 				
-				-- Apply scale using Scale size (this scales everything proportionally)
-				billboard.Size = UDim2.new(scale, 0, scale * 0.43, 0)
+				-- Apply scale to billboard frame only
+				billboard.Size = UDim2.new(0, math.floor(baseWidth * scale), 0, math.floor(baseHeight * scale))
 				
-				-- Adjust vertical offset
-				local offsetScale = math.max(0.5, scale / 3.5)
+				-- Adjust vertical offset - keep it closer to head when far
+				local offsetScale = math.max(0.3, scale)
 				billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
 			end
 		end
@@ -742,5 +761,3 @@ local function CreateInstance()
 end
 
 return CreateInstance()
-
---ddd
