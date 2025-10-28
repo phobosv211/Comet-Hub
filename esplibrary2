@@ -514,30 +514,10 @@ function ESPLibrary:_UpdateBillboardSizes()
 				local adornee = billboard.Adornee
 				local distance = (camera.CFrame.Position - adornee.Position).Magnitude
 				
-				-- VERY aggressive scaling - shrinks fast with distance
+				-- Fixed size - no scaling
 				local baseWidth = 180
 				local baseHeight = 75
-				
-				local scale
-				if distance <= 20 then
-					-- Very close: full size
-					scale = 1
-				elseif distance <= 40 then
-					-- Close: shrink to 50%
-					scale = 1 - ((distance - 20) / 20) * 0.5
-				elseif distance <= 80 then
-					-- Medium: shrink to 25%
-					scale = 0.5 - ((distance - 40) / 40) * 0.25
-				elseif distance <= 150 then
-					-- Far: shrink to 12%
-					scale = 0.25 - ((distance - 80) / 70) * 0.13
-				else
-					-- Very far: keep shrinking to 5% minimum
-					scale = math.max(0.05, 0.12 - ((distance - 150) / 150) * 0.07)
-				end
-				
-				-- Apply scale to billboard frame only
-				billboard.Size = UDim2.new(0, math.floor(baseWidth * scale), 0, math.floor(baseHeight * scale))
+				billboard.Size = UDim2.new(0, baseWidth, 0, baseHeight)
 				
 				-- Check if billboard would cover the character
 				local character = adornee.Parent
@@ -545,36 +525,33 @@ function ESPLibrary:_UpdateBillboardSizes()
 				
 				if hrp then
 					-- Calculate screen positions
-					local billboardWorldPos = adornee.Position + Vector3.new(0, billboard.StudsOffset.Y, 0)
+					local billboardWorldPos = adornee.Position + Vector3.new(0, 2.5, 0)
 					local characterWorldPos = hrp.Position
 					
 					local billboardScreenPos, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
 					local characterScreenPos, characterOnScreen = camera:WorldToScreenPoint(characterWorldPos)
 					
 					if billboardOnScreen and characterOnScreen then
-						local billboardHeight = math.floor(baseHeight * scale)
-						local billboardBottom = billboardScreenPos.Y + (billboardHeight / 2)
+						local billboardBottom = billboardScreenPos.Y + (baseHeight / 2)
 						local characterTop = characterScreenPos.Y - 50 -- Approximate character height on screen
 						
 						-- If billboard is covering the character, move it higher
 						if billboardBottom > characterTop then
-							-- Calculate extra offset needed
-							local extraOffset = (billboardBottom - characterTop) / 50 -- Convert pixels to studs (rough estimate)
+							-- Calculate extra offset needed (convert pixels to studs)
+							local pixelOverlap = billboardBottom - characterTop
+							local extraOffset = pixelOverlap / 30 -- Adjust divisor for sensitivity
 							billboard.StudsOffset = Vector3.new(0, 2.5 + extraOffset, 0)
 						else
-							-- Normal offset
-							local offsetScale = math.max(0.3, scale)
-							billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+							-- Normal offset - not covering
+							billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 						end
 					else
 						-- Fallback to normal offset if off-screen
-						local offsetScale = math.max(0.3, scale)
-						billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+						billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 					end
 				else
 					-- Fallback offset
-					local offsetScale = math.max(0.3, scale)
-					billboard.StudsOffset = Vector3.new(0, 2.5 * offsetScale, 0)
+					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 				end
 			end
 		end
@@ -796,4 +773,4 @@ end
 
 return CreateInstance()
 
---new esp
+--nigalinkonline
