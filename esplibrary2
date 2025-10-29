@@ -521,44 +521,33 @@ function ESPLibrary:_UpdateBillboardSizes()
 				-- Check if billboard would cover the character
 				local character = adornee.Parent
 				local hrp = character and character:FindFirstChild("HumanoidRootPart")
-				local headPos = adornee.Position
 				
-				if hrp and headPos then
-					-- Get camera distance to determine coverage
+				if hrp and character then
 					local distance = (camera.CFrame.Position - hrp.Position).Magnitude
 					
-					-- Calculate world space positions
-					local currentOffset = billboard.StudsOffset.Y
-					local billboardWorldPos = headPos + Vector3.new(0, currentOffset, 0)
-					local headTop = headPos + Vector3.new(0, 0.5, 0)
+					-- Use distance-based positioning to avoid covering
+					-- Closer = needs to be higher to not cover character
+					local baseOffset = 2.5
+					local extraOffset = 0
 					
-					-- Convert to screen space
-					local billboardScreen, billboardVisible = camera:WorldToScreenPoint(billboardWorldPos)
-					local headScreen, headVisible = camera:WorldToScreenPoint(headTop)
-					
-					if billboardVisible and headVisible then
-						-- Billboard bottom in screen space
-						local billboardBottom = billboardScreen.Y + (baseHeight / 2)
-						
-						-- Head top in screen space
-						local headTopScreen = headScreen.Y
-						
-						-- Check if overlapping
-						local overlap = billboardBottom - headTopScreen
-						
-						if overlap > 10 then
-							-- Billboard is covering! Move it up
-							-- Convert screen space overlap to world space
-							local studOffset = overlap / 40 -- Adjust this value for more/less aggressive movement
-							billboard.StudsOffset = Vector3.new(0, 2.5 + studOffset, 0)
-						else
-							-- Not covering, use default position
-							billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-						end
+					if distance <= 30 then
+						-- Very close - move way up
+						extraOffset = 4
+					elseif distance <= 60 then
+						-- Close - move up quite a bit
+						extraOffset = 3
+					elseif distance <= 100 then
+						-- Medium - move up some
+						extraOffset = 2
+					elseif distance <= 150 then
+						-- Far - slight adjustment
+						extraOffset = 1
 					else
-						-- Default position
-						billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+						-- Very far - minimal adjustment
+						extraOffset = 0.5
 					end
+					
+					billboard.StudsOffset = Vector3.new(0, baseOffset + extraOffset, 0)
 				else
 					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
@@ -780,7 +769,5 @@ local function CreateInstance()
 
 	return instance
 end
-
+--penis
 return CreateInstance()
-
---yooo
