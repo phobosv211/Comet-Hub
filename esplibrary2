@@ -523,75 +523,53 @@ function ESPLibrary:_UpdateBillboardSizes()
 				local hrp = character and character:FindFirstChild("HumanoidRootPart")
 				
 				if hrp and character then
-					-- Start with base offset
-					local currentOffset = billboard.StudsOffset.Y
-					if currentOffset == 0 then currentOffset = 2.5 end
+					-- Calculate necessary offset to clear character
+					local baseOffset = 2.5
 					
-					-- Get all character parts
-					local characterParts = {}
+					-- Get character's highest and lowest points
+					local characterTop = -math.huge
+					local characterBottom = math.huge
+					
 					for _, part in pairs(character:GetChildren()) do
 						if part:IsA("BasePart") then
-							table.insert(characterParts, part)
+							local partTop = part.Position.Y + (part.Size.Y / 2)
+							local partBottom = part.Position.Y - (part.Size.Y / 2)
+							characterTop = math.max(characterTop, partTop)
+							characterBottom = math.min(characterBottom, partBottom)
 						end
 					end
 					
-					-- Check if billboard is covering any character part
-					local isCovering = false
-					local maxIterations = 20 -- Safety limit
-					local iteration = 0
+					-- Calculate billboard position
+					local headPos = adornee.Position
+					local billboardWorldY = headPos.Y + baseOffset
 					
-					repeat
-						isCovering = false
-						iteration = iteration + 1
+					-- Convert to screen space to check coverage
+					local billboardWorldPos = Vector3.new(headPos.X, billboardWorldY, headPos.Z)
+					local characterTopPos = Vector3.new(hrp.Position.X, characterTop, hrp.Position.Z)
+					
+					local billboardScreen, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
+					local charTopScreen, charTopOnScreen = camera:WorldToScreenPoint(characterTopPos)
+					
+					if billboardOnScreen and charTopOnScreen then
+						-- Calculate if billboard bottom overlaps character top
+						local billboardBottomY = billboardScreen.Y + (baseHeight / 2)
+						local characterTopY = charTopScreen.Y
 						
-						-- Update billboard position with current offset
-						billboard.StudsOffset = Vector3.new(0, currentOffset, 0)
-						task.wait() -- Let position update
-						
-						-- Calculate billboard screen bounds
-						local billboardWorldPos = adornee.Position + Vector3.new(0, currentOffset, 0)
-						local billboardScreen, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
-						
-						if billboardOnScreen then
-							local billboardLeft = billboardScreen.X - (baseWidth / 2)
-							local billboardRight = billboardScreen.X + (baseWidth / 2)
-							local billboardTop = billboardScreen.Y - (baseHeight / 2)
-							local billboardBottom = billboardScreen.Y + (baseHeight / 2)
+						-- If overlapping, calculate how much to move up
+						if billboardBottomY > characterTopY then
+							local overlapPixels = billboardBottomY - characterTopY
+							-- Convert pixels to studs (rough approximation)
+							local distance = (camera.CFrame.Position - hrp.Position).Magnitude
+							local pixelToStud = distance / 100 -- Approximate conversion factor
+							local extraOffset = (overlapPixels * pixelToStud) / 10
 							
-							-- Check each character part
-							for _, part in pairs(characterParts) do
-								if part and part.Parent then
-									local partScreen, partOnScreen = camera:WorldToScreenPoint(part.Position)
-									
-									if partOnScreen then
-										-- Approximate part screen bounds (simple point check + margin)
-										local partSize = part.Size
-										local margin = 30 -- Screen space margin
-										
-										-- Check if part is within billboard bounds
-										if partScreen.X >= billboardLeft - margin and 
-										   partScreen.X <= billboardRight + margin and
-										   partScreen.Y >= billboardTop and
-										   partScreen.Y <= billboardBottom + margin then
-											isCovering = true
-											break
-										end
-									end
-								end
-							end
-							
-							-- If covering, move up
-							if isCovering then
-								currentOffset = currentOffset + 0.5 -- Move up by 0.5 studs
-							end
+							billboard.StudsOffset = Vector3.new(0, baseOffset + extraOffset + 1, 0)
 						else
-							break -- Billboard off screen
+							billboard.StudsOffset = Vector3.new(0, baseOffset, 0)
 						end
-						
-					until not isCovering or iteration >= maxIterations
-					
-					-- Apply final offset
-					billboard.StudsOffset = Vector3.new(0, currentOffset, 0)
+					else
+						billboard.StudsOffset = Vector3.new(0, baseOffset, 0)
+					end
 				else
 					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
