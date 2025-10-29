@@ -1,6 +1,6 @@
 --[[
 	
-	ESP Library 4 - iOS 26 Glassmorphism Design
+	ESP Library 2
 	
 	Comet Hub
 	
@@ -18,40 +18,14 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 	TeleportThreshold = 100,
 	SpeedThreshold = 150,
 	MaxUpdatesPerFrame = 3,
-	DefaultColor = Color3.fromRGB(10, 132, 255),
+	DefaultColor = Color3.fromRGB(145, 19, 255),
 	HealthBarEnabled = true,
-	NametagEnabled = true,
-	DistanceEnabled = true,
+	DistanceEnabled = false,
 	TeamBased = true,
-	BoxESP = false,
-	DarkMode = false,
+	DarkMode = true,
 }
 
 local ESPLibrary = {}
-
-function ESPLibrary:_WatchConfigChanges()
-	local lastConfig = {}
-	for key, value in pairs(self.Config) do
-		lastConfig[key] = value
-	end
-	
-	task.spawn(function()
-		while true do
-			task.wait(0.5)
-			local changed = false
-			for key, value in pairs(self.Config) do
-				if lastConfig[key] ~= value then
-					changed = true
-					lastConfig[key] = value
-				end
-			end
-			
-			if changed then
-				self:RefreshAll()
-			end
-		end
-	end)
-end
 
 function ESPLibrary:_Initialize()
 	self.Connections.Heartbeat = RunService.Heartbeat:Connect(function()
@@ -85,8 +59,6 @@ function ESPLibrary:_Initialize()
 			task.wait(0.1)
 		end
 	end)
-	
-	self:_WatchConfigChanges()
 end
 
 function ESPLibrary:_CleanUpPlayer(player)
@@ -133,12 +105,12 @@ function ESPLibrary:_CreateESP(player, character)
 	self.ActiveBillboards[playerName] = {}
 
 	local isDark = self.Config.DarkMode
-	local containerBg = isDark and Color3.fromRGB(15, 15, 20) or Color3.fromRGB(255, 255, 255)
+	local containerBg = isDark and Color3.fromRGB(20, 20, 27) or Color3.fromRGB(255, 255, 255)
 	local containerTransparency = isDark and 0.15 or 0.25
 	local blurLayerBg = isDark and Color3.fromRGB(25, 25, 35) or Color3.fromRGB(240, 242, 247)
 	local blurTransparency = isDark and 0.4 or 0.5
 	local textColor = isDark and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(30, 30, 40)
-	local distanceColor = isDark and Color3.fromRGB(170, 170, 180) or Color3.fromRGB(60, 60, 67)
+	local distanceColor = isDark and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(60, 60, 67)
 	local healthBgColor = isDark and Color3.fromRGB(40, 40, 50) or Color3.fromRGB(0, 0, 0)
 	local healthBgTransparency = isDark and 0.7 or 0.88
 
@@ -161,7 +133,7 @@ function ESPLibrary:_CreateESP(player, character)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "ESP_BillboardGui_" .. playerName
 	billboard.Adornee = adornee
-	billboard.Size = UDim2.new(0, 180, 0, 90)
+	billboard.Size = UDim2.new(0, 180, 0, 75)
 	billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 	billboard.AlwaysOnTop = true
 	billboard.MaxDistance = 1000
@@ -193,7 +165,6 @@ function ESPLibrary:_CreateESP(player, character)
 	local blur1Corner = Instance.new("UICorner")
 	blur1Corner.CornerRadius = UDim.new(0, 18)
 	blur1Corner.Parent = blurLayer1
-
 	local gradient = Instance.new("UIGradient")
 	if isDark then
 		gradient.Color = ColorSequence.new{
@@ -214,21 +185,18 @@ function ESPLibrary:_CreateESP(player, character)
 		NumberSequenceKeypoint.new(1, 0.5)
 	}
 	gradient.Parent = blurLayer1
-
 	local border = Instance.new("UIStroke")
 	border.Color = isDark and Color3.fromRGB(80, 80, 90) or Color3.fromRGB(255, 255, 255)
 	border.Thickness = 1.2
 	border.Transparency = isDark and 0.5 or 0.4
 	border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	border.Parent = container
-
 	local accentBorder = Instance.new("UIStroke")
 	accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), isDark and 0.2 or 0.3)
 	accentBorder.Thickness = 0.8
 	accentBorder.Transparency = 0.6
 	accentBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	accentBorder.Parent = blurLayer1
-
 	local shine = Instance.new("Frame")
 	shine.Size = UDim2.new(1, 0, 0.35, 0)
 	shine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -304,7 +272,7 @@ function ESPLibrary:_CreateESP(player, character)
 		local healthCorner = Instance.new("UICorner")
 		healthCorner.CornerRadius = UDim.new(1, 0)
 		healthCorner.Parent = healthContainer
-
+		
 		local innerShadow = Instance.new("UIStroke")
 		innerShadow.Color = Color3.fromRGB(0, 0, 0)
 		innerShadow.Thickness = 1
@@ -325,6 +293,7 @@ function ESPLibrary:_CreateESP(player, character)
 		healthFillCorner.CornerRadius = UDim.new(1, 0)
 		healthFillCorner.Parent = healthFill
 
+		-- Vibrant iOS health gradient
 		local healthGradient = Instance.new("UIGradient")
 		healthGradient.Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0, Color3.fromRGB(52, 199, 89)),
@@ -333,6 +302,7 @@ function ESPLibrary:_CreateESP(player, character)
 		healthGradient.Rotation = 90
 		healthGradient.Parent = healthFill
 
+		-- Glossy overlay on health bar
 		local healthShine = Instance.new("Frame")
 		healthShine.Size = UDim2.new(1, 0, 0.5, 0)
 		healthShine.Position = UDim2.new(0, 0, 0, 0)
@@ -362,8 +332,7 @@ function ESPLibrary:_CreateESP(player, character)
 		healthText.Text = "100%"
 		healthText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		healthText.TextStrokeTransparency = 0.3
-		healthText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-		healthText.Font = Enum.Font.GothamBold
+		healthText.Font = Enum.Font.MontserratBold
 		healthText.TextSize = 12
 		healthText.BackgroundTransparency = 1
 		healthText.TextXAlignment = Enum.TextXAlignment.Center
@@ -398,14 +367,14 @@ function ESPLibrary:_CreateESP(player, character)
 	if self.Config.DistanceEnabled then
 		local distanceLabel = Instance.new("TextLabel")
 		distanceLabel.Name = "DistanceLabel"
-		distanceLabel.Size = UDim2.new(1, -20, 0, 15)
-		distanceLabel.Position = UDim2.new(0, 10, 0, 68)
+		distanceLabel.Size = UDim2.new(1, -20, 0, 18)
+		distanceLabel.Position = UDim2.new(0, 10, 0, 55)
 		distanceLabel.AnchorPoint = Vector2.new(0, 0)
 		distanceLabel.Text = "0m"
 		distanceLabel.TextColor3 = distanceColor
 		distanceLabel.TextStrokeTransparency = 1
-		distanceLabel.Font = Enum.Font.Gotham
-		distanceLabel.TextSize = 11
+		distanceLabel.Font = Enum.Font.MontserratBold
+		distanceLabel.TextSize = 13
 		distanceLabel.BackgroundTransparency = 1
 		distanceLabel.TextXAlignment = Enum.TextXAlignment.Center
 		distanceLabel.ZIndex = 4
@@ -462,45 +431,39 @@ function ESPLibrary:_ProcessUpdateQueue()
 			continue
 		end
 
-		if not data.healthFill then
-			updatesProcessed = updatesProcessed + 1
-			continue
-		end
-
 		local health = humanoid.Health
 		local maxHealth = humanoid.MaxHealth
 		local percentage = maxHealth > 0 and health / maxHealth or 0
-
+		
 		TweenService:Create(data.healthFill, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
 			Size = UDim2.new(percentage, -4, 1, -4)
 		}):Play()
 
 		data.healthText.Text = string.format("%d%%", math.floor(percentage * 100))
-
 		local healthColor
 		if percentage <= 0.2 then
-			healthColor = Color3.fromRGB(255, 59, 48)
+			healthColor = Color3.fromRGB(255, 59, 48) -- Red
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 59, 48)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 69, 58))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(226, 52, 43)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 56, 48))
 			}
 		elseif percentage <= 0.5 then
-			healthColor = Color3.fromRGB(255, 149, 0)
+			healthColor = Color3.fromRGB(255, 149, 0) -- Orange
 			data.healthGradient.Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 149, 0)),
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 159, 10))
 			}
 		elseif percentage <= 0.75 then
-			healthColor = Color3.fromRGB(255, 204, 0)
+			healthColor = Color3.fromRGB(240, 255, 70) -- Yellow
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 204, 0)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 214, 10))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 255, 70)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(206, 216, 59))
 			}
 		else
-			healthColor = Color3.fromRGB(52, 199, 89)
+			healthColor = Color3.fromRGB(0, 255, 94) -- Green
 			data.healthGradient.Color = ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(52, 199, 89)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(48, 209, 88))
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 128)),
+				ColorSequenceKeypoint.new(1, Color3.fromRGB(6, 204, 105))
 			}
 		end
 
@@ -509,10 +472,8 @@ function ESPLibrary:_ProcessUpdateQueue()
 		local teamColor = self.Config.TeamBased and player.Team and player.TeamColor.Color or self.Config.DefaultColor
 		data.highlight.FillColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.6)
 		data.highlight.OutlineColor = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.2)
-		data.accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), self.Config.DarkMode and 0.2 or 0.3)
-		if data.playerIcon then
-			data.playerIcon.TextColor3 = teamColor
-		end
+		data.accentBorder.Color = teamColor:lerp(Color3.fromRGB(255, 255, 255), 0.3)
+		data.playerIcon.TextColor3 = teamColor
 
 		updatesProcessed = updatesProcessed + 1
 	end
@@ -528,19 +489,17 @@ function ESPLibrary:_UpdateBillboardSizes()
 		for _, billboard in pairs(billboards) do
 			if billboard and billboard.Parent and billboard.Adornee then
 				local adornee = billboard.Adornee
-				
 				local baseWidth = 180
-				local baseHeight = 90
+				local baseHeight = 75
 				billboard.Size = UDim2.new(0, baseWidth, 0, baseHeight)
-				
 				local character = adornee.Parent
 				local hrp = character and character:FindFirstChild("HumanoidRootPart")
-				
+
 				if hrp and character then
-					local baseOffset = 2.5
+					local baseOffset = 3
 					local characterTop = -math.huge
 					local characterBottom = math.huge
-					
+
 					for _, part in pairs(character:GetChildren()) do
 						if part:IsA("BasePart") then
 							local partTop = part.Position.Y + (part.Size.Y / 2)
@@ -549,25 +508,23 @@ function ESPLibrary:_UpdateBillboardSizes()
 							characterBottom = math.min(characterBottom, partBottom)
 						end
 					end
-					
 					local headPos = adornee.Position
 					local billboardWorldY = headPos.Y + baseOffset
 					local billboardWorldPos = Vector3.new(headPos.X, billboardWorldY, headPos.Z)
 					local characterTopPos = Vector3.new(hrp.Position.X, characterTop, hrp.Position.Z)
-					
+
 					local billboardScreen, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
 					local charTopScreen, charTopOnScreen = camera:WorldToScreenPoint(characterTopPos)
-					
+
 					if billboardOnScreen and charTopOnScreen then
 						local billboardBottomY = billboardScreen.Y + (baseHeight / 2)
 						local characterTopY = charTopScreen.Y
-						
 						if billboardBottomY > characterTopY then
 							local overlapPixels = billboardBottomY - characterTopY
 							local distance = (camera.CFrame.Position - hrp.Position).Magnitude
 							local pixelToStud = distance / 100
 							local extraOffset = (overlapPixels * pixelToStud) / 10
-							
+
 							billboard.StudsOffset = Vector3.new(0, baseOffset + extraOffset + 1, 0)
 						else
 							billboard.StudsOffset = Vector3.new(0, baseOffset, 0)
@@ -576,6 +533,7 @@ function ESPLibrary:_UpdateBillboardSizes()
 						billboard.StudsOffset = Vector3.new(0, baseOffset, 0)
 					end
 				else
+					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 				end
 			end
@@ -615,15 +573,8 @@ function ESPLibrary:_ProcessPlayerUpdates()
 		if character then
 			if self.Config.ESPEnabled then
 				self:_CreateESP(player, character)
-			elseif self.Config.ChamsEnabled then
-				if self.ActiveBillboards[player.Name] then
-					for _, billboard in pairs(self.ActiveBillboards[player.Name]) do
-						if billboard and billboard.Parent then
-							billboard:Destroy()
-						end
-					end
-					self.ActiveBillboards[player.Name] = nil
-				end
+			end
+			if self.Config.ChamsEnabled then
 				self:_CreateChams(player, character)
 			end
 		end
