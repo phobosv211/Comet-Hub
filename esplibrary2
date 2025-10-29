@@ -20,6 +20,7 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 	MaxUpdatesPerFrame = 3,
 	DefaultColor = Color3.fromRGB(145, 19, 255),
 	HealthBarEnabled = true,
+	NametagEnabled = true,
 	DistanceEnabled = false,
 	TeamBased = true,
 	DarkMode = true,
