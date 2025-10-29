@@ -518,36 +518,80 @@ function ESPLibrary:_UpdateBillboardSizes()
 				local baseHeight = 75
 				billboard.Size = UDim2.new(0, baseWidth, 0, baseHeight)
 				
-				-- Check if billboard would cover the character
+				-- Check if billboard is covering the character
 				local character = adornee.Parent
 				local hrp = character and character:FindFirstChild("HumanoidRootPart")
 				
 				if hrp and character then
-					local distance = (camera.CFrame.Position - hrp.Position).Magnitude
+					-- Start with base offset
+					local currentOffset = billboard.StudsOffset.Y
+					if currentOffset == 0 then currentOffset = 2.5 end
 					
-					-- Use distance-based positioning to avoid covering
-					-- Closer = needs to be higher to not cover character
-					local baseOffset = 2.5
-					local extraOffset = 0
-					
-					if distance <= 30 then
-						-- Very close - move way up
-						extraOffset = 4
-					elseif distance <= 60 then
-						-- Close - move up quite a bit
-						extraOffset = 3
-					elseif distance <= 100 then
-						-- Medium - move up some
-						extraOffset = 2
-					elseif distance <= 150 then
-						-- Far - slight adjustment
-						extraOffset = 1
-					else
-						-- Very far - minimal adjustment
-						extraOffset = 0.5
+					-- Get all character parts
+					local characterParts = {}
+					for _, part in pairs(character:GetChildren()) do
+						if part:IsA("BasePart") then
+							table.insert(characterParts, part)
+						end
 					end
 					
-					billboard.StudsOffset = Vector3.new(0, baseOffset + extraOffset, 0)
+					-- Check if billboard is covering any character part
+					local isCovering = false
+					local maxIterations = 20 -- Safety limit
+					local iteration = 0
+					
+					repeat
+						isCovering = false
+						iteration = iteration + 1
+						
+						-- Update billboard position with current offset
+						billboard.StudsOffset = Vector3.new(0, currentOffset, 0)
+						task.wait() -- Let position update
+						
+						-- Calculate billboard screen bounds
+						local billboardWorldPos = adornee.Position + Vector3.new(0, currentOffset, 0)
+						local billboardScreen, billboardOnScreen = camera:WorldToScreenPoint(billboardWorldPos)
+						
+						if billboardOnScreen then
+							local billboardLeft = billboardScreen.X - (baseWidth / 2)
+							local billboardRight = billboardScreen.X + (baseWidth / 2)
+							local billboardTop = billboardScreen.Y - (baseHeight / 2)
+							local billboardBottom = billboardScreen.Y + (baseHeight / 2)
+							
+							-- Check each character part
+							for _, part in pairs(characterParts) do
+								if part and part.Parent then
+									local partScreen, partOnScreen = camera:WorldToScreenPoint(part.Position)
+									
+									if partOnScreen then
+										-- Approximate part screen bounds (simple point check + margin)
+										local partSize = part.Size
+										local margin = 30 -- Screen space margin
+										
+										-- Check if part is within billboard bounds
+										if partScreen.X >= billboardLeft - margin and 
+										   partScreen.X <= billboardRight + margin and
+										   partScreen.Y >= billboardTop and
+										   partScreen.Y <= billboardBottom + margin then
+											isCovering = true
+											break
+										end
+									end
+								end
+							end
+							
+							-- If covering, move up
+							if isCovering then
+								currentOffset = currentOffset + 0.5 -- Move up by 0.5 studs
+							end
+						else
+							break -- Billboard off screen
+						end
+						
+					until not isCovering or iteration >= maxIterations
+					
+					-- Apply final offset
+					billboard.StudsOffset = Vector3.new(0, currentOffset, 0)
 				else
 					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
@@ -769,5 +813,5 @@ local function CreateInstance()
 
 	return instance
 end
---penis
+
 return CreateInstance()
