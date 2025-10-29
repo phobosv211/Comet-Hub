@@ -21,10 +21,10 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 	DefaultColor = Color3.fromRGB(145, 19, 255),
 	HealthBarEnabled = true,
 	NametagEnabled = true,
-	DistanceEnabled = true,
+	DistanceEnabled = false,
 	TeamBased = true,
 	BoxESP = false,
-	DarkMode = false, -- true = Dark Mode, false = Light Mode
+	DarkMode = true, -- true = Dark Mode, false = Light Mode
 }
 
 local ESPLibrary = {}
