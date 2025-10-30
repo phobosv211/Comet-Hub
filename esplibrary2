@@ -29,6 +29,23 @@ getgenv().ESPLibConfig = getgenv().ESPLibConfig or {
 local ESPLibrary = {}
 
 function ESPLibrary:_Initialize()
+	for _, player in pairs(Players:GetPlayers()) do
+		local character = player.Character
+		if character then
+			for _, child in pairs(character:GetChildren()) do
+				if child:IsA("Highlight") and (string.match(child.Name, "ESP_Highlight_") or string.match(child.Name, "Chams_")) then
+					child:Destroy()
+				end
+			end
+		end
+	end
+	
+	for _, child in pairs(CoreGui:GetChildren()) do
+		if child:IsA("BillboardGui") and string.match(child.Name, "ESP_BillboardGui_") then
+			child:Destroy()
+		end
+	end
+
 	self.Connections.Heartbeat = RunService.Heartbeat:Connect(function()
 		self:_ProcessUpdateQueue()
 		self:_CheckPlayerMovement()
@@ -294,7 +311,6 @@ function ESPLibrary:_CreateESP(player, character)
 		healthFillCorner.CornerRadius = UDim.new(1, 0)
 		healthFillCorner.Parent = healthFill
 
-		-- Vibrant iOS health gradient
 		local healthGradient = Instance.new("UIGradient")
 		healthGradient.Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0, Color3.fromRGB(52, 199, 89)),
@@ -303,7 +319,6 @@ function ESPLibrary:_CreateESP(player, character)
 		healthGradient.Rotation = 90
 		healthGradient.Parent = healthFill
 
-		-- Glossy overlay on health bar
 		local healthShine = Instance.new("Frame")
 		healthShine.Size = UDim2.new(1, 0, 0.5, 0)
 		healthShine.Position = UDim2.new(0, 0, 0, 0)
@@ -443,25 +458,25 @@ function ESPLibrary:_ProcessUpdateQueue()
 		data.healthText.Text = string.format("%d%%", math.floor(percentage * 100))
 		local healthColor
 		if percentage <= 0.2 then
-			healthColor = Color3.fromRGB(255, 59, 48) -- Red
+			healthColor = Color3.fromRGB(255, 59, 48)
 			data.healthGradient.Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0, Color3.fromRGB(226, 52, 43)),
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 56, 48))
 			}
 		elseif percentage <= 0.5 then
-			healthColor = Color3.fromRGB(255, 149, 0) -- Orange
+			healthColor = Color3.fromRGB(255, 149, 0)
 			data.healthGradient.Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 149, 0)),
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 159, 10))
 			}
 		elseif percentage <= 0.75 then
-			healthColor = Color3.fromRGB(240, 255, 70) -- Yellow
+			healthColor = Color3.fromRGB(240, 255, 70)
 			data.healthGradient.Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 255, 70)),
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(206, 216, 59))
 			}
 		else
-			healthColor = Color3.fromRGB(0, 255, 94) -- Green
+			healthColor = Color3.fromRGB(0, 255, 94)
 			data.healthGradient.Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 128)),
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(6, 204, 105))
@@ -534,7 +549,6 @@ function ESPLibrary:_UpdateBillboardSizes()
 						billboard.StudsOffset = Vector3.new(0, baseOffset, 0)
 					end
 				else
-					-- Fallback
 					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 				end
 			end
