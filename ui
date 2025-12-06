@@ -2388,7 +2388,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 	
 	math.randomseed(tick())
 
-	local introChance = math.random(1, 100)
+	local introChance = math.random(1, 300)
 	
 	
 	if not existingSound then
@@ -2404,21 +2404,21 @@ function ModifiedRLibary:CreateWindow(Settings)
 	)
 	sound.SoundId = soundAsset or "rbxassetid://8503531171"
 	
-	if introChance == 70 then
+	if introChance == 250 then
 		local soundAsset = makenewsound(
 			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intromp3base64",
 			"intro1" -- would default to intro1.mp3
 		)
 		
 		sound.SoundId = soundAsset or "rbxassetid://8503531171"
-	elseif introChance == 80 then 
+	elseif introChance == 230 then 
 		local soundAsset = makenewsound(
 			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intro2mp3base64",
 			"intro2" -- would default to intro2.mp3
 		)
 		sound.SoundId = soundAsset or "rbxassetid://8503531171"
 		
-	elseif introChance == 90 then 
+	elseif introChance == 210 then 
 		local soundAsset = makenewsound(
 			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intro3mp3base64",
 			"intro3" -- would default to intro3.mp3
@@ -2446,9 +2446,9 @@ function ModifiedRLibary:CreateWindow(Settings)
 				Position = UDim2.new(0.5, 0, 0.5, 0)
 			})
 
-		entryTween:Play()
-		entryTween.Completed:Wait()
-			task.wait(2)
+			entryTween:Play()
+			entryTween.Completed:Wait()
+			task.wait(1.5)
 			local fadeOut = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
 				ImageTransparency = 1,
 				Size = UDim2.new(0, 0, 0, 0)
@@ -4835,7 +4835,7 @@ end
 -- if not useStudio then
 -- 	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
 -- end
---hi
+--a
 task.delay(4, function()
 	ModifiedRLibary.LoadConfiguration()
 	if Main:FindFirstChild('Notice') and Main.Notice.Visible then
