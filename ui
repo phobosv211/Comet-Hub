@@ -2387,8 +2387,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 	math.randomseed(tick())
 
 	local introChance = math.random(1, 300)
-
-
+	
 	if not existingSound then
 		sound.Name = "Intro"
 		sound.Volume = 3
@@ -2428,14 +2427,25 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Rayfield.Loading.Visible = true
 
 			local banner = Rayfield.Loading:FindFirstChild("Banner")
+			local date = os.date("*t")
+
 			if banner then
-				banner.Image = "rbxassetid://78129230285653"
+				banner.Image = "rbxassetid://78129230285653" -- default
+				
+				if date.month == 12 then
+					if date.day == 24 or date.day == 25 then -- is it 24/25th (christmas / christmas eve)
+						banner.Image = "rbxassetid://100049569677250" -- christmas logo
+					elseif date.month == 12 or date.month == 1 or date.month == 2 then
+						banner.Image = "rbxassetid://92315304851020" -- winter logo
+					end
+				end
 				banner.ImageColor3 = Color3.fromRGB(219, 176, 255)
 				banner.Size = UDim2.new(0, 250, 0, 245)
 				banner.ImageTransparency = 1
 				banner.Position = UDim2.new(1.2, 0, -0.5, 0)
 				banner.AnchorPoint = Vector2.new(0.5, 0.5)
 			end
+
 			sound:Play()
 			local entryTween = TweenService:Create(banner, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
 				ImageTransparency = 0,
