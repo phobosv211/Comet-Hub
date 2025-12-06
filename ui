@@ -2460,7 +2460,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Rayfield.Loading.Visible = false
 		end
 	end
-
+end
 
 
 
@@ -4835,7 +4835,7 @@ end
 -- if not useStudio then
 -- 	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
 -- end
---a
+
 task.delay(4, function()
 	ModifiedRLibary.LoadConfiguration()
 	if Main:FindFirstChild('Notice') and Main.Notice.Visible then
