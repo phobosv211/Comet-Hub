@@ -2445,6 +2445,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 				banner.Position = UDim2.new(1.2, 0, -0.5, 0)
 				banner.AnchorPoint = Vector2.new(0.5, 0.5)
 			end
+			task.wait(1.5) -- wait for images to load
 
 			sound:Play()
 			local entryTween = TweenService:Create(banner, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
