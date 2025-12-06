@@ -2400,7 +2400,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 	
 	local soundAsset = makenewsound(
 		"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/mainintromp3base64",
-		"mainintro" -- would default to mainintro.mp3
+		"mainintro" -- would default to intro3.mp3
 	)
 	sound.SoundId = soundAsset or "rbxassetid://8503531171"
 	
@@ -2446,20 +2446,18 @@ function ModifiedRLibary:CreateWindow(Settings)
 				Position = UDim2.new(0.5, 0, 0.5, 0)
 			})
 
-			entryTween:Play()
-			entryTween.Completed:Wait()
-			sound.Stopped:Connect(function()
-				task.wait(1.5)
-				local fadeOut = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-					ImageTransparency = 1,
-					Size = UDim2.new(0, 0, 0, 0)
-				})
+		entryTween:Play()
+		entryTween.Completed:Wait()
+			task.wait(2)
+			local fadeOut = TweenService:Create(banner, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+				ImageTransparency = 1,
+				Size = UDim2.new(0, 0, 0, 0)
+			})
 
-				fadeOut:Play()
-				fadeOut.Completed:Wait()
+			fadeOut:Play()
+			fadeOut.Completed:Wait()
 
-				Rayfield.Loading.Visible = false
-			end)
+			Rayfield.Loading.Visible = false
 		end
 	end
 
@@ -4837,7 +4835,7 @@ end
 -- if not useStudio then
 -- 	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
 -- end
-
+--hi
 task.delay(4, function()
 	ModifiedRLibary.LoadConfiguration()
 	if Main:FindFirstChild('Notice') and Main.Notice.Visible then
