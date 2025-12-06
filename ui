@@ -1825,7 +1825,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 			elseif data.notificationTYPE == "info" then
 				local soundAsset = makenewsound(
 					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/infomp3base64",
-					"info" -- would default to info.mp3
+					"infonew" -- would default to info.mp3
 				)
 				sound.Volume = 1
 				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
@@ -1846,7 +1846,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 			elseif data.notificationTYPE == "error" then
 				local soundAsset = makenewsound(
 					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/errormp3base64",
-					"error" -- would default to info.mp3
+					"errornew" -- would default to info.mp3
 				)
 				sound.Volume = 3
 				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
