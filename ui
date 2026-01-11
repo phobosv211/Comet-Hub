@@ -708,147 +708,75 @@ local CometHubCSS = {
     PlaceholderColor = Color3.fromRGB(145, 54, 247)
 }
 
+-- Replace the Default theme in ModifiedRLibary.Theme
 ModifiedRLibary.Theme.Default = CometHubCSS
 
+-- Updated SelectedTheme initialization (around line 305)
 local SelectedTheme = CometHubCSS
 
+-- Complete ChangeTheme function
 local function ChangeTheme(Theme)
-	local baseTheme = CometHubCSS 
-	
-	local requiredProps = {
-		'TextColor', 'Background', 'Topbar', 'Shadow',
-		'NotificationBackground', 'NotificationActionsBackground',
-		'TabBackground', 'TabStroke', 'TabBackgroundSelected', 'TabTextColor', 'SelectedTabTextColor',
-		'ElementBackground', 'ElementBackgroundHover', 'SecondaryElementBackground', 'ElementStroke', 'SecondaryElementStroke',
-		'SliderBackground', 'SliderProgress', 'SliderStroke',
-		'ToggleBackground', 'ToggleEnabled', 'ToggleDisabled', 'ToggleEnabledStroke', 'ToggleDisabledStroke', 'ToggleEnabledOuterStroke', 'ToggleDisabledOuterStroke',
-		'DropdownSelected', 'DropdownUnselected',
-		'InputBackground', 'InputStroke', 'PlaceholderColor'
-	}
-	
-	local function validateTheme(themeTable)
-		if typeof(themeTable) ~= 'table' then
-			return false, "Theme is not a table"
-		end
+    local baseTheme = CometHubCSS -- Use CometHub default instead of Rayfield default
+    if typeof(Theme) == 'string' then
+        if ModifiedRLibary.Theme[Theme] then
+            SelectedTheme = ModifiedRLibary.Theme[Theme]
+        else
+            warn('Comet Hub | Theme "'..tostring(Theme)..'" not found, using CometHub default')
+            SelectedTheme = baseTheme
+        end
+    elseif typeof(Theme) == 'table' then
+        SelectedTheme = {}
+        for key, value in pairs(baseTheme) do
+            SelectedTheme[key] = Theme[key] or value
+        end
+    else
+        warn('Comet Hub | Invalid theme type, using CometHub default')
+        SelectedTheme = baseTheme
+    end
+    Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
+    Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-		local missing = {}
-		for _, prop in ipairs(requiredProps) do
-			if not themeTable[prop] then
-				table.insert(missing, prop)
-			elseif typeof(themeTable[prop]) ~= 'Color3' then
-				table.insert(missing, prop .. " (not Color3)")
-			end
-		end
-		
-		if #missing > 0 then
-			return false, "Missing properties: " .. table.concat(missing, ", ")
-		end
-		
-		return true, nil
-	end
-	
-	local function mergeWithDefaults(themeTable)
-		local merged = {}
-		for _, prop in ipairs(requiredProps) do
-			if themeTable[prop] and typeof(themeTable[prop]) == 'Color3' then
-				merged[prop] = themeTable[prop]
-			else
-				merged[prop] = baseTheme[prop] or Color3.fromRGB(255, 255, 255) -- Ultimate fallback
-			end
-		end
-		return merged
-	end
-	
-	if typeof(Theme) == 'string' then
-		if ModifiedRLibary.Theme[Theme] then
-			local isValid, errorMsg = validateTheme(ModifiedRLibary.Theme[Theme])
-			if isValid then
-				SelectedTheme = ModifiedRLibary.Theme[Theme]
-			else
-				warn('Comet Hub | Theme "'..Theme..'" is invalid: '..errorMsg)
-				warn('Comet Hub | Merging with defaults...')
-				SelectedTheme = mergeWithDefaults(ModifiedRLibary.Theme[Theme])
-			end
-		else
-			warn('Comet Hub | Theme "'..tostring(Theme)..'" not found, using default')
-			SelectedTheme = baseTheme
-		end
-	elseif typeof(Theme) == 'table' then
-		local isValid, errorMsg = validateTheme(Theme)
-		if isValid then
-			SelectedTheme = Theme
-		else
-			warn('Comet Hub | Custom theme is invalid: '..errorMsg)
-			warn('Comet Hub | Merging with defaults...')
-			SelectedTheme = mergeWithDefaults(Theme)
-		end
-	else
-		warn('Comet Hub | Invalid theme type ('..typeof(Theme)..'), usingn default')
-		SelectedTheme = baseTheme
-	end
-	local function safeApply(func)
-		local success, err = pcall(func)
-		if not success then
-			warn('Comet Hub | Error applying theme color: '..tostring(err))
-		end
-	end
+    Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
+    Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
+    Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
+    if Topbar:FindFirstChild('Settings') then
+        Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
+        Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
+    end
 
-	safeApply(function()
-		Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
-		Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
-		Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
-		Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+    Main.Search.BackgroundColor3 = SelectedTheme.TextColor
+    Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
+    Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
+    Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
+    Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 
-		Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-		Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-		Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
-	end)
-	
-	safeApply(function()
-		if Topbar:FindFirstChild('Settings') then
-			Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
-			Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
-		end
-	end)
+    if Main:FindFirstChild('Notice') then
+        Main.Notice.BackgroundColor3 = SelectedTheme.Background
+    end
 
-	safeApply(function()
-		Main.Search.BackgroundColor3 = SelectedTheme.TextColor
-		Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
-		Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
-		Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
-		Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
-	end)
+    for _, text in ipairs(Rayfield:GetDescendants()) do
+        if text.Parent.Parent ~= Notifications then
+            if text:IsA('TextLabel') or text:IsA('TextBox') then 
+                text.TextColor3 = SelectedTheme.TextColor 
+            end
+        end
+    end
 
-	safeApply(function()
-		if Main:FindFirstChild('Notice') then
-			Main.Notice.BackgroundColor3 = SelectedTheme.Background
-		end
-	end)
-
-	safeApply(function()
-		for _, text in ipairs(Rayfield:GetDescendants()) do
-			if text.Parent.Parent ~= Notifications then
-				if text:IsA('TextLabel') or text:IsA('TextBox') then 
-					text.TextColor3 = SelectedTheme.TextColor 
-				end
-			end
-		end
-	end)
-
-	safeApply(function()
-		for _, TabPage in ipairs(Elements:GetChildren()) do
-			for _, Element in ipairs(TabPage:GetChildren()) do
-				if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
-					Element.BackgroundColor3 = SelectedTheme.ElementBackground
-					Element.UIStroke.Color = SelectedTheme.ElementStroke
-				end
-			end
-		end
-	end)
+    for _, TabPage in ipairs(Elements:GetChildren()) do
+        for _, Element in ipairs(TabPage:GetChildren()) do
+            if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+                Element.BackgroundColor3 = SelectedTheme.ElementBackground
+                Element.UIStroke.Color = SelectedTheme.ElementStroke
+            end
+        end
+    end
 end
 
 if Settings.Theme then
     local success, result = pcall(function()
+        -- Handle both string theme names and table themes
         if typeof(Settings.Theme) == 'string' then
             if ModifiedRLibary.Theme[Settings.Theme] then
                 ChangeTheme(Settings.Theme)
@@ -876,7 +804,7 @@ if Settings.Theme then
             end
             ChangeTheme(Settings.Theme)
         else
-            warn('Comet Hub | Invalid theme type ('..typeof(Settings.Theme)..'), using default')
+            warn('Comet Hub | Invalid theme type ('..typeof(Settings.Theme)..'), using CometHub default')
             ChangeTheme(CometHubCSS)
         end
     end)
@@ -919,9 +847,9 @@ local function getIcon(name : string): {id: number, imageRectSize: Vector2, imag
 
 	return asset
 end
-
+-- Converts ID to asset URI. Returns rbxassetid://0 if ID is not a number
 local function getAssetUri(id: any): string
-	local assetUri = "rbxassetid://0"
+	local assetUri = "rbxassetid://0" -- Default to empty image
 	if type(id) == "number" then
 		assetUri = "rbxassetid://" .. id
 	elseif type(id) == "string" and not Icons then
@@ -4166,5 +4094,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
-
+--hi
 return ModifiedRLibary
