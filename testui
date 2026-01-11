@@ -15,106 +15,35 @@
 
 math.randomseed(os.time())
 
-local Themes = {}
+-- Load themes with error handling and store in getgenv
+local CometHubCSS
 
--- Load themes from GitHub or use cached version from getgenv
-local themesUrl = "https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/themes.json"
-
-local function arrayToColor3(arr)
-	return Color3.fromRGB(arr[1], arr[2], arr[3])
-end
-
-local function loadThemesFromGitHub()
-	-- Check if themes are already loaded in getgenv
-	if getgenv().CometThemes then
-		print("Using cached themes from getgenv")
-		return getgenv().CometThemes
-	end
-	
-	-- Load from GitHub
+-- Define config functions BEFORE using them
+function loadConfig()
 	local success, result = pcall(function()
-		local themesData = game:HttpGet(themesUrl)
-		return HttpService:JSONDecode(themesData)
+		if isfile and isfile(configPath) then
+			local data = Library:LoadConfig(configPath)
+			return data or {}
+		end
+		return {}
 	end)
 	
-	if success and result then
-		getgenv().CometThemes = result
-		print("Successfully loaded themes from GitHub and cached in getgenv")
+	if success then
 		return result
 	else
-		warn("Failed to load themes from GitHub: " .. tostring(result))
-		return nil
+		warn("Error loading config: " .. tostring(result))
+		return {}
 	end
-end
-
--- Load themes at startup
-local themesData = loadThemesFromGitHub()
-
-if themesData then
-	for themeName, themeColors in pairs(themesData) do
-		Themes[themeName] = {}
-		for key, value in pairs(themeColors) do
-			Themes[themeName][key] = arrayToColor3(value)
-		end
-	end
-else
-	-- Fallback theme if GitHub fails and no cache exists
-	warn("Using fallback default theme")
-	Themes.Default = {
-		TextColor = Color3.fromRGB(200, 160, 255),
-		Background = Color3.fromRGB(20, 10, 30),
-		Topbar = Color3.fromRGB(30, 15, 45),
-		Shadow = Color3.fromRGB(40, 20, 60),
-		NotificationBackground = Color3.fromRGB(25, 15, 35),
-		NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
-		TabBackground = Color3.fromRGB(30, 15, 45),
-		TabStroke = Color3.fromRGB(90, 50, 130),
-		TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
-		TabTextColor = Color3.fromRGB(160, 100, 220),
-		SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
-		ElementBackground = Color3.fromRGB(30, 15, 45),
-		ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
-		SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
-		ElementStroke = Color3.fromRGB(90, 50, 130),
-		SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
-		SliderBackground = Color3.fromRGB(60, 30, 90),
-		SliderProgress = Color3.fromRGB(145, 54, 247),
-		SliderStroke = Color3.fromRGB(160, 100, 220),
-		ToggleBackground = Color3.fromRGB(30, 15, 45),
-		ToggleEnabled = Color3.fromRGB(145, 54, 247),
-		ToggleDisabled = Color3.fromRGB(60, 30, 90),
-		ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
-		ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
-		ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
-		DropdownSelected = Color3.fromRGB(50, 25, 75),
-		DropdownUnselected = Color3.fromRGB(30, 15, 45),
-		InputBackground = Color3.fromRGB(20, 10, 30),
-		InputStroke = Color3.fromRGB(145, 54, 247),
-		PlaceholderColor = Color3.fromRGB(145, 54, 247)
-	}
-	getgenv().CometThemes = {Default = Themes.Default}
-end
-
-local configPath = "Comet-Hub/data.json"
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
-
-function loadConfig()
-	if isfile(configPath) then
-		local data = Library:LoadConfig(configPath)
-		return data or {}
-	end
-	return {}
 end
 
 function saveConfig(data)
-	Library:SaveConfig(configPath, data)
-end
-
-function saveKey(key)
-	local data = loadConfig()
-	data.validKey = key
-	saveConfig(data)
+	local success, err = pcall(function()
+		Library:SaveConfig(configPath, data)
+	end)
+	
+	if not success then
+		warn("Error saving config: " .. tostring(err))
+	end
 end
 
 function loadTheme()
@@ -127,6 +56,72 @@ function saveTheme(theme)
 	data.theme = theme
 	saveConfig(data)
 end
+
+-- Load themes FIRST before loading the UI library
+if not getgenv().CometThemes then
+	local success, result = pcall(function()
+		local themesData = game:HttpGet(themesUrl)
+		return HttpService:JSONDecode(themesData)
+	end)
+
+	if success and result and type(result) == "table" then
+		-- Store the RAW theme data (arrays) in getgenv
+		getgenv().CometThemes = result
+		print("Successfully loaded themes from GitHub")
+		
+		-- Now convert to Color3 for local use
+		local selectedTheme = loadTheme() or "Default"
+		CometHubCSS = applyTheme(result, selectedTheme)
+		print("Applied theme: " .. tostring(selectedTheme))
+	else
+		warn("Failed to load themes from GitHub: " .. tostring(result))
+		warn("Using fallback default theme")
+		
+		-- Create a fallback with the proper structure (arrays, not Color3)
+		getgenv().CometThemes = {
+			Default = {
+				TextColor = {200, 160, 255},
+				Background = {20, 10, 30},
+				Topbar = {30, 15, 45},
+				Shadow = {40, 20, 60},
+				NotificationBackground = {25, 15, 35},
+				NotificationActionsBackground = {60, 30, 90},
+				TabBackground = {30, 15, 45},
+				TabStroke = {90, 50, 130},
+				TabBackgroundSelected = {40, 20, 60},
+				TabTextColor = {160, 100, 220},
+				SelectedTabTextColor = {200, 160, 255},
+				ElementBackground = {30, 15, 45},
+				ElementBackgroundHover = {40, 20, 60},
+				SecondaryElementBackground = {25, 15, 35},
+				ElementStroke = {90, 50, 130},
+				SecondaryElementStroke = {80, 40, 120},
+				SliderBackground = {60, 30, 90},
+				SliderProgress = {145, 54, 247},
+				SliderStroke = {160, 100, 220},
+				ToggleBackground = {30, 15, 45},
+				ToggleEnabled = {145, 54, 247},
+				ToggleDisabled = {60, 30, 90},
+				ToggleEnabledStroke = {180, 120, 255},
+				ToggleDisabledStroke = {80, 40, 120},
+				ToggleEnabledOuterStroke = {60, 30, 90},
+				ToggleDisabledOuterStroke = {40, 20, 60},
+				DropdownSelected = {50, 25, 75},
+				DropdownUnselected = {30, 15, 45},
+				InputBackground = {20, 10, 30},
+				InputStroke = {145, 54, 247},
+				PlaceholderColor = {145, 54, 247}
+			}
+		}
+		CometHubCSS = getDefaultTheme()
+	end
+else
+	-- Themes already loaded, just apply saved theme
+	local selectedTheme = loadTheme() or "Default"
+	CometHubCSS = applyTheme(getgenv().CometThemes, selectedTheme)
+	print("Using cached themes, applied: " .. tostring(selectedTheme))
+end
+
 
 if debugX then
 	warn('Initialising Rayfield')
@@ -4215,5 +4210,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
-
+--yo gurt
 return ModifiedRLibary
