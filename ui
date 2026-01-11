@@ -7,767 +7,10 @@
 	iRay  | Programming
 	Max   | Programming
 	
-	Modified by the Comet Hub Team
-	All credits to Sirius for making Rayfield; thanks from the Comet Hub Team 🩵
+	Modified for Comet Hub
+	All credits to Sirius for making Rayfield; We thank you from the Comet Hub Development Team 🩵
 
 ]]
---yo
-
-math.randomseed(os.time())
-
-local Themes = {
-	Default = {
-		TextColor = Color3.fromRGB(200, 160, 255),
-		Background = Color3.fromRGB(20, 10, 30),
-		Topbar = Color3.fromRGB(30, 15, 45),
-		Shadow = Color3.fromRGB(40, 20, 60),
-		NotificationBackground = Color3.fromRGB(25, 15, 35),
-		NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
-		TabBackground = Color3.fromRGB(30, 15, 45),
-		TabStroke = Color3.fromRGB(90, 50, 130),
-		TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
-		TabTextColor = Color3.fromRGB(160, 100, 220),
-		SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
-		ElementBackground = Color3.fromRGB(30, 15, 45),
-		ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
-		SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
-		ElementStroke = Color3.fromRGB(90, 50, 130),
-		SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
-		SliderBackground = Color3.fromRGB(60, 30, 90),
-		SliderProgress = Color3.fromRGB(145, 54, 247),
-		SliderStroke = Color3.fromRGB(160, 100, 220),
-		ToggleBackground = Color3.fromRGB(30, 15, 45),
-		ToggleEnabled = Color3.fromRGB(145, 54, 247),
-		ToggleDisabled = Color3.fromRGB(60, 30, 90),
-		ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
-		ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
-		ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
-		DropdownSelected = Color3.fromRGB(50, 25, 75),
-		DropdownUnselected = Color3.fromRGB(30, 15, 45),
-		InputBackground = Color3.fromRGB(20, 10, 30),
-		InputStroke = Color3.fromRGB(145, 54, 247),
-		PlaceholderColor = Color3.fromRGB(145, 54, 247)
-	},
-
-	Cyberpunk = {
-		TextColor = Color3.fromRGB(255, 255, 255),
-		Background = Color3.fromRGB(10, 10, 20),
-		Topbar = Color3.fromRGB(20, 10, 40),
-		Shadow = Color3.fromRGB(0, 0, 0),
-		NotificationBackground = Color3.fromRGB(15, 15, 30),
-		NotificationActionsBackground = Color3.fromRGB(255, 20, 147),
-		TabBackground = Color3.fromRGB(30, 10, 60),
-		TabStroke = Color3.fromRGB(0, 255, 255),
-		TabBackgroundSelected = Color3.fromRGB(40, 20, 70),
-		TabTextColor = Color3.fromRGB(0, 255, 255),
-		SelectedTabTextColor = Color3.fromRGB(255, 105, 180),
-		ElementBackground = Color3.fromRGB(20, 10, 40),
-		ElementBackgroundHover = Color3.fromRGB(30, 15, 60),
-		SecondaryElementBackground = Color3.fromRGB(15, 10, 30),
-		ElementStroke = Color3.fromRGB(0, 255, 255),
-		SecondaryElementStroke = Color3.fromRGB(255, 20, 147),
-		SliderBackground = Color3.fromRGB(40, 0, 60),
-		SliderProgress = Color3.fromRGB(0, 255, 255),
-		SliderStroke = Color3.fromRGB(255, 20, 147),
-		ToggleBackground = Color3.fromRGB(20, 10, 30),
-		ToggleEnabled = Color3.fromRGB(0, 255, 255),
-		ToggleDisabled = Color3.fromRGB(60, 60, 90),
-		ToggleEnabledStroke = Color3.fromRGB(255, 105, 180),
-		ToggleDisabledStroke = Color3.fromRGB(60, 60, 90),
-		ToggleEnabledOuterStroke = Color3.fromRGB(0, 255, 255),
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
-		DropdownSelected = Color3.fromRGB(60, 20, 90),
-		DropdownUnselected = Color3.fromRGB(30, 10, 50),
-		InputBackground = Color3.fromRGB(20, 20, 30),
-		InputStroke = Color3.fromRGB(0, 255, 255),
-		PlaceholderColor = Color3.fromRGB(255, 105, 180)
-	},
-
-	Desert = {
-		TextColor = Color3.fromRGB(240, 220, 200),
-		Background = Color3.fromRGB(40, 30, 20),
-		Topbar = Color3.fromRGB(60, 40, 30),
-		Shadow = Color3.fromRGB(30, 20, 15),
-		NotificationBackground = Color3.fromRGB(70, 50, 40),
-		NotificationActionsBackground = Color3.fromRGB(210, 140, 100),
-		TabBackground = Color3.fromRGB(60, 40, 30),
-		TabStroke = Color3.fromRGB(210, 160, 100),
-		TabBackgroundSelected = Color3.fromRGB(80, 60, 40),
-		TabTextColor = Color3.fromRGB(210, 180, 150),
-		SelectedTabTextColor = Color3.fromRGB(255, 230, 200),
-		ElementBackground = Color3.fromRGB(60, 40, 30),
-		ElementBackgroundHover = Color3.fromRGB(80, 60, 40),
-		SecondaryElementBackground = Color3.fromRGB(50, 35, 25),
-		ElementStroke = Color3.fromRGB(210, 140, 100),
-		SecondaryElementStroke = Color3.fromRGB(180, 120, 90),
-		SliderBackground = Color3.fromRGB(90, 60, 40),
-		SliderProgress = Color3.fromRGB(255, 200, 120),
-		SliderStroke = Color3.fromRGB(230, 160, 100),
-		ToggleBackground = Color3.fromRGB(60, 40, 30),
-		ToggleEnabled = Color3.fromRGB(255, 200, 120),
-		ToggleDisabled = Color3.fromRGB(90, 60, 40),
-		ToggleEnabledStroke = Color3.fromRGB(255, 220, 180),
-		ToggleDisabledStroke = Color3.fromRGB(150, 100, 80),
-		ToggleEnabledOuterStroke = Color3.fromRGB(90, 60, 40),
-		ToggleDisabledOuterStroke = Color3.fromRGB(60, 40, 30),
-		DropdownSelected = Color3.fromRGB(100, 70, 50),
-		DropdownUnselected = Color3.fromRGB(60, 40, 30),
-		InputBackground = Color3.fromRGB(40, 30, 20),
-		InputStroke = Color3.fromRGB(210, 140, 100),
-		PlaceholderColor = Color3.fromRGB(230, 180, 150)
-	},
-
-	Arctic = {
-		TextColor = Color3.fromRGB(230, 245, 255),
-		Background = Color3.fromRGB(15, 25, 35),
-		Topbar = Color3.fromRGB(25, 40, 60),
-		Shadow = Color3.fromRGB(20, 30, 45),
-		NotificationBackground = Color3.fromRGB(30, 45, 60),
-		NotificationActionsBackground = Color3.fromRGB(100, 160, 200),
-		TabBackground = Color3.fromRGB(25, 40, 60),
-		TabStroke = Color3.fromRGB(120, 180, 220),
-		TabBackgroundSelected = Color3.fromRGB(35, 55, 80),
-		TabTextColor = Color3.fromRGB(150, 200, 240),
-		SelectedTabTextColor = Color3.fromRGB(230, 245, 255),
-		ElementBackground = Color3.fromRGB(25, 40, 60),
-		ElementBackgroundHover = Color3.fromRGB(35, 55, 80),
-		SecondaryElementBackground = Color3.fromRGB(20, 30, 45),
-		ElementStroke = Color3.fromRGB(100, 160, 200),
-		SecondaryElementStroke = Color3.fromRGB(80, 130, 170),
-		SliderBackground = Color3.fromRGB(45, 70, 90),
-		SliderProgress = Color3.fromRGB(80, 190, 255),
-		SliderStroke = Color3.fromRGB(150, 210, 255),
-		ToggleBackground = Color3.fromRGB(25, 40, 60),
-		ToggleEnabled = Color3.fromRGB(80, 190, 255),
-		ToggleDisabled = Color3.fromRGB(45, 70, 90),
-		ToggleEnabledStroke = Color3.fromRGB(180, 230, 255),
-		ToggleDisabledStroke = Color3.fromRGB(60, 100, 130),
-		ToggleEnabledOuterStroke = Color3.fromRGB(45, 70, 90),
-		ToggleDisabledOuterStroke = Color3.fromRGB(35, 55, 80),
-		DropdownSelected = Color3.fromRGB(50, 80, 110),
-		DropdownUnselected = Color3.fromRGB(25, 40, 60),
-		InputBackground = Color3.fromRGB(15, 25, 35),
-		InputStroke = Color3.fromRGB(80, 190, 255),
-		PlaceholderColor = Color3.fromRGB(150, 210, 255)
-	},
-
-	Pastel = {
-		TextColor = Color3.fromRGB(90, 90, 120),
-		Background = Color3.fromRGB(250, 240, 255),
-		Topbar = Color3.fromRGB(235, 220, 245),
-		Shadow = Color3.fromRGB(220, 200, 230),
-		NotificationBackground = Color3.fromRGB(245, 235, 250),
-		NotificationActionsBackground = Color3.fromRGB(255, 180, 220),
-		TabBackground = Color3.fromRGB(240, 225, 245),
-		TabStroke = Color3.fromRGB(200, 170, 210),
-		TabBackgroundSelected = Color3.fromRGB(255, 240, 250),
-		TabTextColor = Color3.fromRGB(150, 120, 190),
-		SelectedTabTextColor = Color3.fromRGB(180, 150, 220),
-		ElementBackground = Color3.fromRGB(240, 225, 245),
-		ElementBackgroundHover = Color3.fromRGB(255, 240, 250),
-		SecondaryElementBackground = Color3.fromRGB(230, 210, 240),
-		ElementStroke = Color3.fromRGB(190, 160, 210),
-		SecondaryElementStroke = Color3.fromRGB(160, 130, 190),
-		SliderBackground = Color3.fromRGB(255, 210, 240),
-		SliderProgress = Color3.fromRGB(255, 140, 200),
-		SliderStroke = Color3.fromRGB(200, 130, 180),
-		ToggleBackground = Color3.fromRGB(240, 225, 245),
-		ToggleEnabled = Color3.fromRGB(255, 160, 220),
-		ToggleDisabled = Color3.fromRGB(220, 200, 230),
-		ToggleEnabledStroke = Color3.fromRGB(255, 200, 230),
-		ToggleDisabledStroke = Color3.fromRGB(200, 180, 210),
-		ToggleEnabledOuterStroke = Color3.fromRGB(235, 215, 245),
-		ToggleDisabledOuterStroke = Color3.fromRGB(220, 200, 230),
-		DropdownSelected = Color3.fromRGB(255, 230, 245),
-		DropdownUnselected = Color3.fromRGB(240, 225, 245),
-		InputBackground = Color3.fromRGB(250, 240, 255),
-		InputStroke = Color3.fromRGB(200, 160, 220),
-		PlaceholderColor = Color3.fromRGB(200, 160, 220)
-	},
-
-	VSCodeLight = {
-		TextColor = Color3.fromRGB(51, 51, 51),
-		Background = Color3.fromRGB(255, 255, 255),
-		Topbar = Color3.fromRGB(245, 245, 245),
-		Shadow = Color3.fromRGB(200, 200, 200),
-		NotificationBackground = Color3.fromRGB(240, 240, 240),
-		NotificationActionsBackground = Color3.fromRGB(0, 120, 215),
-		TabBackground = Color3.fromRGB(230, 230, 230),
-		TabStroke = Color3.fromRGB(200, 200, 200),
-		TabBackgroundSelected = Color3.fromRGB(255, 255, 255),
-		TabTextColor = Color3.fromRGB(80, 80, 80),
-		SelectedTabTextColor = Color3.fromRGB(0, 120, 215),
-		ElementBackground = Color3.fromRGB(245, 245, 245),
-		ElementBackgroundHover = Color3.fromRGB(235, 235, 235),
-		SecondaryElementBackground = Color3.fromRGB(230, 230, 230),
-		ElementStroke = Color3.fromRGB(200, 200, 200),
-		SecondaryElementStroke = Color3.fromRGB(180, 180, 180),
-		SliderBackground = Color3.fromRGB(220, 220, 220),
-		SliderProgress = Color3.fromRGB(0, 120, 215),
-		SliderStroke = Color3.fromRGB(100, 170, 230),
-		ToggleBackground = Color3.fromRGB(245, 245, 245),
-		ToggleEnabled = Color3.fromRGB(0, 120, 215),
-		ToggleDisabled = Color3.fromRGB(200, 200, 200),
-		ToggleEnabledStroke = Color3.fromRGB(120, 180, 240),
-		ToggleDisabledStroke = Color3.fromRGB(180, 180, 180),
-		ToggleEnabledOuterStroke = Color3.fromRGB(220, 220, 220),
-		ToggleDisabledOuterStroke = Color3.fromRGB(200, 200, 200),
-		DropdownSelected = Color3.fromRGB(240, 240, 240),
-		DropdownUnselected = Color3.fromRGB(230, 230, 230),
-		InputBackground = Color3.fromRGB(255, 255, 255),
-		InputStroke = Color3.fromRGB(0, 120, 215),
-		PlaceholderColor = Color3.fromRGB(100, 150, 200)
-	},
-
-	VSCodeDark = {
-		TextColor = Color3.fromRGB(204, 204, 204),
-		Background = Color3.fromRGB(20, 20, 20),  -- Darkened from 30,30,30
-		Topbar = Color3.fromRGB(35, 35, 35),      -- Darkened from 45,45,45
-		Shadow = Color3.fromRGB(10, 10, 10),      -- Darkened from 15,15,15
-		NotificationBackground = Color3.fromRGB(30, 30, 30), -- Darkened from 40,40,40
-		NotificationActionsBackground = Color3.fromRGB(0, 122, 204),
-		TabBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		TabStroke = Color3.fromRGB(55, 55, 55),
-		TabBackgroundSelected = Color3.fromRGB(35, 35, 35), -- Darkened from 45,45,45
-		TabTextColor = Color3.fromRGB(150, 150, 150),
-		SelectedTabTextColor = Color3.fromRGB(204, 204, 204),
-		ElementBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		ElementBackgroundHover = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		SecondaryElementBackground = Color3.fromRGB(20, 20, 20), -- Darkened from 30,30,30
-		ElementStroke = Color3.fromRGB(60, 60, 60),
-		SecondaryElementStroke = Color3.fromRGB(50, 50, 50),
-		SliderBackground = Color3.fromRGB(35, 35, 35), -- Darkened from 45,45,45
-		SliderProgress = Color3.fromRGB(0, 122, 204),
-		SliderStroke = Color3.fromRGB(100, 170, 230),
-		ToggleBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		ToggleEnabled = Color3.fromRGB(0, 122, 204),
-		ToggleDisabled = Color3.fromRGB(50, 50, 50), -- Darkened from 60,60,60
-		ToggleEnabledStroke = Color3.fromRGB(100, 170, 230),
-		ToggleDisabledStroke = Color3.fromRGB(70, 70, 70), -- Darkened from 80,80,80
-		ToggleEnabledOuterStroke = Color3.fromRGB(35, 35, 35), -- Darkened from 45,45,45
-		ToggleDisabledOuterStroke = Color3.fromRGB(25, 25, 25), -- Darkened from 30,30,30
-		DropdownSelected = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		DropdownUnselected = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		InputBackground = Color3.fromRGB(20, 20, 20), -- Darkened from 30,30,30
-		InputStroke = Color3.fromRGB(0, 122, 204),
-		PlaceholderColor = Color3.fromRGB(150, 150, 150)
-	},
-
-	Abyss = {
-		TextColor = Color3.fromRGB(197, 200, 198),
-		Background = Color3.fromRGB(10, 14, 30),
-		Topbar = Color3.fromRGB(16, 20, 35),
-		Shadow = Color3.fromRGB(5, 10, 25),
-		NotificationBackground = Color3.fromRGB(20, 25, 40),
-		NotificationActionsBackground = Color3.fromRGB(46, 91, 148),
-		TabBackground = Color3.fromRGB(15, 20, 30),
-		TabStroke = Color3.fromRGB(35, 50, 70),
-		TabBackgroundSelected = Color3.fromRGB(20, 25, 40),
-		TabTextColor = Color3.fromRGB(140, 160, 180),
-		SelectedTabTextColor = Color3.fromRGB(197, 200, 198),
-		ElementBackground = Color3.fromRGB(15, 20, 30),
-		ElementBackgroundHover = Color3.fromRGB(25, 30, 45),
-		SecondaryElementBackground = Color3.fromRGB(12, 16, 24),
-		ElementStroke = Color3.fromRGB(46, 91, 148),
-		SecondaryElementStroke = Color3.fromRGB(32, 60, 90),
-		SliderBackground = Color3.fromRGB(25, 30, 45),
-		SliderProgress = Color3.fromRGB(46, 91, 148),
-		SliderStroke = Color3.fromRGB(70, 140, 220),
-		ToggleBackground = Color3.fromRGB(15, 20, 30),
-		ToggleEnabled = Color3.fromRGB(46, 91, 148),
-		ToggleDisabled = Color3.fromRGB(30, 35, 50),
-		ToggleEnabledStroke = Color3.fromRGB(70, 140, 220),
-		ToggleDisabledStroke = Color3.fromRGB(40, 50, 65),
-		ToggleEnabledOuterStroke = Color3.fromRGB(25, 30, 45),
-		ToggleDisabledOuterStroke = Color3.fromRGB(20, 25, 35),
-		DropdownSelected = Color3.fromRGB(30, 35, 50),
-		DropdownUnselected = Color3.fromRGB(15, 20, 30),
-		InputBackground = Color3.fromRGB(10, 14, 30),
-		InputStroke = Color3.fromRGB(46, 91, 148),
-		PlaceholderColor = Color3.fromRGB(130, 140, 160)
-	},
-
-	VampireCrimson = {
-		TextColor = Color3.fromRGB(255, 200, 200),
-		Background = Color3.fromRGB(20, 10, 10),
-		Topbar = Color3.fromRGB(30, 10, 15),
-		Shadow = Color3.fromRGB(40, 0, 0),
-		NotificationBackground = Color3.fromRGB(35, 10, 15),
-		NotificationActionsBackground = Color3.fromRGB(180, 0, 50),
-		TabBackground = Color3.fromRGB(30, 10, 15),
-		TabStroke = Color3.fromRGB(180, 40, 60),
-		TabBackgroundSelected = Color3.fromRGB(50, 10, 20),
-		TabTextColor = Color3.fromRGB(220, 100, 120),
-		SelectedTabTextColor = Color3.fromRGB(255, 200, 200),
-		ElementBackground = Color3.fromRGB(30, 10, 15),
-		ElementBackgroundHover = Color3.fromRGB(50, 10, 20),
-		SecondaryElementBackground = Color3.fromRGB(20, 10, 10),
-		ElementStroke = Color3.fromRGB(180, 40, 60),
-		SecondaryElementStroke = Color3.fromRGB(120, 20, 40),
-		SliderBackground = Color3.fromRGB(70, 10, 30),
-		SliderProgress = Color3.fromRGB(255, 50, 80),
-		SliderStroke = Color3.fromRGB(220, 80, 100),
-		ToggleBackground = Color3.fromRGB(30, 10, 15),
-		ToggleEnabled = Color3.fromRGB(255, 50, 80),
-		ToggleDisabled = Color3.fromRGB(70, 10, 30),
-		ToggleEnabledStroke = Color3.fromRGB(255, 150, 170),
-		ToggleDisabledStroke = Color3.fromRGB(80, 20, 40),
-		ToggleEnabledOuterStroke = Color3.fromRGB(70, 10, 30),
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 0, 0),
-		DropdownSelected = Color3.fromRGB(80, 10, 30),
-		DropdownUnselected = Color3.fromRGB(30, 10, 15),
-		InputBackground = Color3.fromRGB(20, 10, 10),
-		InputStroke = Color3.fromRGB(255, 50, 80),
-		PlaceholderColor = Color3.fromRGB(255, 150, 170)
-	},
-
-	Forest = {
-		TextColor = Color3.fromRGB(200, 255, 210),
-		Background = Color3.fromRGB(15, 25, 20),
-		Topbar = Color3.fromRGB(20, 35, 25),
-		Shadow = Color3.fromRGB(10, 20, 15),
-		NotificationBackground = Color3.fromRGB(20, 30, 25),
-		NotificationActionsBackground = Color3.fromRGB(60, 150, 80),
-		TabBackground = Color3.fromRGB(20, 35, 25),
-		TabStroke = Color3.fromRGB(80, 200, 110),
-		TabBackgroundSelected = Color3.fromRGB(30, 50, 35),
-		TabTextColor = Color3.fromRGB(120, 220, 150),
-		SelectedTabTextColor = Color3.fromRGB(200, 255, 210),
-		ElementBackground = Color3.fromRGB(20, 35, 25),
-		ElementBackgroundHover = Color3.fromRGB(30, 50, 35),
-		SecondaryElementBackground = Color3.fromRGB(15, 25, 20),
-		ElementStroke = Color3.fromRGB(60, 180, 90),
-		SecondaryElementStroke = Color3.fromRGB(50, 150, 70),
-		SliderBackground = Color3.fromRGB(30, 90, 50),
-		SliderProgress = Color3.fromRGB(100, 255, 150),
-		SliderStroke = Color3.fromRGB(80, 220, 120),
-		ToggleBackground = Color3.fromRGB(20, 35, 25),
-		ToggleEnabled = Color3.fromRGB(80, 200, 110),
-		ToggleDisabled = Color3.fromRGB(30, 90, 50),
-		ToggleEnabledStroke = Color3.fromRGB(150, 255, 190),
-		ToggleDisabledStroke = Color3.fromRGB(50, 100, 70),
-		ToggleEnabledOuterStroke = Color3.fromRGB(30, 90, 50),
-		ToggleDisabledOuterStroke = Color3.fromRGB(20, 35, 25),
-		DropdownSelected = Color3.fromRGB(40, 70, 50),
-		DropdownUnselected = Color3.fromRGB(20, 35, 25),
-		InputBackground = Color3.fromRGB(15, 25, 20),
-		InputStroke = Color3.fromRGB(80, 200, 110),
-		PlaceholderColor = Color3.fromRGB(100, 255, 150)
-	},
-
-	MonochromeHacker = {
-		TextColor = Color3.fromRGB(0, 255, 0),
-		Background = Color3.fromRGB(5, 5, 5),    -- Darkened from 10,10,10
-		Topbar = Color3.fromRGB(15, 15, 15),     -- Darkened from 20,20,20
-		Shadow = Color3.fromRGB(0, 0, 0),
-		NotificationBackground = Color3.fromRGB(10, 10, 10), -- Darkened from 15,15,15
-		NotificationActionsBackground = Color3.fromRGB(0, 150, 0),
-		TabBackground = Color3.fromRGB(15, 15, 15), -- Darkened from 20,20,20
-		TabStroke = Color3.fromRGB(0, 255, 0),
-		TabBackgroundSelected = Color3.fromRGB(25, 25, 25), -- Darkened from 30,30,30
-		TabTextColor = Color3.fromRGB(0, 200, 0),
-		SelectedTabTextColor = Color3.fromRGB(0, 255, 0),
-		ElementBackground = Color3.fromRGB(15, 15, 15), -- Darkened from 20,20,20
-		ElementBackgroundHover = Color3.fromRGB(25, 25, 25), -- Darkened from 30,30,30
-		SecondaryElementBackground = Color3.fromRGB(10, 10, 10), -- Darkened from 15,15,15
-		ElementStroke = Color3.fromRGB(0, 255, 0),
-		SecondaryElementStroke = Color3.fromRGB(0, 200, 0),
-		SliderBackground = Color3.fromRGB(35, 35, 35), -- Darkened from 40,40,40
-		SliderProgress = Color3.fromRGB(0, 255, 0),
-		SliderStroke = Color3.fromRGB(0, 200, 0),
-		ToggleBackground = Color3.fromRGB(15, 15, 15), -- Darkened from 20,20,20
-		ToggleEnabled = Color3.fromRGB(0, 255, 0),
-		ToggleDisabled = Color3.fromRGB(35, 35, 35), -- Darkened from 40,40,40
-		ToggleEnabledStroke = Color3.fromRGB(0, 200, 0),
-		ToggleDisabledStroke = Color3.fromRGB(0, 150, 0),
-		ToggleEnabledOuterStroke = Color3.fromRGB(35, 35, 35), -- Darkened from 40,40,40
-		ToggleDisabledOuterStroke = Color3.fromRGB(25, 25, 25), -- Darkened from 30,30,30
-		DropdownSelected = Color3.fromRGB(45, 45, 45), -- Darkened from 50,50,50
-		DropdownUnselected = Color3.fromRGB(15, 15, 15), -- Darkened from 20,20,20
-		InputBackground = Color3.fromRGB(5, 5, 5), -- Darkened from 10,10,10
-		InputStroke = Color3.fromRGB(0, 255, 0),
-		PlaceholderColor = Color3.fromRGB(0, 200, 0)
-	},
-
-	SolarizedDark = {
-		TextColor = Color3.fromRGB(131, 148, 150), -- Base0
-		Background = Color3.fromRGB(0, 30, 40),    -- Darkened from 0,43,54 (Base03)
-		Topbar = Color3.fromRGB(5, 40, 50),        -- Darkened from 7,54,66 (Base02)
-		Shadow = Color3.fromRGB(0, 20, 30),        -- Darkened from 0,34,43
-		NotificationBackground = Color3.fromRGB(8, 50, 60), -- Darkened from 11,65,78 (Base01)
-		NotificationActionsBackground = Color3.fromRGB(38, 139, 210), -- Blue
-		TabBackground = Color3.fromRGB(5, 40, 50), -- Darkened from 7,54,66 (Base02)
-		TabStroke = Color3.fromRGB(42, 161, 152),  -- Cyan
-		TabBackgroundSelected = Color3.fromRGB(8, 50, 60), -- Darkened from 11,65,78 (Base01)
-		TabTextColor = Color3.fromRGB(101, 123, 131), -- Base0
-		SelectedTabTextColor = Color3.fromRGB(131, 148, 150), -- Base0
-		ElementBackground = Color3.fromRGB(5, 40, 50), -- Darkened from 7,54,66 (Base02)
-		ElementBackgroundHover = Color3.fromRGB(8, 50, 60), -- Darkened from 11,65,78 (Base01)
-		SecondaryElementBackground = Color3.fromRGB(0, 30, 40), -- Darkened from 0,43,54 (Base03)
-		ElementStroke = Color3.fromRGB(42, 161, 152), -- Cyan
-		SecondaryElementStroke = Color3.fromRGB(181, 137, 0), -- Yellow
-		SliderBackground = Color3.fromRGB(15, 60, 70), -- Darkened from 23,80,94
-		SliderProgress = Color3.fromRGB(203, 75, 22), -- Orange
-		SliderStroke = Color3.fromRGB(220, 50, 47), -- Red
-		ToggleBackground = Color3.fromRGB(5, 40, 50), -- Darkened from 7,54,66 (Base02)
-		ToggleEnabled = Color3.fromRGB(203, 75, 22), -- Orange
-		ToggleDisabled = Color3.fromRGB(15, 60, 70), -- Darkened from 23,80,94
-		ToggleEnabledStroke = Color3.fromRGB(220, 50, 47), -- Red
-		ToggleDisabledStroke = Color3.fromRGB(101, 123, 131), -- Base0
-		DropdownSelected = Color3.fromRGB(8, 50, 60), -- Darkened from 11,65,78 (Base01)
-		DropdownUnselected = Color3.fromRGB(5, 40, 50), -- Darkened from 7,54,66 (Base02)
-		InputBackground = Color3.fromRGB(0, 30, 40), -- Darkened from 0,43,54 (Base03)
-		InputStroke = Color3.fromRGB(38, 139, 210), -- Blue
-		PlaceholderColor = Color3.fromRGB(131, 148, 150) -- Base0
-	},
-
-	MonokaiPro = {
-		TextColor = Color3.fromRGB(253, 246, 240),
-		Background = Color3.fromRGB(20, 20, 20),  -- Darkened from 30,30,30
-		Topbar = Color3.fromRGB(30, 30, 30),      -- Darkened from 40,40,40
-		Shadow = Color3.fromRGB(0, 0, 0),
-		NotificationBackground = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		NotificationActionsBackground = Color3.fromRGB(102, 217, 239), -- Aqua
-		TabBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		TabStroke = Color3.fromRGB(255, 1, 126),    -- Pink
-		TabBackgroundSelected = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		TabTextColor = Color3.fromRGB(150, 150, 150),
-		SelectedTabTextColor = Color3.fromRGB(253, 246, 240),
-		ElementBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		ElementBackgroundHover = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		SecondaryElementBackground = Color3.fromRGB(20, 20, 20), -- Darkened from 30,30,30
-		ElementStroke = Color3.fromRGB(255, 1, 126), -- Pink
-		SecondaryElementStroke = Color3.fromRGB(166, 226, 46), -- Green
-		SliderBackground = Color3.fromRGB(50, 50, 50), -- Darkened from 60,60,60
-		SliderProgress = Color3.fromRGB(253, 151, 31), -- Orange
-		SliderStroke = Color3.fromRGB(249, 38, 114), -- Reddish pink
-		ToggleBackground = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		ToggleEnabled = Color3.fromRGB(253, 151, 31), -- Orange
-		ToggleDisabled = Color3.fromRGB(50, 50, 50), -- Darkened from 60,60,60
-		ToggleEnabledStroke = Color3.fromRGB(249, 38, 114), -- Reddish pink
-		ToggleDisabledStroke = Color3.fromRGB(150, 150, 150),
-		ToggleEnabledOuterStroke = Color3.fromRGB(50, 50, 50), -- Darkened from 60,60,60
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		DropdownSelected = Color3.fromRGB(40, 40, 40), -- Darkened from 50,50,50
-		DropdownUnselected = Color3.fromRGB(25, 25, 25), -- Darkened from 35,35,35
-		InputBackground = Color3.fromRGB(20, 20, 20), -- Darkened from 30,30,30
-		InputStroke = Color3.fromRGB(102, 217, 239), -- Aqua
-		PlaceholderColor = Color3.fromRGB(253, 246, 240)
-	},
-
-	Dracula = {
-		TextColor = Color3.fromRGB(248, 248, 242), -- Foreground
-		Background = Color3.fromRGB(30, 32, 40),   -- Darkened from 40,42,54 (Background)
-		Topbar = Color3.fromRGB(50, 53, 70),       -- Darkened from 68,71,90 (Current Line/Selection)
-		Shadow = Color3.fromRGB(20, 21, 28),       -- Darkened from 28,29,36
-		NotificationBackground = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		NotificationActionsBackground = Color3.fromRGB(98, 114, 164), -- Cyan
-		TabBackground = Color3.fromRGB(40, 42, 55), -- Darkened from 49,50,68 (Comment)
-		TabStroke = Color3.fromRGB(255, 121, 198),  -- Pink
-		TabBackgroundSelected = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		TabTextColor = Color3.fromRGB(180, 180, 180),
-		SelectedTabTextColor = Color3.fromRGB(248, 248, 242),
-		ElementBackground = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		ElementBackgroundHover = Color3.fromRGB(80, 90, 130), -- Darkened from 98,114,164
-		SecondaryElementBackground = Color3.fromRGB(40, 42, 55), -- Darkened from 49,50,68
-		ElementStroke = Color3.fromRGB(255, 121, 198), -- Pink
-		SecondaryElementStroke = Color3.fromRGB(80, 250, 123), -- Green
-		SliderBackground = Color3.fromRGB(70, 75, 90), -- Darkened from 98,114,164 (Cyan)
-		SliderProgress = Color3.fromRGB(255, 121, 198), -- Pink
-		SliderStroke = Color3.fromRGB(189, 147, 249), -- Purple
-		ToggleBackground = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		ToggleEnabled = Color3.fromRGB(255, 121, 198), -- Pink
-		ToggleDisabled = Color3.fromRGB(70, 75, 90), -- Darkened from 98,114,164
-		ToggleEnabledStroke = Color3.fromRGB(189, 147, 249), -- Purple
-		ToggleDisabledStroke = Color3.fromRGB(180, 180, 180),
-		ToggleEnabledOuterStroke = Color3.fromRGB(70, 75, 90), -- Darkened from 98,114,164
-		ToggleDisabledOuterStroke = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		DropdownSelected = Color3.fromRGB(70, 75, 90), -- Darkened from 98,114,164
-		DropdownUnselected = Color3.fromRGB(50, 53, 70), -- Darkened from 68,71,90
-		InputBackground = Color3.fromRGB(30, 32, 40), -- Darkened from 40,42,54
-		InputStroke = Color3.fromRGB(255, 121, 198),
-		PlaceholderColor = Color3.fromRGB(248, 248, 242)
-	},
-
-	Retro = {
-		TextColor = Color3.fromRGB(254, 255, 255),
-		Background = Color3.fromRGB(1, 1, 5),      -- Darkened from 1,1,10
-		Topbar = Color3.fromRGB(10, 0, 20),        -- Darkened from 15,0,30
-		Shadow = Color3.fromRGB(0, 0, 0),
-		NotificationBackground = Color3.fromRGB(20, 0, 40), -- Darkened from 30,0,60
-		NotificationActionsBackground = Color3.fromRGB(255, 0, 180), -- Bright pink neon
-		TabBackground = Color3.fromRGB(5, 0, 10),   -- Darkened from 10,0,20
-		TabStroke = Color3.fromRGB(0, 255, 255),    -- Bright aqua neon
-		TabBackgroundSelected = Color3.fromRGB(15, 0, 30), -- Darkened from 25,0,50
-		TabTextColor = Color3.fromRGB(180, 100, 255), -- Muted purple neon
-		SelectedTabTextColor = Color3.fromRGB(255, 255, 0), -- Bright yellow neon
-		ElementBackground = Color3.fromRGB(10, 0, 20), -- Darkened from 15,0,30
-		ElementBackgroundHover = Color3.fromRGB(20, 0, 40), -- Darkened from 30,0,60
-		SecondaryElementBackground = Color3.fromRGB(1, 1, 5), -- Darkened from 1,1,10
-		ElementStroke = Color3.fromRGB(0, 255, 255), -- Bright aqua neon
-		SecondaryElementStroke = Color3.fromRGB(255, 0, 180), -- Bright pink neon
-		SliderBackground = Color3.fromRGB(30, 0, 60), -- Darkened from 40,0,80
-		SliderProgress = Color3.fromRGB(255, 255, 0), -- Bright yellow neon
-		SliderStroke = Color3.fromRGB(0, 255, 255),    -- Bright aqua neon
-		ToggleBackground = Color3.fromRGB(10, 0, 20), -- Darkened from 15,0,30
-		ToggleEnabled = Color3.fromRGB(255, 255, 0),
-		ToggleDisabled = Color3.fromRGB(30, 0, 60), -- Darkened from 40,0,80
-		ToggleEnabledStroke = Color3.fromRGB(255, 0, 180),
-		ToggleDisabledStroke = Color3.fromRGB(180, 100, 255),
-		ToggleEnabledOuterStroke = Color3.fromRGB(30, 0, 60), -- Darkened from 40,0,80
-		ToggleDisabledOuterStroke = Color3.fromRGB(20, 0, 40), -- Darkened from 30,0,60
-		DropdownSelected = Color3.fromRGB(40, 0, 80), -- Darkened from 50,0,100
-		DropdownUnselected = Color3.fromRGB(10, 0, 20), -- Darkened from 15,0,30
-		InputBackground = Color3.fromRGB(1, 1, 5), -- Darkened from 5,5,15
-		InputStroke = Color3.fromRGB(0, 255, 255),
-		PlaceholderColor = Color3.fromRGB(255, 255, 0)
-	},
-
-	Palenight = {
-		TextColor = Color3.fromRGB(166, 172, 205),
-		Background = Color3.fromRGB(30, 35, 45),   -- Darkened from 41,45,62
-		Topbar = Color3.fromRGB(38, 41, 58),       -- Darkened from 48,51,72
-		Shadow = Color3.fromRGB(20, 25, 35),       -- Darkened from 32,35,49
-		NotificationBackground = Color3.fromRGB(50, 55, 75), -- Darkened from 65,72,99
-		NotificationActionsBackground = Color3.fromRGB(130, 170, 255), -- Blue accent
-		TabBackground = Color3.fromRGB(38, 41, 58), -- Darkened from 48,51,72
-		TabStroke = Color3.fromRGB(199, 146, 234), -- Purple accent
-		TabBackgroundSelected = Color3.fromRGB(50, 55, 75), -- Darkened from 65,72,99
-		TabTextColor = Color3.fromRGB(103, 110, 149),
-		SelectedTabTextColor = Color3.fromRGB(166, 172, 205),
-		ElementBackground = Color3.fromRGB(38, 41, 58), -- Darkened from 48,51,72
-		ElementBackgroundHover = Color3.fromRGB(50, 55, 75), -- Darkened from 65,72,99
-		SecondaryElementBackground = Color3.fromRGB(30, 35, 45), -- Darkened from 41,45,62
-		ElementStroke = Color3.fromRGB(199, 146, 234), -- Purple accent
-		SecondaryElementStroke = Color3.fromRGB(247, 140, 108), -- Orange accent
-		SliderBackground = Color3.fromRGB(55, 60, 85), -- Darkened from 70,75,115
-		SliderProgress = Color3.fromRGB(199, 146, 234), -- Purple accent
-		SliderStroke = Color3.fromRGB(255, 83, 112), -- Red accent
-		ToggleBackground = Color3.fromRGB(38, 41, 58), -- Darkened from 48,51,72
-		ToggleEnabled = Color3.fromRGB(199, 146, 234),
-		ToggleDisabled = Color3.fromRGB(55, 60, 85), -- Darkened from 70,75,115
-		ToggleEnabledStroke = Color3.fromRGB(247, 140, 108),
-		ToggleDisabledStroke = Color3.fromRGB(103, 110, 149),
-		ToggleEnabledOuterStroke = Color3.fromRGB(55, 60, 85), -- Darkened from 70,75,115
-		ToggleDisabledOuterStroke = Color3.fromRGB(50, 55, 75), -- Darkened from 65,72,99
-		DropdownSelected = Color3.fromRGB(50, 55, 75), -- Darkened from 65,72,99
-		DropdownUnselected = Color3.fromRGB(38, 41, 58), -- Darkened from 48,51,72
-		InputBackground = Color3.fromRGB(30, 35, 45), -- Darkened from 41,45,62
-		InputStroke = Color3.fromRGB(130, 170, 255),
-		PlaceholderColor = Color3.fromRGB(166, 172, 205)
-	},
-
-	OneDarkPro = {
-		TextColor = Color3.fromRGB(171, 178, 191),
-		Background = Color3.fromRGB(30, 34, 40),   -- Darkened from 40,44,52
-		Topbar = Color3.fromRGB(35, 39, 47),       -- Darkened from 45,49,57
-		Shadow = Color3.fromRGB(20, 23, 28),       -- Darkened from 25,28,33
-		NotificationBackground = Color3.fromRGB(40, 45, 55), -- Darkened from 50,55,65
-		NotificationActionsBackground = Color3.fromRGB(97, 175, 239), -- Blue
-		TabBackground = Color3.fromRGB(35, 39, 47), -- Darkened from 45,49,57
-		TabStroke = Color3.fromRGB(198, 120, 221), -- Purple
-		TabBackgroundSelected = Color3.fromRGB(40, 45, 55), -- Darkened from 50,55,65
-		TabTextColor = Color3.fromRGB(128, 137, 153),
-		SelectedTabTextColor = Color3.fromRGB(171, 178, 191),
-		ElementBackground = Color3.fromRGB(35, 39, 47), -- Darkened from 45,49,57
-		ElementBackgroundHover = Color3.fromRGB(40, 45, 55), -- Darkened from 50,55,65
-		SecondaryElementBackground = Color3.fromRGB(30, 34, 40), -- Darkened from 40,44,52
-		ElementStroke = Color3.fromRGB(198, 120, 221), -- Purple
-		SecondaryElementStroke = Color3.fromRGB(152, 195, 121), -- Green
-		SliderBackground = Color3.fromRGB(50, 55, 65), -- Darkened from 60,65,75
-		SliderProgress = Color3.fromRGB(229, 192, 123), -- Yellow/Orange
-		SliderStroke = Color3.fromRGB(224, 108, 117), -- Red
-		ToggleBackground = Color3.fromRGB(35, 39, 47), -- Darkened from 45,49,57
-		ToggleEnabled = Color3.fromRGB(229, 192, 123),
-		ToggleDisabled = Color3.fromRGB(50, 55, 65), -- Darkened from 60,65,75
-		ToggleEnabledStroke = Color3.fromRGB(224, 108, 117),
-		ToggleDisabledStroke = Color3.fromRGB(128, 137, 153),
-		ToggleEnabledOuterStroke = Color3.fromRGB(50, 55, 65), -- Darkened from 60,65,75
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 45, 55), -- Darkened from 50,55,65
-		DropdownSelected = Color3.fromRGB(40, 45, 55), -- Darkened from 50,55,65
-		DropdownUnselected = Color3.fromRGB(35, 39, 47), -- Darkened from 45,49,57
-		InputBackground = Color3.fromRGB(30, 34, 40), -- Darkened from 40,44,52
-		InputStroke = Color3.fromRGB(97, 175, 239),
-		PlaceholderColor = Color3.fromRGB(171, 178, 191)
-	},
-
-	AyuDark = {
-		TextColor = Color3.fromRGB(210, 214, 219), -- E6E1CF (Foreground like)
-		Background = Color3.fromRGB(15, 20, 25),   -- 0F1419 (Very dark blue-grey)
-		Topbar = Color3.fromRGB(25, 30, 35),       -- 191F26 (Slightly lighter)
-		Shadow = Color3.fromRGB(10, 15, 20),       -- 0A0E13 (Darker)
-		NotificationBackground = Color3.fromRGB(35, 40, 45),
-		NotificationActionsBackground = Color3.fromRGB(80, 160, 220), -- 5C8DBB (Blue accent)
-		TabBackground = Color3.fromRGB(25, 30, 35),
-		TabStroke = Color3.fromRGB(255, 200, 100),  -- FFD580 (Yellow/Orange)
-		TabBackgroundSelected = Color3.fromRGB(35, 40, 45),
-		TabTextColor = Color3.fromRGB(130, 140, 150), -- 828C99 (Muted grey-blue)
-		SelectedTabTextColor = Color3.fromRGB(210, 214, 219),
-		ElementBackground = Color3.fromRGB(25, 30, 35),
-		ElementBackgroundHover = Color3.fromRGB(35, 40, 45),
-		SecondaryElementBackground = Color3.fromRGB(15, 20, 25),
-		ElementStroke = Color3.fromRGB(255, 200, 100), -- FFD580
-		SecondaryElementStroke = Color3.fromRGB(90, 180, 100), -- 73C990 (Green accent)
-		SliderBackground = Color3.fromRGB(45, 50, 55),
-		SliderProgress = Color3.fromRGB(80, 160, 220), -- 5C8DBB
-		SliderStroke = Color3.fromRGB(255, 120, 120), -- FF6666 (Red accent)
-		ToggleBackground = Color3.fromRGB(25, 30, 35),
-		ToggleEnabled = Color3.fromRGB(80, 160, 220),
-		ToggleDisabled = Color3.fromRGB(45, 50, 55),
-		ToggleEnabledStroke = Color3.fromRGB(255, 120, 120),
-		ToggleDisabledStroke = Color3.fromRGB(130, 140, 150),
-		ToggleEnabledOuterStroke = Color3.fromRGB(45, 50, 55),
-		ToggleDisabledOuterStroke = Color3.fromRGB(35, 40, 45),
-		DropdownSelected = Color3.fromRGB(35, 40, 45),
-		DropdownUnselected = Color3.fromRGB(25, 30, 35),
-		InputBackground = Color3.fromRGB(15, 20, 25),
-		InputStroke = Color3.fromRGB(80, 160, 220),
-		PlaceholderColor = Color3.fromRGB(210, 214, 219)
-	},
-
-	Nord = {
-		TextColor = Color3.fromRGB(216, 222, 233), -- D8DEE9 (Snow Storm 1)
-		Background = Color3.fromRGB(46, 52, 64),   -- 2E3440 (Polar Night 1)
-		Topbar = Color3.fromRGB(59, 66, 82),       -- 3B4252 (Polar Night 2)
-		Shadow = Color3.fromRGB(35, 40, 49),       -- Slightly darker than Polar Night 1
-		NotificationBackground = Color3.fromRGB(67, 76, 94), -- 434C5E (Polar Night 3)
-		NotificationActionsBackground = Color3.fromRGB(94, 129, 172), -- 5E81AC (Frost 4)
-		TabBackground = Color3.fromRGB(59, 66, 82),
-		TabStroke = Color3.fromRGB(136, 192, 208), -- 88C0D0 (Frost 2)
-		TabBackgroundSelected = Color3.fromRGB(67, 76, 94),
-		TabTextColor = Color3.fromRGB(150, 160, 175), -- Muted text
-		SelectedTabTextColor = Color3.fromRGB(216, 222, 233),
-		ElementBackground = Color3.fromRGB(59, 66, 82),
-		ElementBackgroundHover = Color3.fromRGB(67, 76, 94),
-		SecondaryElementBackground = Color3.fromRGB(46, 52, 64),
-		ElementStroke = Color3.fromRGB(136, 192, 208), -- 88C0D0 (Frost 2)
-		SecondaryElementStroke = Color3.fromRGB(179, 142, 173), -- B48EAD (Aurora 5 - Purple)
-		SliderBackground = Color3.fromRGB(76, 86, 106), -- 4C566A (Polar Night 4)
-		SliderProgress = Color3.fromRGB(136, 192, 208), -- 88C0D0 (Frost 2)
-		SliderStroke = Color3.fromRGB(143, 188, 187), -- 8FBCBB (Frost 1)
-		ToggleBackground = Color3.fromRGB(59, 66, 82),
-		ToggleEnabled = Color3.fromRGB(136, 192, 208),
-		ToggleDisabled = Color3.fromRGB(76, 86, 106),
-		ToggleEnabledStroke = Color3.fromRGB(143, 188, 187),
-		ToggleDisabledStroke = Color3.fromRGB(150, 160, 175),
-		ToggleEnabledOuterStroke = Color3.fromRGB(76, 86, 106),
-		ToggleDisabledOuterStroke = Color3.fromRGB(67, 76, 94),
-		DropdownSelected = Color3.fromRGB(67, 76, 94),
-		DropdownUnselected = Color3.fromRGB(59, 66, 82),
-		InputBackground = Color3.fromRGB(46, 52, 64),
-		InputStroke = Color3.fromRGB(136, 192, 208),
-		PlaceholderColor = Color3.fromRGB(216, 222, 233)
-	},
-
-	clarkWARE = {
-		TextColor = Color3.fromRGB(145, 54, 247),
-		Background = Color3.fromRGB(10,10,10),
-		Topbar = Color3.fromRGB(15,15,15),
-		Shadow = Color3.fromRGB(20, 20, 20),
-		NotificationBackground = Color3.fromRGB(10,10,10),
-		NotificationActionsBackground = Color3.fromRGB(230, 230, 230),
-		TabBackground = Color3.fromRGB(14,14,14),
-		TabStroke = Color3.fromRGB(85, 85, 85),
-		TabBackgroundSelected = Color3.fromRGB(15,15,15),
-		TabTextColor = Color3.fromRGB(116, 48, 191),
-		SelectedTabTextColor = Color3.fromRGB(163, 85, 250),
-		ElementBackground = Color3.fromRGB(14,14,14),
-		ElementBackgroundHover = Color3.fromRGB(15,15,15),
-		SecondaryElementBackground = Color3.fromRGB(14,14,14),
-		ElementStroke = Color3.fromRGB(14,14,14),
-		SecondaryElementStroke = Color3.fromRGB(14,14,14),
-		SliderBackground = Color3.fromRGB(30, 30, 30),
-		SliderProgress = Color3.fromRGB(131, 85, 181),
-		SliderStroke = Color3.fromRGB(178, 116, 247),
-		ToggleBackground = Color3.fromRGB(30, 30, 30),
-		ToggleEnabled = Color3.fromRGB(178, 116, 247),
-		ToggleDisabled = Color3.fromRGB(92, 91, 91),
-		ToggleEnabledStroke = Color3.fromRGB(163, 93, 240),
-		ToggleDisabledStroke = Color3.fromRGB(92, 91, 91),
-		ToggleEnabledOuterStroke = Color3.fromRGB(35,35,35),
-		ToggleDisabledOuterStroke = Color3.fromRGB(30,30,30),
-		DropdownSelected = Color3.fromRGB(40, 40, 40),
-		DropdownUnselected = Color3.fromRGB(30, 30, 30),
-		InputBackground = Color3.fromRGB(10,10,10),
-		InputStroke = Color3.fromRGB(145, 54, 247),
-		PlaceholderColor = Color3.fromRGB(145, 54, 247)
-	},
-
-	CS6K = {
-		TextColor = Color3.fromRGB(254,194,0,255),
-
-		Background = Color3.fromRGB(10,10,10),
-		Topbar = Color3.fromRGB(15,15,15),
-		Shadow = Color3.fromRGB(20, 20, 20),
-
-		NotificationBackground = Color3.fromRGB(10,10,10),
-		NotificationActionsBackground = Color3.fromRGB(230, 230, 230),
-
-		TabBackground = Color3.fromRGB(14,14,14),
-		TabStroke = Color3.fromRGB(85, 85, 85),
-		TabBackgroundSelected = Color3.fromRGB(15,15,15),
-		TabTextColor = Color3.fromRGB(254,194,0,255),
-		SelectedTabTextColor = Color3.fromRGB(254,194,0,255),
-
-		ElementBackground = Color3.fromRGB(14,14,14),
-		ElementBackgroundHover = Color3.fromRGB(15,15,15),
-		SecondaryElementBackground = Color3.fromRGB(14,14,14),
-		ElementStroke = Color3.fromRGB(14,14,14),
-		SecondaryElementStroke = Color3.fromRGB(14,14,14),
-
-		SliderBackground = Color3.fromRGB(25,25,25),
-		SliderProgress = Color3.fromRGB(15,15,15),
-		SliderStroke = Color3.fromRGB(254,194,0,255),
-
-		ToggleBackground = Color3.fromRGB(22,22,22),
-		ToggleEnabled = Color3.fromRGB(254,194,0,255),
-		ToggleDisabled = Color3.fromRGB(100, 100, 100),
-		ToggleEnabledStroke = Color3.fromRGB(254,194,0,255),
-		ToggleDisabledStroke = Color3.fromRGB(14,14,14),
-		ToggleEnabledOuterStroke = Color3.fromRGB(14,14,14),
-		ToggleDisabledOuterStroke = Color3.fromRGB(14,14,14),
-
-		DropdownSelected = Color3.fromRGB(40, 40, 40),
-		DropdownUnselected = Color3.fromRGB(30, 30, 30),
-
-		InputBackground = Color3.fromRGB(10,10,10),
-		InputStroke = Color3.fromRGB(254,194,0,255),
-		PlaceholderColor = Color3.fromRGB(254,194,0,255)
-	}
-}
-
-local configPath = "Comet-Hub/data.json"
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
-
-function loadConfig()
-	if isfile(configPath) then
-		local data = Library:LoadConfig(configPath)
-		return data or {}
-	end
-	return {}
-end
-
-function saveConfig(data)
-	Library:SaveConfig(configPath, data)
-end
-
-function saveKey(key)
-	local data = loadConfig()
-	data.validKey = key
-	saveConfig(data)
-end
-
-function loadTheme()
-	local data = loadConfig()
-	return data.theme
-end
-
-function saveTheme(theme)
-	local data = loadConfig()
-	data.theme = theme
-	saveConfig(data)
-end
 
 if debugX then
 	warn('Initialising Rayfield')
@@ -813,12 +56,9 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 			requestCompleted = true
 		end
 	end)
-
-	-- Wait for completion or timeout
 	while not requestCompleted do
 		task.wait()
 	end
-	-- Cancel timeout thread if still running when request completes
 	if coroutine.status(timeoutThread) ~= "dead" then
 		task.cancel(timeoutThread)
 	end
@@ -829,36 +69,20 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 end
 
 local requestsDisabled = false -- set to default for performance
-local InterfaceBuild = '3K4W'
-local Release = "UI Version 1.70"
+local InterfaceBuild = '3K3W'
+local Release = "UI Version 1.68"
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
-
-local themeNames = {}
-
-for themeName in pairs(Themes) do
-	table.insert(themeNames, themeName)
-end
-
 local settingsTable = {
 	General = {
-		rayfieldOpen = {
-			Type = 'bind',
-			Value = 'K',
-			Name = 'Toggle UI'
-		},
+		-- if needs be in order just make getSetting(name)
+		rayfieldOpen = {Type = 'bind', Value = 'K', Name = 'Toggle UI'},
+		-- buildwarnings
+		-- rayfieldprompts
 
-		themeSelection = {
-			Type = 'dropdown',
-			Name = 'Theme',
-			Options = {"Cyberpunk","Desert","Arctic","Forest","Vampire Crimson","Monochrome Hacker","Pastel","VSCodeLight","VSCodeDark","Abyss", "Solarized Dark", "Monokai Pro", "Dracula", "Retro", "Palenight", "One Dark Pro", "Ayu Dark", "Nord","clarkWARE","CS6K"},
-			Value = "",
-			Multiple = false, -- optional (set true for multi-select dropdowns)
-		},
 	}
 }
-
 
 -- Settings that have been overridden by the developer. These will not be saved to the user's configuration file
 -- Overridden settings always take precedence over settings in the configuration file, and are cleared if the user changes the setting in the UI
@@ -1352,10 +576,10 @@ local UserInputService = getService("UserInputService")
 local TweenService = getService("TweenService")
 local Players = getService("Players")
 local CoreGui = getService("CoreGui")
---hi
+
 -- Interface Management
 
-local Rayfield = useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://119681114050388")[1]
+local Rayfield = useStudio and script.Parent:FindFirstChild('Rayfield') or game:GetObjects("rbxassetid://10804731440")[1]
 local buildAttempts = 0
 local correctBuild = false
 local warned
@@ -1369,7 +593,7 @@ repeat
 	end
 
 	correctBuild = false
-	toDestroy, Rayfield = Rayfield, useStudio and script.Parent:FindFirstChild('UI') or game:GetObjects("rbxassetid://119681114050388")[1]
+	toDestroy, Rayfield = Rayfield, useStudio and script.Parent:FindFirstChild('Rayfield') or game:GetObjects("rbxassetid://10804731440")[1]
 	if toDestroy and not useStudio then toDestroy:Destroy() end
 
 	buildAttempts = buildAttempts + 1
@@ -1431,10 +655,6 @@ local dragBar = Rayfield:FindFirstChild('Drag')
 local dragInteract = dragBar and dragBar.Interact or nil
 local dragBarCosmetic = dragBar and dragBar.Drag or nil
 
-local detail1 = Main:FindFirstChild("detail")
-
-detail1.ImageColor3 = Topbar.BackgroundColor3
-
 local dragOffset = 255
 local dragOffsetMobile = 150
 
@@ -1453,68 +673,149 @@ local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
 
-local SelectedTheme = ModifiedRLibary.Theme.Default
+-- Default CometHubCSS Theme (replaces Rayfield Default)
+local CometHubCSS = {
+    TextColor = Color3.fromRGB(200, 160, 255),
+    Background = Color3.fromRGB(20, 10, 30),
+    Topbar = Color3.fromRGB(30, 15, 45),
+    Shadow = Color3.fromRGB(40, 20, 60),
+    NotificationBackground = Color3.fromRGB(25, 15, 35),
+    NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
+    TabBackground = Color3.fromRGB(30, 15, 45),
+    TabStroke = Color3.fromRGB(90, 50, 130),
+    TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
+    TabTextColor = Color3.fromRGB(160, 100, 220),
+    SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
+    ElementBackground = Color3.fromRGB(30, 15, 45),
+    ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
+    SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
+    ElementStroke = Color3.fromRGB(90, 50, 130),
+    SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
+    SliderBackground = Color3.fromRGB(60, 30, 90),
+    SliderProgress = Color3.fromRGB(145, 54, 247),
+    SliderStroke = Color3.fromRGB(160, 100, 220),
+    ToggleBackground = Color3.fromRGB(30, 15, 45),
+    ToggleEnabled = Color3.fromRGB(145, 54, 247),
+    ToggleDisabled = Color3.fromRGB(60, 30, 90),
+    ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
+    ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
+    ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
+    ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
+    DropdownSelected = Color3.fromRGB(50, 25, 75),
+    DropdownUnselected = Color3.fromRGB(30, 15, 45),
+    InputBackground = Color3.fromRGB(20, 10, 30),
+    InputStroke = Color3.fromRGB(145, 54, 247),
+    PlaceholderColor = Color3.fromRGB(145, 54, 247)
+}
 
+-- Replace the Default theme in ModifiedRLibary.Theme
+ModifiedRLibary.Theme.Default = CometHubCSS
+
+-- Updated SelectedTheme initialization (around line 305)
+local SelectedTheme = CometHubCSS
+
+-- Complete ChangeTheme function
 local function ChangeTheme(Theme)
-	if typeof(Theme) == 'string' then
-		SelectedTheme = ModifiedRLibary.Theme[Theme]
-	elseif typeof(Theme) == 'table' then
-		SelectedTheme = Theme
-	end
+    local baseTheme = CometHubCSS -- Use CometHub default instead of Rayfield default
+    if typeof(Theme) == 'string' then
+        if ModifiedRLibary.Theme[Theme] then
+            SelectedTheme = ModifiedRLibary.Theme[Theme]
+        else
+            warn('Comet Hub | Theme "'..tostring(Theme)..'" not found, using CometHub default')
+            SelectedTheme = baseTheme
+        end
+    elseif typeof(Theme) == 'table' then
+        SelectedTheme = {}
+        for key, value in pairs(baseTheme) do
+            SelectedTheme[key] = Theme[key] or value
+        end
+    else
+        warn('Comet Hub | Invalid theme type, using CometHub default')
+        SelectedTheme = baseTheme
+    end
+    Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
+    Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
-	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
-	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
-	Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+    Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
+    Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
+    Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
+    if Topbar:FindFirstChild('Settings') then
+        Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
+        Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
+    end
 
-	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-	Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
-	if Topbar:FindFirstChild('Settings') then
-		Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
-		Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
-	end
+    Main.Search.BackgroundColor3 = SelectedTheme.TextColor
+    Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
+    Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
+    Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
+    Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 
-	Main.Search.BackgroundColor3 = SelectedTheme.TextColor
-	Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
-	Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
-	Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
-	Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
+    if Main:FindFirstChild('Notice') then
+        Main.Notice.BackgroundColor3 = SelectedTheme.Background
+    end
 
-	if Main:FindFirstChild('Notice') then
-		Main.Notice.BackgroundColor3 = SelectedTheme.Background
-	end
+    for _, text in ipairs(Rayfield:GetDescendants()) do
+        if text.Parent.Parent ~= Notifications then
+            if text:IsA('TextLabel') or text:IsA('TextBox') then 
+                text.TextColor3 = SelectedTheme.TextColor 
+            end
+        end
+    end
 
-	for _, text in ipairs(Rayfield:GetDescendants()) do
-		if text.Parent.Parent ~= Notifications then
-			if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
-		end
-	end
-
-	for _, TabPage in ipairs(Elements:GetChildren()) do
-		for _, Element in ipairs(TabPage:GetChildren()) do
-			if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
-				Element.BackgroundColor3 = SelectedTheme.ElementBackground
-				Element.UIStroke.Color = SelectedTheme.ElementStroke
-			end
-		end
-	end
+    for _, TabPage in ipairs(Elements:GetChildren()) do
+        for _, Element in ipairs(TabPage:GetChildren()) do
+            if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+                Element.BackgroundColor3 = SelectedTheme.ElementBackground
+                Element.UIStroke.Color = SelectedTheme.ElementStroke
+            end
+        end
+    end
 end
 
-function ModifiedRLibary:ChangeTheme(Theme)
-	local success, result = pcall(ChangeTheme, Theme)
-	if not success then
-		local success, result2 = pcall(ChangeTheme, 'Default')
-		if not success then
-			warn('COMET HUB INTERNAL UI ERR: CRITICAL ERROR - NO DEFAULT THEME')
-			print(result2)
-		end
-		warn('COMET HUB INTERNAL UI ERR: Issue rendering theme. No theme on file')
-		print(result)
-	end
+if Settings.Theme then
+    local success, result = pcall(function()
+        -- Handle both string theme names and table themes
+        if typeof(Settings.Theme) == 'string' then
+            if ModifiedRLibary.Theme[Settings.Theme] then
+                ChangeTheme(Settings.Theme)
+            else
+                warn('Comet Hub | Theme "'..Settings.Theme..'" not found, using default')
+                ChangeTheme(CometHubCSS)
+            end
+        elseif typeof(Settings.Theme) == 'table' then
+            local requiredProps = {
+                'TextColor', 'Background', 'Topbar', 'ElementBackground',
+                'SliderProgress', 'ToggleEnabled', 'ToggleDisabled'
+            }
+            
+            local isValid = true
+            local missingProps = {}
+            for _, prop in ipairs(requiredProps) do
+                if not Settings.Theme[prop] then
+                    table.insert(missingProps, prop)
+                end
+            end
+            
+            if #missingProps > 0 then
+                warn('Comet Hub | Custom theme missing properties: '..table.concat(missingProps, ', '))
+                warn('Comet Hub | Filling missing properties with defaults')
+            end
+            ChangeTheme(Settings.Theme)
+        else
+            warn('Comet Hub | Invalid theme type ('..typeof(Settings.Theme)..'), using CometHub default')
+            ChangeTheme(CometHubCSS)
+        end
+    end)
+    
+    if not success then
+        warn('Comet Hub | Error applying theme: '..tostring(result))
+        pcall(ChangeTheme, CometHubCSS)
+    end
+else
+    ChangeTheme(CometHubCSS)
 end
-
-
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
 	if not Icons then
@@ -1650,7 +951,7 @@ local function LoadConfiguration(Configuration)
 	local success, Data = pcall(function() return HttpService:JSONDecode(Configuration) end)
 	local changed
 
-	if not success then warn('Comet Hub had an issue decoding the configuration file, please try delete the file and reopen Rayfield.') return end
+	if not success then warn('Rayfield had an issue decoding the configuration file, please try delete the file and reopen Rayfield.') return end
 
 	-- Iterate through current UI elements' flags
 	for FlagName, Flag in pairs(ModifiedRLibary.Flags) do
@@ -1727,6 +1028,29 @@ local function SaveConfiguration()
 	end
 end
 
+function makenewsound(bytecodelink, soundname)
+	local folderName = "Comet-Hub"
+	local subFolderName = "sounds"
+	local fullFolderPath = folderName .. "/" .. subFolderName
+	local fileName = soundname .. ".mp3"
+	local fullFilePath = fullFolderPath .. "/" .. fileName
+
+	if not isfolder(folderName) then
+		makefolder(folderName)
+	end
+
+	if not isfolder(fullFolderPath) then
+		makefolder(fullFolderPath)
+	end
+
+	if not isfile(fullFilePath) then
+		local encoded = game:HttpGet(bytecodelink)
+		writefile(fullFilePath, crypt.base64decode(encoded))
+	end
+
+	return getcustomasset(fullFilePath)
+end
+
 
 function ModifiedRLibary:Notify(data) -- action e.g open messages
 	task.spawn(function()
@@ -1764,8 +1088,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 		newNotification.UIStroke.Color = SelectedTheme.TextColor
 		newNotification.Icon.ImageColor3 = SelectedTheme.TextColor
 
-		--newNotification.BackgroundTransparency = 1
-		newNotification.BackgroundTransparency = 0.7
+		newNotification.BackgroundTransparency = 1
 		newNotification.Title.TextTransparency = 1
 		newNotification.Description.TextTransparency = 1
 		newNotification.UIStroke.Transparency = 1
@@ -1788,7 +1111,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 		TweenService:Create(newNotification, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, math.max(bounds[1] + bounds[2] + 31, 60))}):Play()
 
 		task.wait(0.15)
-		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.7}):Play()
+		TweenService:Create(newNotification, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.45}):Play()
 		TweenService:Create(newNotification.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
 		task.wait(0.05)
@@ -1801,7 +1124,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 		TweenService:Create(newNotification.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0.82}):Play()
 
 		local waitDuration = math.min(math.max((#newNotification.Description.Text * 0.1) + 2.5, 3), 10)
-
+		
 		if data.notificationTYPE then
 			local existingSound = newNotification:FindFirstChild("SFX")
 			local sound = existingSound or Instance.new("Sound")
@@ -1825,7 +1148,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 			elseif data.notificationTYPE == "info" then
 				local soundAsset = makenewsound(
 					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/infomp3base64",
-					"infonew" -- would default to info.mp3
+					"info" -- would default to info.mp3
 				)
 				sound.Volume = 1
 				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
@@ -1846,7 +1169,7 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 			elseif data.notificationTYPE == "error" then
 				local soundAsset = makenewsound(
 					"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/errormp3base64",
-					"errornew" -- would default to info.mp3
+					"error" -- would default to info.mp3
 				)
 				sound.Volume = 3
 				sound.SoundId = soundAsset or "rbxassetid://100772509583336"
@@ -1876,6 +1199,10 @@ function ModifiedRLibary:Notify(data) -- action e.g open messages
 		newNotification:Destroy()
 	end)
 end
+
+
+
+
 
 local function openSearch()
 	searchOpen = true
@@ -1924,7 +1251,7 @@ local function closeSearch()
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
 			tabbtn.Interact.Visible = true
 			if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2027,11 +1354,11 @@ end
 
 local function Maximise()
 	Debounce = true
+	Topbar.ChangeSize.Image = "rbxassetid://"..10137941941
 
 	TweenService:Create(Topbar.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 0.6}):Play()
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.3}):Play()
-	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Topbar.Divider, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(dragBarCosmetic, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0.7}):Play()
 	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = useMobileSizing and UDim2.new(0, 500, 0, 275) or UDim2.new(0, 500, 0, 475)}):Play()
@@ -2051,7 +1378,7 @@ local function Maximise()
 						elseif element.Name == 'Divider' then
 							TweenService:Create(element.Divider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.85}):Play()
 						else
-							TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+							TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 							TweenService:Create(element.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 							TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 						end
@@ -2071,7 +1398,7 @@ local function Maximise()
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
 			if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2089,6 +1416,7 @@ local function Maximise()
 	Debounce = false
 end
 
+
 local function Unhide()
 	Debounce = true
 	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -2096,10 +1424,10 @@ local function Unhide()
 	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = useMobileSizing and UDim2.new(0, 500, 0, 275) or UDim2.new(0, 500, 0, 475)}):Play()
 	TweenService:Create(Main.Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, 500, 0, 45)}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.6}):Play()
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.3}):Play()
-	TweenService:Create(Main.Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.85}):Play()
+	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+	TweenService:Create(Main.Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Main.Topbar.Divider, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
-	TweenService:Create(Main.Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+	TweenService:Create(Main.Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Main.Topbar.Title, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 
 	if MPrompt then
@@ -2134,7 +1462,7 @@ local function Unhide()
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
 		if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
 			if tostring(Elements.UIPageLayout.CurrentPage) == tabbtn.Title.Text then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2157,7 +1485,7 @@ local function Unhide()
 						elseif element.Name == 'Divider' then
 							TweenService:Create(element.Divider, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.85}):Play()
 						else
-							TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+							TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 							TweenService:Create(element.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 							TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 						end
@@ -2181,6 +1509,7 @@ end
 
 local function Minimise()
 	Debounce = true
+	Topbar.ChangeSize.Image = "rbxassetid://"..11036884234
 
 	Topbar.UIStroke.Color = SelectedTheme.ElementStroke
 
@@ -2256,31 +1585,19 @@ local function saveSettings() -- Save settings to config file
 end
 
 local function updateSetting(category: string, setting: string, value: any)
-	if not settingsInitialized then return end
-
-	settingsTable[category][setting].Value = value
-	overriddenSettings[`{category}.{setting}`] = nil
-	saveSettings()
-
-	if category == "General" and setting == "themeSelection" then
-		local selectedThemeName = typeof(value) == "table" and value[1] or value
-		local themes = _G.Themes or Themes
-		if themes and themes[selectedThemeName] then
-			ModifiedRLibary:ChangeTheme(themes[selectedThemeName])
-			saveTheme(selectedThemeName)
-		else
-			--warn("Unknown theme: " .. tostring(selectedThemeName))
-		end
+	if not settingsInitialized then
+		return
 	end
+	settingsTable[category][setting].Value = value
+	overriddenSettings[`{category}.{setting}`] = nil -- If user changes an overriden setting, remove the override
+	saveSettings()
 end
---h
-
 
 local function createSettings(window)
 	if not (writefile and isfile and readfile and isfolder and makefolder) and not useStudio then
 		if Topbar['Settings'] then Topbar.Settings.Visible = false end
 		Topbar['Search'].Position = UDim2.new(1, -75, 0.5, 0)
-		warn("Can't create settings as no file-saving functionality is available.")
+		warn('Can\'t create settings as no file-saving functionality is available.')
 		return
 	end
 
@@ -2310,7 +1627,6 @@ local function createSettings(window)
 						updateSetting(categoryName, settingName, Value)
 					end,
 				})
-
 			elseif setting.Type == 'toggle' then
 				setting.Element = newTab:CreateToggle({
 					Name = setting.Name,
@@ -2320,7 +1636,6 @@ local function createSettings(window)
 						updateSetting(categoryName, settingName, Value)
 					end,
 				})
-
 			elseif setting.Type == 'bind' then
 				setting.Element = newTab:CreateKeybind({
 					Name = setting.Name,
@@ -2328,17 +1643,6 @@ local function createSettings(window)
 					HoldToInteract = false,
 					Ext = true,
 					CallOnChange = true,
-					Callback = function(Value)
-						updateSetting(categoryName, settingName, Value)
-					end,
-				})
-			elseif setting.Type == 'dropdown' then
-				setting.Element = newTab:CreateDropdown({
-					Name = setting.Name,
-					Options = setting.Options or {}, -- table of dropdown options
-					CurrentOption = setting.Value or setting.Options and setting.Options[1] or nil,
-					MultipleOptions = setting.Multiple or false, -- optional: allow multiple selections
-					Ext = true,
 					Callback = function(Value)
 						updateSetting(categoryName, settingName, Value)
 					end,
@@ -2352,73 +1656,21 @@ local function createSettings(window)
 	saveSettings()
 end
 
-function makenewsound(bytecodelink, soundname)
-	local folderName = "Comet-Hub"
-	local subFolderName = "sounds"
-	local fullFolderPath = folderName .. "/" .. subFolderName
-	local fileName = soundname .. ".mp3"
-	local fullFilePath = fullFolderPath .. "/" .. fileName
-
-	if not isfolder(folderName) then
-		makefolder(folderName)
-	end
-
-	if not isfolder(fullFolderPath) then
-		makefolder(fullFolderPath)
-	end
-
-	if not isfile(fullFilePath) then
-		local encoded = game:HttpGet(bytecodelink)
-		writefile(fullFilePath, crypt.base64decode(encoded))
-	end
-
-	return getcustomasset(fullFilePath)
-end
 
 
 function ModifiedRLibary:CreateWindow(Settings)
-	Main.Visible = false
 	local TweenService = game:GetService("TweenService")
-
+	
 	local existingSound = Rayfield:FindFirstChild("Intro")
-
+	
 	local sound = existingSound or Instance.new("Sound")
 
-	math.randomseed(tick())
-
-	local introChance = math.random(1, 300)
-	
 	if not existingSound then
 		sound.Name = "Intro"
-		sound.Volume = 3
+		sound.Volume = 1
 		sound.Looped = false
 		sound.Parent = Rayfield
-	end
-	
-	local soundAsset = makenewsound(
-		"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/mainintromp3base64",
-		"mainintro"
-	)
-	sound.SoundId = soundAsset or "rbxassetid://8503531171"
-
-	if introChance == 250 then
-		soundAsset = makenewsound(
-			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intromp3base64",
-			"intro1"
-		)
-		sound.SoundId = soundAsset or "rbxassetid://8503531171"
-	elseif introChance == 230 then
-		soundAsset = makenewsound(
-			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intro2mp3base64",
-			"intro2"
-		)
-		sound.SoundId = soundAsset or "rbxassetid://8503531171"
-	elseif introChance == 210 then
-		soundAsset = makenewsound(
-			"https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/intro3mp3base64",
-			"intro3"
-		)
-		sound.SoundId = soundAsset or "rbxassetid://8503531171"
+		sound.SoundId = "rbxassetid://8503531171"
 	end
 
 	if Rayfield:FindFirstChild("Loading") then
@@ -2427,26 +1679,14 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Rayfield.Loading.Visible = true
 
 			local banner = Rayfield.Loading:FindFirstChild("Banner")
-			local date = os.date("*t")
-
 			if banner then
-				banner.Image = "rbxassetid://78129230285653" -- default
-				
-				if date.month == 12 then
-					if date.day == 24 or date.day == 25 then -- is it 24/25th (christmas / christmas eve)
-						banner.Image = "rbxassetid://100049569677250" -- christmas logo
-					elseif date.month == 12 or date.month == 1 or date.month == 2 then
-						banner.Image = "rbxassetid://92315304851020" -- winter logo
-					end
-				end
+				banner.Image = "rbxassetid://78129230285653"
 				banner.ImageColor3 = Color3.fromRGB(219, 176, 255)
 				banner.Size = UDim2.new(0, 250, 0, 245)
 				banner.ImageTransparency = 1
 				banner.Position = UDim2.new(1.2, 0, -0.5, 0)
 				banner.AnchorPoint = Vector2.new(0.5, 0.5)
 			end
-			task.wait(1.5) -- wait for images to load
-
 			sound:Play()
 			local entryTween = TweenService:Create(banner, TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
 				ImageTransparency = 0,
@@ -2510,13 +1750,12 @@ function ModifiedRLibary:CreateWindow(Settings)
 	end
 
 	LoadingFrame.Version.TextTransparency = 1
-	LoadingFrame.Title.Text = Settings.LoadingTitle or "N/A"
-	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "N/A"
-
+	LoadingFrame.Title.Text = Settings.LoadingTitle or "Rayfield"
+	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "Interface Suite"
+	
 	if Settings.Icon and Settings.Icon ~= 0 and Topbar:FindFirstChild('Icon') then
 		Topbar.Icon.Visible = true
 		Topbar.Title.Position = UDim2.new(0, 47, 0.5, 0)
-		Topbar.Title.Size = UDim2.new(0, 317,0, 16)
 
 		if Settings.Icon then
 			if typeof(Settings.Icon) == 'string' and Icons then
@@ -2544,10 +1783,10 @@ function ModifiedRLibary:CreateWindow(Settings)
 		if not success then
 			local success, result2 = pcall(ChangeTheme, 'Default')
 			if not success then
-				warn('COMET HUB INTERNAL UI ERR: CRITICAL ERROR - NO DEFAULT THEME')
+				warn('Comet Hub INTERNAL UI ERR: CRITICAL ERROR - NO DEFAULT THEME')
 				print(result2)
 			end
-			warn('COMET HUB INTERNAL UI ERR: Issue rendering theme. No theme on file')
+			warn('Comet Hub INTERNAL UI ERR: Issue rendering theme. No theme on file')
 			print(result)
 		end
 	end
@@ -2824,7 +2063,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 	Rayfield.Enabled = true
 
 	task.wait(0.5)
-	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.3}):Play()
+	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.6}):Play()
 	task.wait(0.1)
 	TweenService:Create(LoadingFrame.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
@@ -2928,7 +2167,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			TabButton.Image.ImageColor3 = SelectedTheme.SelectedTabTextColor
 			TabButton.Title.TextColor3 = SelectedTheme.SelectedTabTextColor
 			TweenService:Create(TabButton.Image, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
-			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+			TweenService:Create(TabButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(TabButton.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 		end
 
@@ -2976,7 +2215,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Button.UIStroke.Transparency = 1
 			Button.Title.TextTransparency = 1
 
-			TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Button, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Button.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Button.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -3091,7 +2330,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 					TweenService:Create(ColorPicker.Interact, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(0.574, 0, 1, 0)}):Play()
 					TweenService:Create(Main.MainPoint, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {ImageTransparency = 0}):Play()
 					TweenService:Create(Main, TweenInfo.new(0.2, Enum.EasingStyle.Exponential), {ImageTransparency = SelectedTheme ~= ModifiedRLibary.Theme.Default and 0.25 or 0.1}):Play()
-					TweenService:Create(Background, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+					TweenService:Create(Background, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 				else
 					opened = false
 					TweenService:Create(ColorPicker, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, -10, 0, 45)}):Play()
@@ -3347,7 +2586,6 @@ function ModifiedRLibary:CreateWindow(Settings)
 					local asset = getIcon(Icon)
 
 					Label.Icon.Image = 'rbxassetid://'..asset.id
-					Label.Icon.ImageTransparency = 0
 					Label.Icon.ImageRectOffset = asset.imageRectOffset
 					Label.Icon.ImageRectSize = asset.imageRectSize
 				else
@@ -3358,14 +2596,14 @@ function ModifiedRLibary:CreateWindow(Settings)
 			end
 
 			if Icon and Label:FindFirstChild('Icon') then
-				Label.Title.Position = UDim2.new(0.44, 45,0.5, 0)
-				Label.Title.Size = UDim2.new(1.085, -100,0, 14)
+				Label.Title.Position = UDim2.new(0, 45, 0.5, 0)
+				Label.Title.Size = UDim2.new(1, -100, 0, 14)
+
 				if Icon then
 					if typeof(Icon) == 'string' and Icons then
 						local asset = getIcon(Icon)
 
 						Label.Icon.Image = 'rbxassetid://'..asset.id
-						Label.Icon.ImageTransparency = 0
 						Label.Icon.ImageRectOffset = asset.imageRectOffset
 						Label.Icon.ImageRectSize = asset.imageRectSize
 					else
@@ -3383,7 +2621,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Label.UIStroke.Transparency = 1
 			Label.Title.TextTransparency = 1
 
-			TweenService:Create(Label, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = Color and 0.8 or 0.75}):Play()
+			TweenService:Create(Label, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = Color and 0.8 or 0}):Play()
 			TweenService:Create(Label.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = Color and 0.7 or 0}):Play()
 			TweenService:Create(Label.Icon, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.2}):Play()
 			TweenService:Create(Label.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = Color and 0.2 or 0}):Play()	
@@ -3393,22 +2631,21 @@ function ModifiedRLibary:CreateWindow(Settings)
 					Label.Title.Text = NewLabel
 					-- prevent console errors
 				end
-
+				
 				if Color then
 					Label.BackgroundColor3 = Color or SelectedTheme.SecondaryElementBackground
 					Label.UIStroke.Color = Color or SelectedTheme.SecondaryElementStroke
 				end
 
 				if Icon and Label:FindFirstChild('Icon') then
-					Label.Title.Position = UDim2.new(0.44, 45,0.5, 0)
-					Label.Title.Size = UDim2.new(1.085, -100,0, 14)
+					Label.Title.Position = UDim2.new(0, 45, 0.5, 0)
+					Label.Title.Size = UDim2.new(1, -100, 0, 14)
 
 					if Icon then
 						if typeof(Icon) == 'string' and Icons then
 							local asset = getIcon(Icon)
 
 							Label.Icon.Image = 'rbxassetid://'..asset.id
-							Label.Icon.ImageTransparency = 0
 							Label.Icon.ImageRectOffset = asset.imageRectOffset
 							Label.Icon.ImageRectSize = asset.imageRectSize
 						else
@@ -3448,7 +2685,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Paragraph.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
 			Paragraph.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 
-			TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Paragraph.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 			TweenService:Create(Paragraph.Content, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
@@ -3483,7 +2720,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Input.InputFrame.BackgroundColor3 = SelectedTheme.InputBackground
 			Input.InputFrame.UIStroke.Color = SelectedTheme.InputStroke
 
-			TweenService:Create(Input, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Input, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Input.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Input.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -3605,7 +2842,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 
 			Dropdown.Size = UDim2.new(1, -10, 0, 45)
 
-			TweenService:Create(Dropdown, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Dropdown, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Dropdown.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -3649,7 +2886,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 							if DropdownOpt.Name ~= Dropdown.Selected.Text then
 								TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 							end
-							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 						end
 					end
@@ -3887,7 +3124,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Keybind.KeybindFrame.BackgroundColor3 = SelectedTheme.InputBackground
 			Keybind.KeybindFrame.UIStroke.Color = SelectedTheme.InputStroke
 
-			TweenService:Create(Keybind, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Keybind, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Keybind.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -4020,7 +3257,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 				Toggle.Switch.Shadow.Visible = false
 			end
 
-			TweenService:Create(Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -4192,7 +3429,7 @@ function ModifiedRLibary:CreateWindow(Settings)
 			Slider.Main.Progress.UIStroke.Color = SelectedTheme.SliderStroke
 			Slider.Main.Progress.BackgroundColor3 = SelectedTheme.SliderProgress
 
-			TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.75}):Play()
+			TweenService:Create(Slider, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 			TweenService:Create(Slider.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 			TweenService:Create(Slider.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()	
 
@@ -4358,6 +3595,8 @@ function ModifiedRLibary:CreateWindow(Settings)
 	end
 
 	Elements.Visible = true
+
+
 	task.wait(1.1)
 	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 390, 0, 90)}):Play()
 	task.wait(0.3)
@@ -4383,8 +3622,8 @@ function ModifiedRLibary:CreateWindow(Settings)
 
 	task.wait(0.5)
 	Topbar.Visible = true
-	TweenService:Create(Topbar, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.85}):Play()
-	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0.8}):Play()
+	TweenService:Create(Topbar, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
+	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	task.wait(0.1)
 	TweenService:Create(Topbar.Divider, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Size = UDim2.new(1, 0, 0, 1)}):Play()
 	TweenService:Create(Topbar.Title, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
@@ -4616,6 +3855,8 @@ function ModifiedRLibary:LoadConfiguration()
 
 	globalLoaded = true
 end
+
+
 
 if useStudio then
 	-- run w/ studio
