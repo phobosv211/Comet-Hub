@@ -8,7 +8,7 @@
 	Max   | Programming
 	
 	Modified for Comet Hub
-	All credits to Sirius for making Rayfield; We thank you from the Comet Hub Development Team 🩵
+	All credits to Sirius for making Rayfield; thanks from the Comet Hub Team 🩵
 
 ]]
 
@@ -56,9 +56,12 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 			requestCompleted = true
 		end
 	end)
+
+	-- Wait for completion or timeout
 	while not requestCompleted do
 		task.wait()
 	end
+	-- Cancel timeout thread if still running when request completes
 	if coroutine.status(timeoutThread) ~= "dead" then
 		task.cancel(timeoutThread)
 	end
@@ -673,148 +676,52 @@ local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
 
--- Default CometHubCSS Theme (replaces Rayfield Default)
-local CometHubCSS = {
-    TextColor = Color3.fromRGB(200, 160, 255),
-    Background = Color3.fromRGB(20, 10, 30),
-    Topbar = Color3.fromRGB(30, 15, 45),
-    Shadow = Color3.fromRGB(40, 20, 60),
-    NotificationBackground = Color3.fromRGB(25, 15, 35),
-    NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
-    TabBackground = Color3.fromRGB(30, 15, 45),
-    TabStroke = Color3.fromRGB(90, 50, 130),
-    TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
-    TabTextColor = Color3.fromRGB(160, 100, 220),
-    SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
-    ElementBackground = Color3.fromRGB(30, 15, 45),
-    ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
-    SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
-    ElementStroke = Color3.fromRGB(90, 50, 130),
-    SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
-    SliderBackground = Color3.fromRGB(60, 30, 90),
-    SliderProgress = Color3.fromRGB(145, 54, 247),
-    SliderStroke = Color3.fromRGB(160, 100, 220),
-    ToggleBackground = Color3.fromRGB(30, 15, 45),
-    ToggleEnabled = Color3.fromRGB(145, 54, 247),
-    ToggleDisabled = Color3.fromRGB(60, 30, 90),
-    ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
-    ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
-    ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
-    ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
-    DropdownSelected = Color3.fromRGB(50, 25, 75),
-    DropdownUnselected = Color3.fromRGB(30, 15, 45),
-    InputBackground = Color3.fromRGB(20, 10, 30),
-    InputStroke = Color3.fromRGB(145, 54, 247),
-    PlaceholderColor = Color3.fromRGB(145, 54, 247)
-}
+local SelectedTheme = ModifiedRLibary.Theme.Default
 
--- Replace the Default theme in ModifiedRLibary.Theme
-ModifiedRLibary.Theme.Default = CometHubCSS
-
--- Updated SelectedTheme initialization (around line 305)
-local SelectedTheme = CometHubCSS
-
--- Complete ChangeTheme function
 local function ChangeTheme(Theme)
-    local baseTheme = CometHubCSS -- Use CometHub default instead of Rayfield default
-    if typeof(Theme) == 'string' then
-        if ModifiedRLibary.Theme[Theme] then
-            SelectedTheme = ModifiedRLibary.Theme[Theme]
-        else
-            warn('Comet Hub | Theme "'..tostring(Theme)..'" not found, using CometHub default')
-            SelectedTheme = baseTheme
-        end
-    elseif typeof(Theme) == 'table' then
-        SelectedTheme = {}
-        for key, value in pairs(baseTheme) do
-            SelectedTheme[key] = Theme[key] or value
-        end
-    else
-        warn('Comet Hub | Invalid theme type, using CometHub default')
-        SelectedTheme = baseTheme
-    end
-    Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
-    Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
-    Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
-    Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+	if typeof(Theme) == 'string' then
+		SelectedTheme = ModifiedRLibary.Theme[Theme]
+	elseif typeof(Theme) == 'table' then
+		SelectedTheme = Theme
+	end
 
-    Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-    Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
-    Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
-    if Topbar:FindFirstChild('Settings') then
-        Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
-        Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
-    end
+	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
+	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+	Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 
-    Main.Search.BackgroundColor3 = SelectedTheme.TextColor
-    Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
-    Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
-    Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
-    Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
+	Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
+	Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
+	Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
+	if Topbar:FindFirstChild('Settings') then
+		Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
+		Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
+	end
 
-    if Main:FindFirstChild('Notice') then
-        Main.Notice.BackgroundColor3 = SelectedTheme.Background
-    end
+	Main.Search.BackgroundColor3 = SelectedTheme.TextColor
+	Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
+	Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
+	Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
+	Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 
-    for _, text in ipairs(Rayfield:GetDescendants()) do
-        if text.Parent.Parent ~= Notifications then
-            if text:IsA('TextLabel') or text:IsA('TextBox') then 
-                text.TextColor3 = SelectedTheme.TextColor 
-            end
-        end
-    end
+	if Main:FindFirstChild('Notice') then
+		Main.Notice.BackgroundColor3 = SelectedTheme.Background
+	end
 
-    for _, TabPage in ipairs(Elements:GetChildren()) do
-        for _, Element in ipairs(TabPage:GetChildren()) do
-            if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
-                Element.BackgroundColor3 = SelectedTheme.ElementBackground
-                Element.UIStroke.Color = SelectedTheme.ElementStroke
-            end
-        end
-    end
-end
+	for _, text in ipairs(Rayfield:GetDescendants()) do
+		if text.Parent.Parent ~= Notifications then
+			if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
+		end
+	end
 
-if Settings.Theme then
-    local success, result = pcall(function()
-        -- Handle both string theme names and table themes
-        if typeof(Settings.Theme) == 'string' then
-            if ModifiedRLibary.Theme[Settings.Theme] then
-                ChangeTheme(Settings.Theme)
-            else
-                warn('Comet Hub | Theme "'..Settings.Theme..'" not found, using default')
-                ChangeTheme(CometHubCSS)
-            end
-        elseif typeof(Settings.Theme) == 'table' then
-            local requiredProps = {
-                'TextColor', 'Background', 'Topbar', 'ElementBackground',
-                'SliderProgress', 'ToggleEnabled', 'ToggleDisabled'
-            }
-            
-            local isValid = true
-            local missingProps = {}
-            for _, prop in ipairs(requiredProps) do
-                if not Settings.Theme[prop] then
-                    table.insert(missingProps, prop)
-                end
-            end
-            
-            if #missingProps > 0 then
-                warn('Comet Hub | Custom theme missing properties: '..table.concat(missingProps, ', '))
-                warn('Comet Hub | Filling missing properties with defaults')
-            end
-            ChangeTheme(Settings.Theme)
-        else
-            warn('Comet Hub | Invalid theme type ('..typeof(Settings.Theme)..'), using CometHub default')
-            ChangeTheme(CometHubCSS)
-        end
-    end)
-    
-    if not success then
-        warn('Comet Hub | Error applying theme: '..tostring(result))
-        pcall(ChangeTheme, CometHubCSS)
-    end
-else
-    ChangeTheme(CometHubCSS)
+	for _, TabPage in ipairs(Elements:GetChildren()) do
+		for _, Element in ipairs(TabPage:GetChildren()) do
+			if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+				Element.BackgroundColor3 = SelectedTheme.ElementBackground
+				Element.UIStroke.Color = SelectedTheme.ElementStroke
+			end
+		end
+	end
 end
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
@@ -1783,10 +1690,10 @@ function ModifiedRLibary:CreateWindow(Settings)
 		if not success then
 			local success, result2 = pcall(ChangeTheme, 'Default')
 			if not success then
-				warn('Comet Hub INTERNAL UI ERR: CRITICAL ERROR - NO DEFAULT THEME')
+				warn('COMET HUB INTERNAL UI ERR: CRITICAL ERROR - NO DEFAULT THEME')
 				print(result2)
 			end
-			warn('Comet Hub INTERNAL UI ERR: Issue rendering theme. No theme on file')
+			warn('COMET HUB INTERNAL UI ERR: Issue rendering theme. No theme on file')
 			print(result)
 		end
 	end
@@ -4094,5 +4001,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
---hi
+
 return ModifiedRLibary
