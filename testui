@@ -11,7 +11,6 @@
 	All credits to Sirius for making Rayfield; thanks from the Comet Hub Team 🩵
 
 ]]
---yo
 
 math.randomseed(os.time())
 
@@ -23,13 +22,27 @@ local CometHubCSS
 
 -- Function to convert RGB array to Color3
 local function arrayToColor3(arr)
+	if type(arr) ~= "table" or #arr < 3 then
+		warn("Invalid color array:", arr)
+		return Color3.fromRGB(200, 160, 255) -- fallback color
+	end
 	return Color3.fromRGB(arr[1], arr[2], arr[3])
 end
 
 -- Function to apply theme from theme data
 local function applyTheme(themeData, themeName)
+	if not themeData or type(themeData) ~= "table" then
+		warn("Invalid theme data provided")
+		return getDefaultTheme()
+	end
+	
+	if not themeName or themeName == "" then
+		themeName = "Default"
+	end
+	
 	local selectedThemeData = themeData[themeName]
 	
+	-- Try case-insensitive search if exact match fails
 	if not selectedThemeData then
 		for key, value in pairs(themeData) do
 			if key:lower() == themeName:lower() then
@@ -39,9 +52,16 @@ local function applyTheme(themeData, themeName)
 		end
 	end
 	
+	-- Fallback to Default if theme not found
 	if not selectedThemeData then
 		warn("Theme '" .. tostring(themeName) .. "' not found, using Default")
 		selectedThemeData = themeData["Default"]
+	end
+	
+	-- If still no theme data, use fallback
+	if not selectedThemeData then
+		warn("No theme data available, using fallback")
+		return getDefaultTheme()
 	end
 	
 	local css = {}
@@ -130,7 +150,7 @@ end
 
 function loadTheme()
 	local data = loadConfig()
-	return data.theme
+	return data.theme or "Default" -- Always return "Default" if no theme saved
 end
 
 function saveTheme(theme)
@@ -139,7 +159,7 @@ function saveTheme(theme)
 	saveConfig(data)
 end
 
--- Load themes from GitHub
+-- Load themes from GitHub with better error handling
 if not getgenv().CometThemes then
 	local success, result = pcall(function()
 		local themesData = game:HttpGet(themesUrl)
@@ -147,12 +167,53 @@ if not getgenv().CometThemes then
 	end)
 
 	if success and result and type(result) == "table" then
-		getgenv().CometThemes = result
-		print("Successfully loaded themes from GitHub")
-		
-		local selectedTheme = loadTheme() or "Default"
-		CometHubCSS = applyTheme(result, selectedTheme)
-		print("Applied theme: " .. tostring(selectedTheme))
+		-- Validate that we have at least the Default theme
+		if not result.Default then
+			warn("No Default theme in loaded data, using fallback")
+			getgenv().CometThemes = {
+				Default = {
+					TextColor = {200, 160, 255},
+					Background = {20, 10, 30},
+					Topbar = {30, 15, 45},
+					Shadow = {40, 20, 60},
+					NotificationBackground = {25, 15, 35},
+					NotificationActionsBackground = {60, 30, 90},
+					TabBackground = {30, 15, 45},
+					TabStroke = {90, 50, 130},
+					TabBackgroundSelected = {40, 20, 60},
+					TabTextColor = {160, 100, 220},
+					SelectedTabTextColor = {200, 160, 255},
+					ElementBackground = {30, 15, 45},
+					ElementBackgroundHover = {40, 20, 60},
+					SecondaryElementBackground = {25, 15, 35},
+					ElementStroke = {90, 50, 130},
+					SecondaryElementStroke = {80, 40, 120},
+					SliderBackground = {60, 30, 90},
+					SliderProgress = {145, 54, 247},
+					SliderStroke = {160, 100, 220},
+					ToggleBackground = {30, 15, 45},
+					ToggleEnabled = {145, 54, 247},
+					ToggleDisabled = {60, 30, 90},
+					ToggleEnabledStroke = {180, 120, 255},
+					ToggleDisabledStroke = {80, 40, 120},
+					ToggleEnabledOuterStroke = {60, 30, 90},
+					ToggleDisabledOuterStroke = {40, 20, 60},
+					DropdownSelected = {50, 25, 75},
+					DropdownUnselected = {30, 15, 45},
+					InputBackground = {20, 10, 30},
+					InputStroke = {145, 54, 247},
+					PlaceholderColor = {145, 54, 247}
+				}
+			}
+			CometHubCSS = getDefaultTheme()
+		else
+			getgenv().CometThemes = result
+			print("Successfully loaded themes from GitHub")
+			
+			local selectedTheme = loadTheme()
+			CometHubCSS = applyTheme(result, selectedTheme)
+			print("Applied theme: " .. tostring(selectedTheme))
+		end
 	else
 		warn("Failed to load themes from GitHub: " .. tostring(result))
 		warn("Using fallback default theme")
@@ -195,20 +256,25 @@ if not getgenv().CometThemes then
 		CometHubCSS = getDefaultTheme()
 	end
 else
-	local selectedTheme = loadTheme() or "Default"
+	-- Themes already loaded, just apply saved theme
+	local selectedTheme = loadTheme()
 	CometHubCSS = applyTheme(getgenv().CometThemes, selectedTheme)
 	print("Using cached themes, applied: " .. tostring(selectedTheme))
 end
 
--- Build theme names list
+-- Build theme names list (with safety check)
 local themeNames = {}
 local Themes = getgenv().CometThemes or {}
 
-for themeName in pairs(Themes) do
-	table.insert(themeNames, themeName)
+if type(Themes) == "table" then
+	for themeName in pairs(Themes) do
+		table.insert(themeNames, themeName)
+	end
+	table.sort(themeNames)
+else
+	warn("Themes is not a table, using default")
+	themeNames = {"Default"}
 end
-
-table.sort(themeNames)
 
 
 if debugX then
@@ -4298,5 +4364,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
---HIIII
+--yo
 return ModifiedRLibary
