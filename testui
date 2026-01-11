@@ -20,6 +20,45 @@ local HttpService = game:GetService('HttpService')
 local themesUrl = "https://raw.githubusercontent.com/phobosv211/Comet-Hub/refs/heads/main/themes.json"
 local CometHubCSS
 
+
+-- Default fallback theme
+local function getDefaultTheme()
+	return {
+		TextColor = Color3.fromRGB(200, 160, 255),
+		Background = Color3.fromRGB(20, 10, 30),
+		Topbar = Color3.fromRGB(30, 15, 45),
+		Shadow = Color3.fromRGB(40, 20, 60),
+		NotificationBackground = Color3.fromRGB(25, 15, 35),
+		NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
+		TabBackground = Color3.fromRGB(30, 15, 45),
+		TabStroke = Color3.fromRGB(90, 50, 130),
+		TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
+		TabTextColor = Color3.fromRGB(160, 100, 220),
+		SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
+		ElementBackground = Color3.fromRGB(30, 15, 45),
+		ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
+		SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
+		ElementStroke = Color3.fromRGB(90, 50, 130),
+		SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
+		SliderBackground = Color3.fromRGB(60, 30, 90),
+		SliderProgress = Color3.fromRGB(145, 54, 247),
+		SliderStroke = Color3.fromRGB(160, 100, 220),
+		ToggleBackground = Color3.fromRGB(30, 15, 45),
+		ToggleEnabled = Color3.fromRGB(145, 54, 247),
+		ToggleDisabled = Color3.fromRGB(60, 30, 90),
+		ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
+		ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
+		ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
+		ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
+		DropdownSelected = Color3.fromRGB(50, 25, 75),
+		DropdownUnselected = Color3.fromRGB(30, 15, 45),
+		InputBackground = Color3.fromRGB(20, 10, 30),
+		InputStroke = Color3.fromRGB(145, 54, 247),
+		PlaceholderColor = Color3.fromRGB(145, 54, 247)
+	}
+end
+
+
 -- Function to convert RGB array to Color3
 local function arrayToColor3(arr)
 	if type(arr) ~= "table" or #arr < 3 then
@@ -70,43 +109,6 @@ local function applyTheme(themeData, themeName)
 	end
 	
 	return css
-end
-
--- Default fallback theme
-local function getDefaultTheme()
-	return {
-		TextColor = Color3.fromRGB(200, 160, 255),
-		Background = Color3.fromRGB(20, 10, 30),
-		Topbar = Color3.fromRGB(30, 15, 45),
-		Shadow = Color3.fromRGB(40, 20, 60),
-		NotificationBackground = Color3.fromRGB(25, 15, 35),
-		NotificationActionsBackground = Color3.fromRGB(60, 30, 90),
-		TabBackground = Color3.fromRGB(30, 15, 45),
-		TabStroke = Color3.fromRGB(90, 50, 130),
-		TabBackgroundSelected = Color3.fromRGB(40, 20, 60),
-		TabTextColor = Color3.fromRGB(160, 100, 220),
-		SelectedTabTextColor = Color3.fromRGB(200, 160, 255),
-		ElementBackground = Color3.fromRGB(30, 15, 45),
-		ElementBackgroundHover = Color3.fromRGB(40, 20, 60),
-		SecondaryElementBackground = Color3.fromRGB(25, 15, 35),
-		ElementStroke = Color3.fromRGB(90, 50, 130),
-		SecondaryElementStroke = Color3.fromRGB(80, 40, 120),
-		SliderBackground = Color3.fromRGB(60, 30, 90),
-		SliderProgress = Color3.fromRGB(145, 54, 247),
-		SliderStroke = Color3.fromRGB(160, 100, 220),
-		ToggleBackground = Color3.fromRGB(30, 15, 45),
-		ToggleEnabled = Color3.fromRGB(145, 54, 247),
-		ToggleDisabled = Color3.fromRGB(60, 30, 90),
-		ToggleEnabledStroke = Color3.fromRGB(180, 120, 255),
-		ToggleDisabledStroke = Color3.fromRGB(80, 40, 120),
-		ToggleEnabledOuterStroke = Color3.fromRGB(60, 30, 90),
-		ToggleDisabledOuterStroke = Color3.fromRGB(40, 20, 60),
-		DropdownSelected = Color3.fromRGB(50, 25, 75),
-		DropdownUnselected = Color3.fromRGB(30, 15, 45),
-		InputBackground = Color3.fromRGB(20, 10, 30),
-		InputStroke = Color3.fromRGB(145, 54, 247),
-		PlaceholderColor = Color3.fromRGB(145, 54, 247)
-	}
 end
 
 -- Config path
@@ -213,6 +215,8 @@ if not getgenv().CometThemes then
 			local selectedTheme = loadTheme()
 			CometHubCSS = applyTheme(result, selectedTheme)
 			print("Applied theme: " .. tostring(selectedTheme))
+
+			SelectedTheme = CometHubCSS
 		end
 	else
 		warn("Failed to load themes from GitHub: " .. tostring(result))
@@ -256,10 +260,11 @@ if not getgenv().CometThemes then
 		CometHubCSS = getDefaultTheme()
 	end
 else
-	-- Themes already loaded, just apply saved theme
 	local selectedTheme = loadTheme()
 	CometHubCSS = applyTheme(getgenv().CometThemes, selectedTheme)
 	print("Using cached themes, applied: " .. tostring(selectedTheme))
+
+	SelectedTheme = CometHubCSS
 end
 
 -- Build theme names list (with safety check)
@@ -964,15 +969,31 @@ local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
 
-local SelectedTheme = ModifiedRLibary.Theme.Default
+local SelectedTheme = CometHubCSS or getDefaultTheme()
 
 local function ChangeTheme(Theme)
+	-- Handle both string theme names and direct theme tables
 	if typeof(Theme) == 'string' then
-		SelectedTheme = ModifiedRLibary.Theme[Theme]
+		-- If it's a string, try to get from CometThemes first, then fallback to ModifiedRLibary.Theme
+		local themeData = getgenv().CometThemes
+		if themeData and themeData[Theme] then
+			-- Convert from array format to Color3
+			SelectedTheme = applyTheme(themeData, Theme)
+		elseif ModifiedRLibary.Theme[Theme] then
+			SelectedTheme = ModifiedRLibary.Theme[Theme]
+		else
+			warn("Theme not found: " .. tostring(Theme) .. ", using Default")
+			SelectedTheme = CometHubCSS or ModifiedRLibary.Theme.Default
+		end
 	elseif typeof(Theme) == 'table' then
+		-- Direct theme table provided (already in Color3 format)
 		SelectedTheme = Theme
+	else
+		warn("Invalid theme type: " .. typeof(Theme))
+		SelectedTheme = CometHubCSS or ModifiedRLibary.Theme.Default
 	end
 
+	-- Apply the theme colors to UI elements
 	Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
 	Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
 	Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
