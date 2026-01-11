@@ -1775,12 +1775,16 @@ local function updateSetting(category: string, setting: string, value: any)
 
 	if category == "General" and setting == "themeSelection" then
 		local selectedThemeName = typeof(value) == "table" and value[1] or value
-		local themes = _G.Themes or Themes
-		if themes and themes[selectedThemeName] then
-			ModifiedRLibary:ChangeTheme(themes[selectedThemeName])
+		local themeData = getgenv().CometThemes
+		
+		if themeData and themeData[selectedThemeName] then
+			local appliedTheme = applyTheme(themeData, selectedThemeName)
+			ModifiedRLibary:ChangeTheme(appliedTheme)
 			saveTheme(selectedThemeName)
 		else
-			--warn("Unknown theme: " .. tostring(selectedThemeName))
+			warn("Unknown theme: " .. tostring(selectedThemeName))
+			local defaultTheme = applyTheme(themeData, "Default")
+			ModifiedRLibary:ChangeTheme(defaultTheme)
 		end
 	end
 end
@@ -4364,5 +4368,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
---yo
+
 return ModifiedRLibary
