@@ -171,7 +171,7 @@ if not getgenv().CometThemes then
 	if success and result and type(result) == "table" then
 		-- Validate that we have at least the Default theme
 		if not result.Default then
-			warn("No Default theme in loaded data, using fallback")
+			if debugX then warn("No Default theme in loaded data, using fallback") end
 			getgenv().CometThemes = {
 				Default = {
 					TextColor = {200, 160, 255},
@@ -210,17 +210,17 @@ if not getgenv().CometThemes then
 			CometHubCSS = getDefaultTheme()
 		else
 			getgenv().CometThemes = result
-			print("Successfully loaded themes from GitHub")
+			if debugX then print("Loaded Themes") end
 			
 			local selectedTheme = loadTheme()
 			CometHubCSS = applyTheme(result, selectedTheme)
-			print("Applied theme: " .. tostring(selectedTheme))
+			if debugX then print("Applied theme: " .. tostring(selectedTheme)) end
 
 			SelectedTheme = CometHubCSS
 		end
 	else
-		warn("Failed to load themes from GitHub: " .. tostring(result))
-		warn("Using fallback default theme")
+		if debugX then warn("Failed to load themes: " .. tostring(result)) end
+		if debugX then warn("Using fallback default theme") end
 		
 		getgenv().CometThemes = {
 			Default = {
@@ -262,25 +262,10 @@ if not getgenv().CometThemes then
 else
 	local selectedTheme = loadTheme()
 	CometHubCSS = applyTheme(getgenv().CometThemes, selectedTheme)
-	print("Using cached themes, applied: " .. tostring(selectedTheme))
+	if debugX then print("Using cached themes, applied: " .. tostring(selectedTheme)) end
 
 	SelectedTheme = CometHubCSS
 end
-
--- Build theme names list (with safety check)
-local themeNames = {}
-local Themes = getgenv().CometThemes or {}
-
-if type(Themes) == "table" then
-	for themeName in pairs(Themes) do
-		table.insert(themeNames, themeName)
-	end
-	table.sort(themeNames)
-else
-	warn("Themes is not a table, using default")
-	themeNames = {"Default"}
-end
-
 
 if debugX then
 	warn('Initialising Rayfield')
@@ -341,21 +326,26 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 	return if success then result else nil
 end
 
+-- Build theme names list AFTER loading themes
+local themeNames = {}
+local Themes = getgenv().CometThemes or {}
+
+if type(Themes) == "table" then
+	for themeName in pairs(Themes) do
+		table.insert(themeNames, themeName)
+	end
+	table.sort(themeNames)
+else
+	warn("Themes is not a table, using default")
+	themeNames = {"Default"}
+end
+
 local requestsDisabled = false -- set to default for performance
 local InterfaceBuild = '3K4W'
 local Release = "UI Version 1.70"
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
-
-local themeNames = {}
-
-for themeName in pairs(Themes) do
-	table.insert(themeNames, themeName)
-end
-
-
-table.sort(themeNames)
 
 local settingsTable = {
 	General = {
