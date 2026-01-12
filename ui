@@ -12,6 +12,8 @@
 
 ]]
 
+debugX = getgenv().debugX or false
+
 math.randomseed(os.time())
 
 local HttpService = game:GetService('HttpService')
@@ -62,7 +64,7 @@ end
 -- Function to convert RGB array to Color3
 local function arrayToColor3(arr)
 	if type(arr) ~= "table" or #arr < 3 then
-		warn("Invalid color array:", arr)
+		if debugX then warn("Invalid color array:", arr) end
 		return Color3.fromRGB(200, 160, 255) -- fallback color
 	end
 	return Color3.fromRGB(arr[1], arr[2], arr[3])
@@ -71,7 +73,7 @@ end
 -- Function to apply theme from theme data
 local function applyTheme(themeData, themeName)
 	if not themeData or type(themeData) ~= "table" then
-		warn("Invalid theme data provided")
+		if debugX then warn("Invalid theme data provided") end
 		return getDefaultTheme()
 	end
 	
@@ -93,13 +95,13 @@ local function applyTheme(themeData, themeName)
 	
 	-- Fallback to Default if theme not found
 	if not selectedThemeData then
-		warn("Theme '" .. tostring(themeName) .. "' not found, using Default")
+		if debugX then warn("Theme '" .. tostring(themeName) .. "' not found, using Default") end
 		selectedThemeData = themeData["Default"]
 	end
 	
 	-- If still no theme data, use fallback
 	if not selectedThemeData then
-		warn("No theme data available, using fallback")
+		if debugX then warn("No theme data available, using fallback") end
 		return getDefaultTheme()
 	end
 	
@@ -131,7 +133,7 @@ function loadConfig()
 	if success then
 		return result
 	else
-		warn("Error loading config: " .. tostring(result))
+		if debugX then warn("Error loading config: " .. tostring(result)) end
 		return {}
 	end
 end
@@ -146,7 +148,7 @@ function saveConfig(data)
 	end)
 	
 	if not success then
-		warn("Error saving config: " .. tostring(err))
+		if debugX then warn("Error saving config: " .. tostring(err)) end
 	end
 end
 
@@ -4379,5 +4381,5 @@ task.delay(4, function()
 		Main.Notice.Visible = false
 	end
 end)
-
+--yo gurt
 return ModifiedRLibary
